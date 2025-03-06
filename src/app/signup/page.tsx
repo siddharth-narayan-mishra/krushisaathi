@@ -2,12 +2,13 @@
 import React, { useContext, useEffect } from "react";
 import SignupForm from "@/components/SignupForm";
 import Image from "next/image";
-import logo from "../../../public/assets/images/logo.png";
+// import logo from "../../../public/assets/images/logo.png";
 import globe from "../../../public/assets/icons/globe.svg";
 import arrowDown from "../../../public/assets/icons/arrowDown.svg";
 import Link from "next/link";
 import UserContext from "@/context/userContext";
 import { useRouter } from "next/navigation";
+import { logo } from "@/config/ImagesUrl";
 
 const page = () => {
   const router = useRouter();
@@ -33,7 +34,13 @@ const page = () => {
   return (
     <section className="h-screen flex overflow-hidden">
       <div className="w-full lg:w-[40%] px-20 content-center h-screen overflow-y-auto ">
-        <Image src={logo} alt="Krushi Saathi Logo" className=" mx-auto" />
+        <Image
+          src={logo}
+          alt="Krushi Saathi Logo"
+          height={10}
+          width={10}
+          className=" mx-auto"
+        />
         <SignupForm />
         <div className="flex justify-center content-center mt-6">
           <hr className="my-auto border border-[#6378659C] w-full" />
@@ -49,7 +56,7 @@ const page = () => {
       <div
         className="w-0 lg:w-[60%] bg-cover bg-no-repeat bg-center relative"
         style={{
-          backgroundImage: `url('/assets/images/mission.png')`,
+          backgroundImage: `url('/assets/images/mission.png')`
         }}
       >
         <button className="flex bg-secondary_green content-center rounded-lg px-5 py-0.5 m-3">

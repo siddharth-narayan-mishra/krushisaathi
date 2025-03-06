@@ -16,11 +16,11 @@ const page = () => {
   const { currentComponent } = navContext;
 
   return (
-    <main className="lg:flex">
+    <main className="lg:flex overflow-x-auto">
       <div>
         <Sidebar />
       </div>
-      <div className="w-full">{currentComponent}</div>
+      <div className="w-full ">{currentComponent}</div>
     </main>
   );
 };

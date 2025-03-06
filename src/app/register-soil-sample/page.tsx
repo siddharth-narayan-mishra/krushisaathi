@@ -5,13 +5,14 @@ import Sidebar from "@/components/farmer/Sidebar";
 import backArrow from "../../../public/assets/icons/back-arrow.svg";
 import Image from "next/image";
 import navigationContext from "@/context/navigationContext";
-import placeholder_lab from "../../../public/assets/images/placeholder_lab.png";
+// import placeholder_lab from "../../../public/assets/images/placeholder_lab.png";
 import Call from "../../../public/assets/icons/call.svg";
 import Bookmark from "../../../public/assets/icons/Bookmark.svg";
 import Directions from "../../../public/assets/icons/Directions.svg";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import UserContext from "@/context/userContext";
+import { placeholder_lab } from "@/config/ImagesUrl";
 
 const Page = () => {
   const [destination, setDestination] = useState<{

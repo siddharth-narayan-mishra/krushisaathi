@@ -3,6 +3,12 @@ import globe from "../../../public/assets/icons/globe.svg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import UserContext from "@/context/userContext";
+import {
+  register_sample_bg,
+  soil_result_bg,
+  soil_sample_bg,
+  soil_testing_bg
+} from "@/config/ImagesUrl";
 
 const HomeComponent = () => {
   const router = useRouter();
@@ -35,7 +41,7 @@ const HomeComponent = () => {
         <div
           className="bg-cover col-span-2 h-[250px] md:h-auto md:col-span-1 bg-center bg-no-repeat rounded-lg text-center content-center text-3xl"
           style={{
-            backgroundImage: `url('/assets/images/soil-testing-bg.png')`,
+            backgroundImage: `url(${soil_testing_bg})`
           }}
         >
           Soil Testing
@@ -45,7 +51,7 @@ const HomeComponent = () => {
             onClick={() => router.push("/how-to")}
             className="bg-cover w-full bg-center bg-no-repeat rounded-lg text-center content-center text-3xl h-[250px] mb-3"
             style={{
-              backgroundImage: `url('/assets/images/soil-sample-bg.png')`,
+              backgroundImage: `url(${soil_sample_bg})`
             }}
           >
             How to Take Soil Sample
@@ -53,7 +59,7 @@ const HomeComponent = () => {
           <button
             className="bg-cover w-full bg-center bg-no-repeat rounded-lg text-center content-center text-3xl h-[250px]"
             style={{
-              backgroundImage: `url('/assets/images/register-sample-bg.png')`,
+              backgroundImage: `url(${register_sample_bg})`
             }}
             onClick={() => router.push("/register-soil-sample")}
           >
@@ -66,7 +72,7 @@ const HomeComponent = () => {
           <div
             className="bg-cover bg-center bg-no-repeat rounded-lg text-center content-center p-3 mr-3 mb-3"
             style={{
-              backgroundImage: "url('/assets/images/soil-result-bg.png')",
+              backgroundImage: `url(${soil_result_bg})`
             }}
           >
             <h3 className="text-[#2DFF00] text-lg">Top left corner</h3>
@@ -81,7 +87,7 @@ const HomeComponent = () => {
           <div
             className="bg-cover bg-center bg-no-repeat rounded-lg text-center content-center p-3 mr-3 mb-3"
             style={{
-              backgroundImage: "url('/assets/images/soil-result-bg.png')",
+              backgroundImage: `url(${soil_result_bg})`
             }}
           >
             <h3 className="text-[#2DFF00] text-lg">Top left corner</h3>
@@ -96,7 +102,7 @@ const HomeComponent = () => {
           <div
             className="bg-cover bg-center bg-no-repeat rounded-lg text-center content-center p-3 mr-3 mb-3"
             style={{
-              backgroundImage: "url('/assets/images/soil-result-bg.png')",
+              backgroundImage: `url(${soil_result_bg})`
             }}
           >
             <h3 className="text-[#2DFF00] text-lg">Top left corner</h3>
@@ -111,7 +117,7 @@ const HomeComponent = () => {
           <div
             className="bg-cover bg-center bg-no-repeat rounded-lg text-center content-center p-3 mr-3 mb-3"
             style={{
-              backgroundImage: "url('/assets/images/soil-result-bg.png')",
+              backgroundImage: `url(${soil_result_bg})`
             }}
           >
             <h3 className="text-[#2DFF00] text-lg">Top left corner</h3>
@@ -126,7 +132,7 @@ const HomeComponent = () => {
           <div
             className="bg-cover bg-center bg-no-repeat rounded-lg text-center content-center p-3 mr-3 mb-3"
             style={{
-              backgroundImage: "url('/assets/images/soil-result-bg.png')",
+              backgroundImage: `url(${soil_result_bg})`
             }}
           >
             <h3 className="text-[#2DFF00] text-lg">Top left corner</h3>

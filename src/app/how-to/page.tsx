@@ -6,9 +6,14 @@ import backArrow from "../../../public/assets/icons/back-arrow.svg";
 import globe from "../../../public/assets/icons/globe.svg";
 import arrow from "../../../public/assets/icons/arrow.svg";
 import { useRouter } from "next/navigation";
-import step1 from "../../../public/assets/images/step-1-sampling.jpg";
-import step2 from "../../../public/assets/images/step-2-sampling.jpg";
-import step3 from "../../../public/assets/images/step-3-sampling.jpg";
+import {
+  step_1_sampling,
+  step_2_sampling,
+  step_3_sampling
+} from "@/config/ImagesUrl";
+// import step1 from "../../../public/assets/images/step-1-sampling.jpg";
+// import step2 from "../../../public/assets/images/step-2-sampling.jpg";
+// import step3 from "../../../public/assets/images/step-3-sampling.jpg";
 
 const VideoComponent = React.lazy(
   () => import("@/components/farmer/VideoComponent")
@@ -52,7 +57,7 @@ const page = () => {
               <div className=" md:w-[200px] md:mx-auto flex md:block">
                 <Image
                   className="rounded-lg mx-auto mt-3"
-                  src={step1}
+                  src={step_1_sampling}
                   width={200}
                   height={200}
                   alt="globe"
@@ -78,7 +83,7 @@ const page = () => {
               <div className="sm:mx-10 md:w-[200px] md:mx-auto flex md:block">
                 <Image
                   className="rounded-lg mx-auto mt-3"
-                  src={step2}
+                  src={step_2_sampling}
                   width={200}
                   height={200}
                   alt="globe"
@@ -105,7 +110,7 @@ const page = () => {
               <div className="sm:mx-10 md:w-[200px] md:mx-auto flex md:block">
                 <Image
                   className="rounded-lg mx-auto mt-3"
-                  src={step3}
+                  src={step_3_sampling}
                   width={200}
                   height={200}
                   alt="globe"

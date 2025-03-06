@@ -17,12 +17,13 @@ import privacy from "../../../public/assets/icons/Privacy.svg";
 import settings from "../../../public/assets/icons/Settings.svg";
 import logoutIcn from "../../../public/assets/icons/logout.svg";
 import test from "../../../public/assets/icons/Test.svg";
-import logo from "../../../public/assets/images/logo.png";
+// import logo from "../../../public/assets/images/logo.png";
 import right_arrow from "../../../public/assets/icons/right_arrow.svg";
-import logo_small from "../../../public/assets/images/logo_small.png";
+// import logo_small from "../../../public/assets/images/logo_small.png";
 import Image from "next/image";
 import navigationContext from "@/context/navigationContext";
 import UserContext from "@/context/userContext";
+import { logo, logo_small } from "@/config/ImagesUrl";
 
 const Sidebar = () => {
   const navContext = useContext(navigationContext);

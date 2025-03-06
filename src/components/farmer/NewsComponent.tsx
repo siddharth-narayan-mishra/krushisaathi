@@ -3,9 +3,9 @@ import backArrow from "../../../public/assets/icons/back-arrow.svg";
 import globe from "../../../public/assets/icons/globe.svg";
 import Bookmark from "../../../public/assets/icons/Bookmark.svg";
 import clock from "../../../public/assets/icons/Clock.svg";
-import newsPlaceholderBg from "../../../public/assets/images/news-placeholder-bg.png";
 import Image from "next/image";
 import { customImageLoader } from "@/utils/customImageLoader";
+import { news_placeholder_bg } from "@/config/ImagesUrl";
 
 interface NewsComponentProps {
   setActive: (active: string) => void;
@@ -14,7 +14,7 @@ interface NewsComponentProps {
 
 const NewsComponent: React.FC<NewsComponentProps> = ({
   setActive,
-  prevActive,
+  prevActive
 }) => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -94,7 +94,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
                     <div className="relative">
                       <Image
                         className="rounded-t-lg h-[200px]"
-                        src={element.urlToImage || newsPlaceholderBg}
+                        src={element.urlToImage || news_placeholder_bg}
                         alt="news"
                         width={500}
                         height={300}
@@ -103,7 +103,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
                       <span className="absolute rounded-full p-2 bg-[#27612B] top-2 right-2">
                         <Image src={Bookmark} alt="mark" width={8} height={4} />
                       </span>
-                      <div className="bg-secondary_green rounded-b-lg p-2 h-[110px]">
+                      <div className="bg-secondary_green rounded-b-lg p-2 h-[134px]">
                         <p className="text-lg">{getTitle(element.title)}</p>
                         <span className="text-xs text-gray-500 flex mt-3">
                           <Image

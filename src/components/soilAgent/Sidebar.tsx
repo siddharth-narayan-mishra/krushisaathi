@@ -7,12 +7,13 @@ import home from "../../../public/assets/icons/Home.svg";
 import logoutIcn from "../../../public/assets/icons/logout.svg";
 import list from "../../../public/assets/icons/News.svg";
 import test from "../../../public/assets/icons/Test.svg";
-import logo from "../../../public/assets/images/logo.png";
+// import logo from "../../../public/assets/images/logo.png";
 import right_arrow from "../../../public/assets/icons/right_arrow.svg";
-import logo_small from "../../../public/assets/images/logo_small.png";
+// import logo_small from "../../../public/assets/images/logo_small.png";
 import Image from "next/image";
 import navigationContext from "@/context/navigationContext";
 import UserContext from "@/context/userContext";
+import { logo, logo_small } from "@/config/ImagesUrl";
 
 const Sidebar = () => {
   const navContext = useContext(navigationContext);
@@ -41,13 +42,14 @@ const Sidebar = () => {
 
   const { logout } = userContext;
   return (
-    <>
+    <div className="">
       {/* // Desktop Sidebar */}
+
       <div
         className={`relative ${
           sidebarOpen ? "w-64" : "w-20"
         } hidden lg:block h-screen overflow-y-auto border-r-2 ${
-          sidebarOpen ? "border-r-primary_green" : "border-gray-300"
+          sidebarOpen ? "" : "border-gray-300"
         } `}
       >
         <button
@@ -224,7 +226,7 @@ const Sidebar = () => {
           </div>
         </div>
       </nav>
-    </>
+    </div>
   );
 };
 
