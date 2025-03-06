@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Styles for a thin scrollbar */
+::-webkit-scrollbar {
+  width: 5px; /* Adjust the width for thinness */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Optional: Track color */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Optional: Thumb color */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Optional: Thumb color on hover */
+}
+
+body {
+  @apply font-sans;
+}
+
+.primary-green-bg-button {
+  @apply bg-primary_green text-white text-center px-16 py-2 w-fit rounded-full text-xl mx-auto mt-9 font-light;
+}
+
+.input-field {
+  @apply bg-secondary_green py-1 px-2 w-full rounded-lg text-lg;
+}
+
+.custom-placeholder::placeholder {
+  @apply text-[#637865] text-[15px];
+}
+
+.uploadField {
+  @apply bg-[#EDEDED] text-[#49624B] text-center w-32 px-1.5 py-1 rounded-lg text-sm relative;
+}
+
+.upload-button {
+  @apply bg-secondary_green text-primary_black text-center px-3 rounded-lg mx-auto font-medium;
+}
+
+.active-side-button {
+  @apply text-white bg-primary_green rounded-lg px-2 py-0.5;
+}
+
+.side-button {
+  @apply rounded-lg px-2 py-0.5 hover:bg-primary_white;
+}
+
+.side-button-mobile {
+  @apply w-[380px] text-1.5xl flex justify-between;
+}
+
+.location_utility_button {
+  @apply border border-primary_green text-primary_green rounded-full px-3 py-0.5 flex font-light text-sm;
+}

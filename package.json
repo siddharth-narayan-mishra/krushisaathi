@@ -1,0 +1,43 @@
+{
+  "name": "krishi",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@cloudinary/react": "^1.13.0",
+    "@cloudinary/url-gen": "^1.21.0",
+    "awesome-react-stepper": "^1.1.1",
+    "axios": "^1.7.7",
+    "azure-maps-control": "^3.4.0",
+    "azure-maps-drawing-tools": "^1.0.4",
+    "bcrypt": "^5.1.1",
+    "firebase": "^11.0.1",
+    "formik": "^2.4.6",
+    "jose": "^5.9.6",
+    "jsonwebtoken": "^9.0.2",
+    "newsapi": "^2.4.1",
+    "next": "14.2.4",
+    "next-cloudinary": "^6.16.0",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^6.9.16",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-hot-toast": "^2.4.1",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
