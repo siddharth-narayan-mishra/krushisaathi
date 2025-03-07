@@ -58,3 +58,7 @@ body {
 .location_utility_button {
   @apply border border-primary_green text-primary_green rounded-full px-3 py-0.5 flex font-light text-sm;
 }
+
+.marker-label {
+  @apply text-xs translate-x-[65%];
+}

@@ -6,6 +6,6 @@ interface LabContextType {
   getLab: (id: string) => Promise<any>;
 }
 // Create the context with a default value
-const navigationContext = createContext<LabContextType | undefined>(undefined);
+const labContext = createContext<LabContextType | undefined>(undefined);
 
-export default navigationContext;
+export default labContext;
