@@ -12,7 +12,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { username, password, role } = body;
 
-    const userDocRef = doc(db, "users", username);
+    const userDocRef = doc(
+      db,
+      role === "soil-agent" ? "labs" : "users",
+      username
+    );
     const userDoc = await getDoc(userDocRef);
 
     if (!userDoc.exists()) {
@@ -22,7 +26,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // validate password
     const validPassword = await bcrypt.compare(
       password,
       userDoc.data().password
@@ -35,28 +38,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // create token
     const tokenData = {
       username: userDoc.data().username,
-      role: userDoc.data().role,
+      role: userDoc.data().role
     };
 
     const token = jwt.sign(tokenData, process.env.NEXT_PUBLIC_TOKEN_SECRETE!, {
-      expiresIn: "1d",
+      expiresIn: "1d"
     });
 
     const reponse = NextResponse.json({
       message: "Login successful",
-      success: true,
+      success: true
     });
 
     reponse.cookies.set("token", token, {
-      httpOnly: true,
+      httpOnly: true
     });
 
     return reponse;
   } catch (error) {
-    console.log("Login post error: ",error);
+    console.log("Login post error: ", error);
 
     return new NextResponse(
       JSON.stringify({ error: (error as Error).message, success: false }),

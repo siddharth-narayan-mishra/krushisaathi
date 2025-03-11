@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToFirebase } from "@/utils/FirebaseConfig";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { UserModel } from "@/models/User";
+import { LabModel } from "@/models/Labs";
 import bcrypt from "bcrypt";
 
 const db = connectToFirebase();
@@ -16,72 +17,85 @@ export async function POST(req: NextRequest) {
       password,
       role,
       adhaar,
-      address,
+      country,
+      state,
+      district,
+      fulladdress,
       passbook,
       photo,
       ekyf,
+      latitude,
+      longitude,
+      labName
     } = body;
 
-    console.log(
-      name,
-      username,
-      password,
-      role,
-      adhaar,
-      address,
-      passbook,
-      photo,
-      ekyf
-    );
+    // if (
+    //   !name ||
+    //   !username ||
+    //   !password ||
+    //   !role ||
+    //   !adhaar ||
+    //   !country ||
+    //   !state ||
+    //   !district ||
+    //   !fulladdress ||
+    //   !passbook ||
+    //   !photo ||
+    //   !ekyf
+    // ) {
+    //   return NextResponse.json(
+    //     { error: "Missing required fields", success: false },
+    //     { status: 400 }
+    //   );
+    // }
 
-    if (
-      name === undefined ||
-      username === undefined ||
-      password === undefined ||
-      role === undefined ||
-      adhaar === undefined ||
-      address === undefined ||
-      passbook === undefined ||
-      photo === undefined ||
-      ekyf === undefined
-    ) {
-      return new NextResponse(
-        JSON.stringify({ error: "Missing required fields", success: false }),
-        { status: 400 }
-      );
-    }
-
-    const userDocRef = doc(db, "users", username);
+    const collection = role === "soil-agent" ? "labs" : "users";
+    const userDocRef = doc(db, collection, username);
     const userDoc = await getDoc(userDocRef);
-
     if (userDoc.exists()) {
-      return new NextResponse(
-        JSON.stringify({ error: "User already exists", success: false }),
+      return NextResponse.json(
+        { error: "User already exists", success: false },
         { status: 400 }
       );
     }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const user =
+      role === "soil-agent"
+        ? new LabModel({
+            name,
+            username,
+            password: hashedPassword,
+            role,
+            labName,
+            address: { country, state, district, fulladdress },
+            position:
+              latitude && longitude ? { latitude, longitude } : undefined
+          })
+        : new UserModel({
+            name,
+            username,
+            password: hashedPassword,
+            role,
+            adhaar,
+            passbook,
+            photo,
+            ekyf
+          });
+    await setDoc(userDocRef, JSON.parse(JSON.stringify(user)));
 
-    const user = new UserModel({
-      ...body,
-      password: hashedPassword,
-    });
-
-    await setDoc(doc(db, "users", user.username), { ...user });
-
-    return new NextResponse(
-      JSON.stringify({ message: "User created successfully", success: true }),
-      { status: 200 }
+    return NextResponse.json(
+      { message: "User created successfully", success: true },
+      { status: 201 }
     );
   } catch (error) {
-    console.error("Error parsing request body:", error);
-    return new NextResponse(
-      JSON.stringify({ error: (error as Error).message, success: false }),
+    console.error("Error processing request:", error);
+    return NextResponse.json(
       {
-        status: 400,
-      }
+        error: (error as Error).message || "Something went wrong",
+        success: false
+      },
+      { status: 500 }
     );
   }
 }

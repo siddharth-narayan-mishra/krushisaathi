@@ -11,21 +11,22 @@ export async function GET(req: NextRequest) {
     const labsSnapshot = await getDocs(labsCollection);
     const labsList = labsSnapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data(),
+      ...doc.data()
     }));
 
     return new NextResponse(JSON.stringify({ labs: labsList, success: true }), {
-      status: 200,
+      status: 200
     });
   } catch (error) {
     return new NextResponse(JSON.stringify({ error, success: false }), {
-      status: 500,
+      status: 500
     });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
+    console.log("hii madam");
     const body: Lab = await req.json();
     const { name, position, address, phone } = body;
 
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
       name,
       position,
       address,
-      phone,
+      phone
     });
 
     return new NextResponse(
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
     return new NextResponse(
       JSON.stringify({ message: "Internal Error", success: false }),
       {
-        status: 500,
+        status: 500
       }
     );
   }
