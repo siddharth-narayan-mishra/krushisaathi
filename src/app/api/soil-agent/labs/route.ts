@@ -26,11 +26,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("hii madam");
     const body: Lab = await req.json();
     const { name, position, address, phone } = body;
-
-    console.log(name, position, address, phone);
 
     if (!name || !position || !address || !phone) {
       return new NextResponse(

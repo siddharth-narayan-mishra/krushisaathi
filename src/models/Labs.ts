@@ -1,4 +1,5 @@
 export interface Lab {
+  id: unknown;
   name: string;
   username: string;
   password: string;
@@ -56,4 +57,5 @@ export class LabModel implements Lab {
     this.phone = lab.phone;
     this.users = lab.users ?? [];
   }
+  id: unknown;
 }

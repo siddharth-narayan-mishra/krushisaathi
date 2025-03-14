@@ -36,9 +36,30 @@ const getLab = async (id: string) => {
   }
 };
 
+const registerSample = async (values: any, labId: string) => {
+  try {
+    var url = `http://localhost:3000/api/soil-agent/labs/${labId}`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+    const data = await response.json();
+    if (data.success) {
+      toast.success("Sample registered successfully");
+      return data.lab;
+    }
+  } catch (error) {
+    console.log("Error: ", error);
+    toast.error("Error: " + error);
+  }
+}
+
 const LabState: React.FC<LabStateProps> = ({ children }) => {
   return (
-    <LabContext.Provider value={{ getLabs, getLab }}>
+    <LabContext.Provider value={{ getLabs, getLab, registerSample }}>
       {children}
     </LabContext.Provider>
   );

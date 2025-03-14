@@ -4,6 +4,7 @@ import { createContext } from "react";
 interface LabContextType {
   getLabs: () => Promise<any>;
   getLab: (id: string) => Promise<any>;
+  registerSample: (values: any, labId: string) => Promise<any>;
 }
 // Create the context with a default value
 const labContext = createContext<LabContextType | undefined>(undefined);
