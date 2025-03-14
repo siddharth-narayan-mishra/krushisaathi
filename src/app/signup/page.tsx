@@ -33,7 +33,7 @@ const page = () => {
 
   return (
     <section className="h-screen flex overflow-hidden">
-      <div className="w-full lg:w-[40%] px-20 content-center h-screen overflow-y-auto ">
+      <div className="w-full lg:w-[40%] px-6 md:px-12 content-center h-screen overflow-y-auto ">
         <Image
           src={logo}
           alt="Krushi Saathi Logo"

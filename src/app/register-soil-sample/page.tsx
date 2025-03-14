@@ -17,8 +17,7 @@ const Page = () => {
     longitude: number;
   } | null>(null);
   const router = useRouter();
-  const subscriptionKey =
-    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
+  const subscriptionKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
   if (!subscriptionKey) {
     console.error("Google Maps subscription key is not defined in .env.local");
@@ -102,7 +101,7 @@ const Page = () => {
                       priority
                     />
                     <h2 className="mt-3 text-sm">
-                      {location.name}, {location.address.district}
+                      {location.labName}, {location.address.district}
                     </h2>
                     <p className="text-xs mt-2">
                       Address: {location.address.fulladdress}

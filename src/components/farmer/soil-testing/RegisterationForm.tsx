@@ -15,7 +15,7 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
     farmName: Yup.string().required("Required"),
     samples: Yup.array()
       .of(Yup.string().required("Sample name is required"))
-      .min(1, "At least one sample is required"),
+      .min(1, "At least one sample is required")
   });
 
   const labContext = useContext(LabContext);
@@ -34,7 +34,7 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
         initialValues={{
           farmName: "",
           samples: ["", "", "", ""],
-          username: user?.username,
+          username: user?.username
         }}
         validationSchema={validationSchema}
         onSubmit={(values) => {

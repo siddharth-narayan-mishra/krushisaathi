@@ -27,9 +27,11 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body: Lab = await req.json();
-    const { name, position, address, phone } = body;
+    const { position, address, phone } = body;
 
-    if (!name || !position || !address || !phone) {
+    console.log(name, position, address, phone);
+
+    if (!position || !address || !phone) {
       return new NextResponse(
         JSON.stringify({ message: "Invalid data", success: false }),
         { status: 400 }
@@ -37,7 +39,6 @@ export async function POST(req: NextRequest) {
     }
 
     const doc = await addDoc(collection(db, "labs"), {
-      name,
       position,
       address,
       phone

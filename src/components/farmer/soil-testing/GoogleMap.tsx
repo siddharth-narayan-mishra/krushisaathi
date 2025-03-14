@@ -14,14 +14,14 @@ interface GoogleMapProps {
 
 const containerStyle = {
   width: "full",
-  height: "100vh",
+  height: "100vh"
 };
 
 const CustomGoogleMap: React.FC<GoogleMapProps> = ({
   subscriptionKey,
   locations,
   destination,
-  setDestination,
+  setDestination
 }) => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [routePolyline, setRoutePolyline] =
@@ -31,7 +31,6 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
     lng: number;
   } | null>(null);
 
-  // Getting User Location
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -48,7 +47,6 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
   // Fit bounds to include user location and 3 nearest labs
   useEffect(() => {
     if (window.google?.maps?.geometry && map && userLocation) {
-      // Calculate distances and get the nearest 3 locations
       console.log("locations now:", locations);
       const bounds = new window.google.maps.LatLngBounds();
 
@@ -70,7 +68,7 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
                   userLocation.lng
                 ),
                 latLng
-              ),
+              )
           };
         })
         .sort((a, b) => a.distance - b.distance) // Sort by distance
@@ -88,8 +86,6 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
       map.fitBounds(bounds);
     }
   }, [locations, userLocation, map]);
-
-  // Fetch route from user location to destination
   const fetchRoute = async (origin: any, destination: any) => {
     const url = `https://routes.googleapis.com/directions/v2:computeRoutes`;
 
@@ -99,27 +95,27 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
         "Content-Type": "application/json",
         "X-Goog-Api-Key": subscriptionKey,
         "X-Goog-FieldMask":
-          "routes.polyline.encodedPolyline,routes.legs,routes.distanceMeters,routes.duration",
+          "routes.polyline.encodedPolyline,routes.legs,routes.distanceMeters,routes.duration"
       },
       body: JSON.stringify({
         origin: {
           location: {
             latLng: {
               latitude: origin.lat,
-              longitude: origin.lng,
-            },
-          },
+              longitude: origin.lng
+            }
+          }
         },
         destination: {
           location: {
             latLng: {
               latitude: destination.latitude,
-              longitude: destination.longitude,
-            },
-          },
+              longitude: destination.longitude
+            }
+          }
         },
-        travelMode: "DRIVE",
-      }),
+        travelMode: "DRIVE"
+      })
     });
 
     const data = await response.json();
@@ -143,7 +139,7 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
             geodesic: true,
             strokeColor: "#0000ff",
             strokeOpacity: 1.0,
-            strokeWeight: 3,
+            strokeWeight: 3
           });
 
           polyline.setMap(map);
@@ -158,7 +154,7 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: subscriptionKey,
-    libraries: ["geometry", "places"],
+    libraries: ["geometry", "places"]
   });
 
   const onLoad = useCallback((map: any) => {
@@ -175,7 +171,7 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
         url: "/assets/icons/user-location.svg",
         scaledSize: new window.google.maps.Size(40, 40),
         origin: new window.google.maps.Point(0, 0),
-        anchor: new window.google.maps.Point(20, 40),
+        anchor: new window.google.maps.Point(20, 40)
       }
     : undefined;
 
@@ -195,14 +191,14 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
             key={index}
             position={{
               lat: location.position.latitude,
-              lng: location.position.longitude,
+              lng: location.position.longitude
             }}
             onClick={() => {
               setDestination(location.position);
             }}
             label={{
               text: location.labName,
-              className: "marker-label",
+              className: "marker-label"
             }}
           />
         ))}

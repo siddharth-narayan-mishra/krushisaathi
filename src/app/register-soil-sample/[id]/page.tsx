@@ -62,22 +62,11 @@ const page = () => {
       <div className="w-full">
         <div className="flex justify-between text-2xl px-3 py-2 border-b-2 border-b-gray-400">
           <button onClick={() => setActive(prevActive)}>
-            {" "}
-            <Image
-              src={backArrow}
-              width={16}
-              height={16}
-              alt="back"
-            />
+            <Image src={backArrow} width={16} height={16} alt="back" />
           </button>
           Sample Registeration
           <button>
-            <Image
-              src={globe}
-              width={30}
-              height={30}
-              alt="globe"
-            />
+            <Image src={globe} width={30} height={30} alt="globe" />
           </button>
         </div>
         <RegistrationForm lab={lab} user={user} />

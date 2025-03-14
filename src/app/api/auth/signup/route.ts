@@ -13,6 +13,9 @@ export async function POST(req: NextRequest) {
 
     const {
       name,
+      pincode,
+      streetAddress,
+      city,
       username,
       password,
       role,
@@ -20,13 +23,13 @@ export async function POST(req: NextRequest) {
       country,
       state,
       district,
-      fulladdress,
       passbook,
       photo,
       ekyf,
       latitude,
       longitude,
-      labName
+      labName,
+      phone
     } = body;
 
     // if (
@@ -60,17 +63,27 @@ export async function POST(req: NextRequest) {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const fullAddress = `${streetAddress}, ${city}, ${district}, ${pincode}, ${state}, ${country}`;
+
     const user =
       role === "soil-agent"
         ? new LabModel({
-            name,
             username,
             password: hashedPassword,
             role,
             labName,
-            address: { country, state, district, fulladdress },
+            address: {
+              country,
+              state,
+              district,
+              fulladdress: fullAddress,
+              pincode,
+              city,
+              streetaddress: streetAddress
+            },
             position:
-              latitude && longitude ? { latitude, longitude } : undefined
+              latitude && longitude ? { latitude, longitude } : undefined,
+            phone: phone
           })
         : new UserModel({
             name,
