@@ -15,7 +15,7 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab }) => {
     samples: Yup.array()
       .of(Yup.string())
       .required("At least one sample is required")
-      .min(1, "At least one sample is required"),
+      .min(1, "At least one sample is required")
   });
 
   return (
@@ -23,7 +23,7 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab }) => {
       <Formik
         initialValues={{
           farmname: "",
-          samples: ["", "", "", ""],
+          samples: ["", "", "", ""]
         }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
@@ -90,10 +90,10 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab }) => {
               )}
             </FieldArray>
 
-            {lab.name ? (
+            {lab.labName ? (
               <div className="bg-[#eeebeb] rounded-xl p-3 mt-6">
                 <h2 className="text-lg">
-                  {lab.name}, {lab.address?.district}
+                  {lab.labName}, {lab.address?.district}
                 </h2>
                 <p className=" mt-2 font-light">
                   Address: {lab.address?.fulladdress}

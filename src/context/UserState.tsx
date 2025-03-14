@@ -48,9 +48,10 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
         router.push("/");
         return;
       }
-      console.log(values);
+
       const isLab = values.role;
       setLoading(true);
+      console.log(values);
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
