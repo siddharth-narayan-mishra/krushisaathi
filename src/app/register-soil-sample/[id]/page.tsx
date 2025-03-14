@@ -6,12 +6,14 @@ import navigationContext from "@/context/navigationContext";
 import Image from "next/image";
 import globe from "../../../../public/assets/icons/globe.svg";
 import backArrow from "../../../../public/assets/icons/back-arrow.svg";
-import RegistrationForm from "@/components/farmer/RegisterationForm";
+import RegistrationForm from "@/components/farmer/soil-testing/RegisterationForm";
 import labContext from "@/context/labContext";
+import UserContext from "@/context/userContext";
 
 const page = () => {
   const navContext = useContext(navigationContext);
   const labcontext = useContext(labContext);
+  const userContext = useContext(UserContext);
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const { id } = params;
@@ -25,10 +27,14 @@ const page = () => {
     console.error("Lab context is not provided");
     return <div>Error: Lab context is not provided.</div>;
   }
-
-  const { getLab } = labcontext;
+  if (!userContext) {
+    console.error("User context is not provided");
+    return <div>Error: User context is not provided.</div>;
+  }
 
   const { setActive, prevActive } = navContext;
+  const { getLab } = labcontext;
+  const { user } = userContext;
 
   useEffect(() => {
     if (!id) {
@@ -37,11 +43,16 @@ const page = () => {
       return;
     } else {
       getLab(id).then((data) => {
-        console.log("Lab data: ", data);
         setLab(data);
       });
     }
-  }, [location, router]);
+  }, [router]);
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="block lg:flex">
@@ -58,7 +69,7 @@ const page = () => {
             <Image src={globe} width={30} height={30} alt="globe" />
           </button>
         </div>
-        <RegistrationForm lab={lab} />
+        <RegistrationForm lab={lab} user={user} />
       </div>
     </div>
   );

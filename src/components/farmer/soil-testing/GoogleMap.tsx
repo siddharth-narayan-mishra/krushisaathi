@@ -200,7 +200,7 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
               setDestination(location.position);
             }}
             label={{
-              text: location.name,
+              text: location.labName,
               className: "marker-label"
             }}
           />

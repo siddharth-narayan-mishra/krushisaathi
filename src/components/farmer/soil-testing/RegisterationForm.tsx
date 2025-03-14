@@ -1,73 +1,79 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
-import Image from "next/image";
 import { Lab } from "@/models/Labs";
+import LabContext from "@/context/labContext";
 
 interface RegisterationFormProps {
   lab: Lab;
+  user: any;
 }
 
-const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab }) => {
+const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
   const validationSchema = Yup.object({
     farmName: Yup.string().required("Required"),
     samples: Yup.array()
-      .of(Yup.string())
-      .required("At least one sample is required")
+      .of(Yup.string().required("Sample name is required"))
       .min(1, "At least one sample is required")
   });
+
+  const labContext = useContext(LabContext);
+  if (!labContext) {
+    console.log("Lab context is not provided", labContext);
+
+    console.error("Lab context is not provided");
+    return <div>Error: Lab context is not provided.</div>;
+  }
+
+  const { registerSample } = labContext;
 
   return (
     <>
       <Formik
         initialValues={{
-          farmname: "",
-          samples: ["", "", "", ""]
+          farmName: "",
+          samples: ["", "", "", ""],
+          username: user?.username
         }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          console.log(values);
+          registerSample(values, lab.id as string);
         }}
       >
         {({ values }) => (
           <Form className="flex flex-col mx-auto w-[500px] px-1 mt-5 overflow-auto">
-            <label htmlFor="farmname" className="font-medium mb-2">
+            <label htmlFor="farmName" className="font-medium mb-2">
               Enter Your Farm Name
             </label>
             <Field
               className="input-field custom-placeholder"
-              id="farmname"
-              name="farmname"
-              type="farmname"
+              id="farmName"
+              name="farmName"
+              type="text"
               placeholder="Ex. Gukesh Yard"
             />
             <div className="mb-7 h-5">
               <ErrorMessage
-                name="farmname"
+                name="farmName"
                 component="div"
                 className="text-sm text-red-400"
               />
             </div>
 
             <FieldArray name="samples">
-              {({ insert, remove, push }) => (
+              {({ remove, push }) => (
                 <div>
                   <p className="font-medium mb-2">Add Samples</p>
                   {values.samples.length > 0 &&
                     values.samples.map((sample, index) => (
                       <div className="sample mb-4" key={index}>
-                        <div className="flex mb-4 relative">
+                        <div className="mb-4 relative">
                           <Field
                             name={`samples.${index}`}
                             type="text"
                             className="input-field custom-placeholder"
                             placeholder="Enter Sample Name"
-                          />
-                          <ErrorMessage
-                            name={`samples.${index}`}
-                            component="div"
-                            className="text-sm text-red-400"
                           />
                           <button
                             type="button"
@@ -76,6 +82,11 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab }) => {
                           >
                             x
                           </button>
+                          <ErrorMessage
+                            name={`samples.${index}`}
+                            component="div"
+                            className="text-sm text-red-400"
+                          />
                         </div>
                       </div>
                     ))}

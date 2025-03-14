@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useContext, useEffect } from "react";
-import GoogleMap from "../../components/farmer/GoogleMap";
+import GoogleMap from "../../components/farmer/soil-testing/GoogleMap";
 import Sidebar from "@/components/farmer/Sidebar";
 import backArrow from "../../../public/assets/icons/back-arrow.svg";
 import Image from "next/image";
@@ -43,8 +43,6 @@ const Page = () => {
 
   const handleProceedClick = (id: string) => {
     const url = "/register-soil-sample/" + id;
-    console.log("Navigating to:", url);
-
     router.push(url);
   };
 

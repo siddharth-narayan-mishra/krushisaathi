@@ -1,6 +1,5 @@
-import { string } from "yup";
-
 export interface Lab {
+  id: unknown;
   username: string;
   password: string;
   role: string;
@@ -30,6 +29,7 @@ export interface Lab {
 }
 
 export class LabModel implements Lab {
+  name: string;
   username: string;
   password: string;
   role: string;
@@ -65,4 +65,5 @@ export class LabModel implements Lab {
     this.phone = lab.phone;
     this.users = lab.users ?? [];
   }
+  id: unknown;
 }
