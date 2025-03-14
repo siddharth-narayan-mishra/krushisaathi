@@ -29,7 +29,6 @@ export interface Lab {
 }
 
 export class LabModel implements Lab {
-  name: string;
   username: string;
   password: string;
   role: string;

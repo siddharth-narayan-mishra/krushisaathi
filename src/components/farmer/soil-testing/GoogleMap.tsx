@@ -47,7 +47,6 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
   // Fit bounds to include user location and 3 nearest labs
   useEffect(() => {
     if (window.google?.maps?.geometry && map && userLocation) {
-      // Calculate distances and get the nearest 3 locations
       console.log("locations now:", locations);
       const bounds = new window.google.maps.LatLngBounds();
 
@@ -87,8 +86,6 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
       map.fitBounds(bounds);
     }
   }, [locations, userLocation, map]);
-
-  // Fetch route from user location to destination
   const fetchRoute = async (origin: any, destination: any) => {
     const url = `https://routes.googleapis.com/directions/v2:computeRoutes`;
 
