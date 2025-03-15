@@ -56,6 +56,10 @@ export async function POST(req: NextRequest) {
       httpOnly: true
     });
 
+    reponse.cookies.set("role", role, {
+      httpOnly: true
+    });
+
     return reponse;
   } catch (error) {
     console.log("Login post error: ", error);

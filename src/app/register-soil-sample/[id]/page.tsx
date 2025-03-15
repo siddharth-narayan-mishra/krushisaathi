@@ -18,6 +18,7 @@ const page = () => {
   const params = useParams<{ id: string }>();
   const { id } = params;
   const [lab, setLab] = useState<any>({});
+  console.log(id);
 
   if (!navContext) {
     console.error("Navigation context is not provided");
@@ -38,12 +39,13 @@ const page = () => {
 
   useEffect(() => {
     if (!id) {
-      router.push("/register-soil-sample");
+      // router.push("/register-soil-sample");
       console.error("Location is not provided");
       return;
     } else {
       getLab(id).then((data) => {
         setLab(data);
+        console.log("window", data);
       });
     }
   }, [router]);

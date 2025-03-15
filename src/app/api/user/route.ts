@@ -9,6 +9,7 @@ const db = connectToFirebase();
 export async function GET(req: NextRequest) {
   try {
     const token = req.cookies.get("token")?.value || "";
+    const role = req.cookies.get("role")?.value || "";
     if (!token) {
       return new NextResponse(
         JSON.stringify({ message: "User not authenticated", success: false }),
@@ -21,13 +22,17 @@ export async function GET(req: NextRequest) {
     );
 
     if (typeof decodedToken !== "string" && "username" in decodedToken) {
-      const docRef = doc(db, "users", decodedToken.username);
+      const docRef = doc(
+        db,
+        role === "soil-agent" ? "labs" : "users",
+        decodedToken.username
+      );
       const userDoc = await getDoc(docRef);
       if (userDoc.exists()) {
         const user = { ...userDoc.data() };
         delete user.password;
         delete user.verifyToken;
-        delete user.verifyTokenExpiry  ;
+        delete user.verifyTokenExpiry;
         delete user.forgotPasswordTokenExpiry;
         delete user.forgotPasswordToken;
 
@@ -35,7 +40,7 @@ export async function GET(req: NextRequest) {
           JSON.stringify({
             message: "User authenticated",
             success: true,
-            user: user,
+            user: user
           }),
           { status: 200 }
         );

@@ -1,57 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Eye, Pencil, Search, ChevronDown, ChevronUp } from "lucide-react";
+import { getLabUsers, UseUser } from "@/utils/getuser";
 
 interface Farmer {
-  id: string;
-  name: string;
-  username: string;
-  registrationDate: string;
-  status: "active" | "pending" | "inactive";
+  userId: string;
+  farmName: string;
+  sampleNames: { position: string; status: string }[];
 }
 
-const MOCK_FARMERS: Farmer[] = [
-  {
-    id: "1",
-    name: "Rajesh Kumar",
-    username: "rajesh_k",
-    registrationDate: "2024-02-15",
-    status: "active"
-  },
-  {
-    id: "2",
-    name: "Priya Patel",
-    username: "priya_p",
-    registrationDate: "2024-02-14",
-    status: "pending"
-  },
-  {
-    id: "3",
-    name: "Amit Singh",
-    username: "amit_s",
-    registrationDate: "2024-02-13",
-    status: "active"
-  },
-  {
-    id: "4",
-    name: "Sneha Reddy",
-    username: "sneha_r",
-    registrationDate: "2024-02-12",
-    status: "inactive"
-  },
-  {
-    id: "5",
-    name: "Vikram Sharma",
-    username: "vikram_s",
-    registrationDate: "2024-02-11",
-    status: "active"
-  }
-];
-
 function FarmersListComponent() {
-  const [farmers, setFarmers] = useState<Farmer[]>(MOCK_FARMERS);
+  const user = UseUser();
+  const [farmers, setFarmers] = useState<Farmer[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortField, setSortField] = useState<keyof Farmer>("name");
+  const [sortField, setSortField] = useState<keyof Farmer>("farmName");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  useEffect(() => {
+    const fetchUsers = () => {
+      const labUsers = getLabUsers(user);
+      console.log("Fetched lab users:", labUsers);
+      setFarmers(labUsers || []);
+    };
+
+    if (user) fetchUsers();
+  }, [user]);
 
   const handleSort = (field: keyof Farmer) => {
     if (sortField === field) {
@@ -63,28 +35,46 @@ function FarmersListComponent() {
   };
 
   const sortedAndFilteredFarmers = farmers
-    .filter(
-      (farmer) =>
-        farmer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        farmer.username.toLowerCase().includes(searchTerm.toLowerCase())
+    .filter((farmer) =>
+      farmer.farmName?.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
-      const aValue = a[sortField];
-      const bValue = b[sortField];
+      const aValue = a[sortField]?.toString().toLowerCase() || "";
+      const bValue = b[sortField]?.toString().toLowerCase() || "";
       return sortDirection === "asc"
         ? aValue.localeCompare(bValue)
         : bValue.localeCompare(aValue);
     });
 
-  const getStatusColor = (status: Farmer["status"]) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case "active":
-        return "bg-black text-white";
+      case "complete":
+        return "bg-green-100 text-green-700";
       case "pending":
-        return "bg-black text-white";
-      case "inactive":
-        return "bg-black text-white";
+        return "bg-yellow-100 text-yellow-700";
+      case "rejected":
+        return "bg-red-100 text-red-700";
+      default:
+        return "bg-gray-100 text-gray-700";
     }
+  };
+
+  const countSamplesByStatus = (farmer: Farmer, status: string) => {
+    return (
+      farmer.sampleNames?.filter((sample) => sample.status === status).length ||
+      0
+    );
+  };
+
+  const getOverallStatus = (farmer: Farmer) => {
+    const pendingCount = countSamplesByStatus(farmer, "pending");
+    const completeCount = countSamplesByStatus(farmer, "complete");
+    const rejectedCount = countSamplesByStatus(farmer, "rejected");
+
+    if (rejectedCount > 0) return "rejected";
+    if (pendingCount > 0) return "pending";
+    if (completeCount > 0) return "complete";
+    return "pending";
   };
 
   const SortIcon = ({ field }: { field: keyof Farmer }) => {
@@ -119,33 +109,21 @@ function FarmersListComponent() {
             <table className="w-full text-sm text-left text-gray-500">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort("name")}
-                  >
-                    Name <SortIcon field="name" />
+                  <th scope="col" className="px-6 py-3">
+                    SerialNo.
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort("username")}
+                    onClick={() => handleSort("farmName")}
                   >
-                    Username <SortIcon field="username" />
+                    Farm Name <SortIcon field="farmName" />
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort("registrationDate")}
-                  >
-                    Registration Date <SortIcon field="registrationDate" />
+                  <th scope="col" className="px-6 py-3">
+                    Sample Positions
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort("status")}
-                  >
-                    Status <SortIcon field="status" />
+                  <th scope="col" className="px-6 py-3">
+                    Status
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Actions
@@ -153,27 +131,52 @@ function FarmersListComponent() {
                 </tr>
               </thead>
               <tbody>
-                {sortedAndFilteredFarmers.map((farmer) => (
+                {sortedAndFilteredFarmers.map((farmer, index) => (
                   <tr
-                    key={farmer.id}
+                    key={farmer.userId}
                     className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
                   >
+                    <td className="px-6  py-4 font-medium text-gray-900">
+                      {index + 1}
+                    </td>
                     <td className="px-6 py-4 font-medium text-gray-900">
-                      {farmer.name}
-                    </td>
-                    <td className="px-6 py-4">{farmer.username}</td>
-                    <td className="px-6 py-4">
-                      {new Date(farmer.registrationDate).toLocaleDateString()}
+                      {farmer.farmName}
                     </td>
                     <td className="px-6 py-4">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                          farmer.status
-                        )}`}
-                      >
-                        {farmer.status.charAt(0).toUpperCase() +
-                          farmer.status.slice(1)}
-                      </span>
+                      {farmer.sampleNames
+                        ?.map((sample) => sample.position)
+                        .join(", ")}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1">
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                            getOverallStatus(farmer)
+                          )}`}
+                        >
+                          {getOverallStatus(farmer).charAt(0).toUpperCase() +
+                            getOverallStatus(farmer).slice(1)}
+                        </span>
+                        <div className="text-xs text-gray-500">
+                          {countSamplesByStatus(farmer, "pending") > 0 && (
+                            <span className="mr-2">
+                              Pending: {countSamplesByStatus(farmer, "pending")}
+                            </span>
+                          )}
+                          {countSamplesByStatus(farmer, "complete") > 0 && (
+                            <span className="mr-2">
+                              Complete:{" "}
+                              {countSamplesByStatus(farmer, "complete")}
+                            </span>
+                          )}
+                          {countSamplesByStatus(farmer, "rejected") > 0 && (
+                            <span>
+                              Rejected:{" "}
+                              {countSamplesByStatus(farmer, "rejected")}
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex gap-3">

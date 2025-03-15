@@ -4,6 +4,9 @@ import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import { Lab } from "@/models/Labs";
 import LabContext from "@/context/labContext";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+// import { v4 } from "uuid";
 
 interface RegisterationFormProps {
   lab: Lab;
@@ -11,6 +14,7 @@ interface RegisterationFormProps {
 }
 
 const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
+  const [loading, setLoading] = useState(false);
   const validationSchema = Yup.object({
     farmName: Yup.string().required("Required"),
     samples: Yup.array()
@@ -18,6 +22,8 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
       .min(1, "At least one sample is required")
   });
 
+  // console.log(lab.labName);
+  const router = useRouter();
   const labContext = useContext(LabContext);
   if (!labContext) {
     console.log("Lab context is not provided", labContext);
@@ -37,8 +43,15 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
           username: user?.username
         }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          registerSample(values, lab.id as string);
+        onSubmit={async (values) => {
+          setLoading(true);
+          const data = await registerSample(values, lab.username as string);
+          console.log(data);
+          if (data.success) {
+            setLoading(false);
+            toast.success("sample registered successfull");
+            router.push("/");
+          }
         }}
       >
         {({ values }) => (
@@ -116,7 +129,7 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
             )}
 
             <button type="submit" className="primary-green-bg-button">
-              Register
+              {loading ? "submitting..." : "submit"}
             </button>
           </Form>
         )}

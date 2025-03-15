@@ -4,6 +4,7 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 import { UserModel } from "@/models/User";
 import { LabModel } from "@/models/Labs";
 import bcrypt from "bcrypt";
+import { v4 } from "uuid";
 
 const db = connectToFirebase();
 
@@ -65,9 +66,13 @@ export async function POST(req: NextRequest) {
 
     const fullAddress = `${streetAddress}, ${city}, ${district}, ${pincode}, ${state}, ${country}`;
 
+    const uuid = v4();
+    console.log(v4);
+
     const user =
       role === "soil-agent"
         ? new LabModel({
+            id: uuid.toString(),
             username,
             password: hashedPassword,
             role,

@@ -1,4 +1,6 @@
-import { createContext } from "react";
+import { LabModel } from "@/models/Labs";
+import { UserModel } from "@/models/User";
+import { createContext, ReactElement } from "react";
 
 interface UserContextType {
   loading: boolean;
@@ -7,7 +9,7 @@ interface UserContextType {
   logout: () => void;
   login: (values: any) => void;
   getUserData: () => void;
-  user: any;
+  user: UserModel | LabModel | ReactElement | null;
   isLoggedIn: () => Promise<boolean>;
 }
 

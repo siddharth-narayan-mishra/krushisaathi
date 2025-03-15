@@ -14,7 +14,7 @@ export class UserModel implements User {
   name: string;
   username: string;
   password: string;
-  role: string = "farmer"; 
+  role: string = "farmer";
   adhaar: string;
   address: string;
   passbook: string;
@@ -31,5 +31,5 @@ export class UserModel implements User {
     this.passbook = user.passbook || "";
     this.photo = user.photo || "";
     this.ekyf = user.ekyf || "";
-}
+  }
 }

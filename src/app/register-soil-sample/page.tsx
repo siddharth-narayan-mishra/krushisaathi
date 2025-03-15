@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import UserContext from "@/context/userContext";
 import { placeholder_lab } from "@/config/ImagesUrl";
 import LabContext from "@/context/labContext";
+import { v4 } from "uuid";
 
 const Page = () => {
   const [destination, setDestination] = useState<{
@@ -69,6 +70,7 @@ const Page = () => {
     getLabs().then((data) => {
       if (data) {
         setLocations(data);
+        console.log(data);
       }
     });
   }, []);
@@ -125,7 +127,7 @@ const Page = () => {
 
                       <button
                         onClick={() => {
-                          handleProceedClick(location.id);
+                          handleProceedClick(location.username);
                         }}
                         className="bg-primary_green w-fit text-white text-sm font-light rounded-full px-4 py-0.5 flex mx-auto"
                       >

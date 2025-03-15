@@ -1,5 +1,5 @@
 export interface Lab {
-  id: unknown;
+  id: string;
   username: string;
   password: string;
   role: string;
@@ -7,8 +7,7 @@ export interface Lab {
   users: {
     userId: string;
     farmName: string;
-    sampleNames: string[];
-    status: { rejected: string } | { pending: string } | { complete: string };
+    sampleNames: { position: string; status: string }[];
   }[];
 
   position?: {
@@ -29,6 +28,7 @@ export interface Lab {
 }
 
 export class LabModel implements Lab {
+  id: string;
   username: string;
   password: string;
   role: string;
@@ -49,8 +49,8 @@ export class LabModel implements Lab {
   users: {
     userId: string;
     farmName: string;
-    sampleNames: string[];
-    status: { rejected: string } | { pending: string } | { complete: string };
+    sampleNames: { position: string; status: string }[];
+    // status: "rejected" | "pending" | "complete";
   }[];
   phone?: number;
 
@@ -63,6 +63,6 @@ export class LabModel implements Lab {
     this.address = lab.address;
     this.phone = lab.phone;
     this.users = lab.users ?? [];
+    this.id = lab.id || "";
   }
-  id: unknown;
 }
