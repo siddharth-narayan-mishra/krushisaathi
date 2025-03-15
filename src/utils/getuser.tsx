@@ -12,7 +12,7 @@ export const UseUser = () => {
     return <div>Error: User context is not provided.</div>;
   }
   const { user } = userContext;
-  console.log(user);
+  // console.log(user);
   useEffect(() => {
     if (!user) {
       router.push("/login");

@@ -1,16 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  Users,
-  ClipboardList,
-  TestTube2,
-  CheckCircle,
-  Users2,
-  XCircle,
-  Clock
-} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { CheckCircle, Users2, XCircle, Clock } from "lucide-react";
 import { getLabUsers, UseUser } from "@/utils/getuser";
-import UserContext from "@/context/userContext";
-import { useRouter } from "next/navigation";
 
 function StatCard({
   title,
@@ -38,7 +28,6 @@ function AgentDashboardComponent() {
   const user = UseUser();
   const labUsers = getLabUsers(user);
 
-  // State to store statistics
   const [stats, setStats] = useState([
     { title: "Total Farmers", value: 0, icon: Users2 },
     { title: "Pending Requests", value: 0, icon: Clock },
@@ -49,9 +38,13 @@ function AgentDashboardComponent() {
   const countRequestsByStatus = (status: string) => {
     if (!labUsers) return 0;
 
-    return labUsers.filter((user) => {
-      return Object.keys(user.status).includes(status);
-    }).length;
+    return labUsers.reduce((totalCount, user) => {
+      const userRequestCount = user.sampleNames.filter(
+        (sample) => sample.status === status
+      ).length;
+
+      return totalCount + userRequestCount;
+    }, 0);
   };
 
   useEffect(() => {

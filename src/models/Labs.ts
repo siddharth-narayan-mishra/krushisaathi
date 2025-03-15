@@ -7,8 +7,7 @@ export interface Lab {
   users: {
     userId: string;
     farmName: string;
-    sampleNames: string[];
-    status: "rejected" | "pending" | "complete";
+    sampleNames: { position: string; status: string }[];
   }[];
 
   position?: {
@@ -50,8 +49,8 @@ export class LabModel implements Lab {
   users: {
     userId: string;
     farmName: string;
-    sampleNames: string[];
-    status: "rejected" | "pending" | "complete";
+    sampleNames: { position: string; status: string }[];
+    // status: "rejected" | "pending" | "complete";
   }[];
   phone?: number;
 

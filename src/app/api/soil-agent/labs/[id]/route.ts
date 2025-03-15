@@ -100,12 +100,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const SamplesData: { position: string; status: string }[] = [];
+    samples.forEach((item: string) => {
+      SamplesData.push({ position: item, status: "pending" });
+    });
+
     await updateDoc(labRef, {
       users: arrayUnion({
         userId: username,
         farmName,
-        status: "pending",
-        sampleNames: samples
+        sampleNames: SamplesData
       })
     });
 
