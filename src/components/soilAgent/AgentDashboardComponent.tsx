@@ -1,5 +1,16 @@
-import React from "react";
-import { Users, ClipboardList, TestTube2, CheckCircle } from "lucide-react";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Users,
+  ClipboardList,
+  TestTube2,
+  CheckCircle,
+  Users2,
+  XCircle,
+  Clock
+} from "lucide-react";
+import { getLabUsers, UseUser } from "@/utils/getuser";
+import UserContext from "@/context/userContext";
+import { useRouter } from "next/navigation";
 
 function StatCard({
   title,
@@ -24,28 +35,51 @@ function StatCard({
 }
 
 function AgentDashboardComponent() {
-  const stats = [
-    {
-      title: "Total Farmers",
-      value: 234,
-      icon: Users
-    },
-    {
-      title: "Pending Requests",
-      value: 234,
-      icon: ClipboardList
-    },
-    {
-      title: "Sample Processing",
-      value: 234,
-      icon: TestTube2
-    },
-    {
-      title: "Completed Tests",
-      value: 234,
-      icon: CheckCircle
+  const user = UseUser();
+  const labUsers = getLabUsers(user);
+
+  // State to store statistics
+  const [stats, setStats] = useState([
+    { title: "Total Farmers", value: 0, icon: Users2 },
+    { title: "Pending Requests", value: 0, icon: Clock },
+    { title: "Completed Requests", value: 0, icon: CheckCircle },
+    { title: "Rejected Requests", value: 0, icon: XCircle }
+  ]);
+
+  const countRequestsByStatus = (status: string) => {
+    if (!labUsers) return 0;
+
+    return labUsers.filter((user) => {
+      return Object.keys(user.status).includes(status);
+    }).length;
+  };
+
+  useEffect(() => {
+    if (labUsers) {
+      setStats([
+        {
+          title: "Total Farmers",
+          value: labUsers.length,
+          icon: Users2
+        },
+        {
+          title: "Pending Requests",
+          value: countRequestsByStatus("pending"),
+          icon: Clock
+        },
+        {
+          title: "Completed Requests",
+          value: countRequestsByStatus("complete"),
+          icon: CheckCircle
+        },
+        {
+          title: "Rejected Requests",
+          value: countRequestsByStatus("rejected"),
+          icon: XCircle
+        }
+      ]);
     }
-  ];
+  }, [labUsers]);
 
   return (
     <main className="min-h-screen bg-gray-50">

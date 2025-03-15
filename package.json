@@ -39,6 +39,7 @@
     "react-syntax-highlighter": "^15.6.1",
     "sass": "^1.85.1",
     "tailwind-merge": "^3.0.2",
+    "uuid": "^11.1.0",
     "vega": "^5.32.0",
     "vega-embed": "^6.29.0",
     "vega-lite": "^5.23.0",
