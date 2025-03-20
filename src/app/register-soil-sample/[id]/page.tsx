@@ -18,7 +18,7 @@ const page = () => {
   const params = useParams<{ id: string }>();
   const { id } = params;
   const [lab, setLab] = useState<any>({});
-  console.log(id);
+  console.log("id",id);
 
   if (!navContext) {
     console.error("Navigation context is not provided");

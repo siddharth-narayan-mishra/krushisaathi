@@ -22,8 +22,6 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
       .min(1, "At least one sample is required")
   });
 
-
-  console.log(lab);
   const router = useRouter();
   const labContext = useContext(LabContext);
   if (!labContext) {
@@ -42,12 +40,13 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
           yardName: "",
           samples: ["", "", "", ""],
           userId: user?.id,
-          labId: lab.id
         }}
         validationSchema={validationSchema}
         onSubmit={async (values) => {
           setLoading(true);
-          const data = await registerSample(values);
+          const finalvalues = { ...values, labId: lab.id };
+          console.log(values);
+          const data = await registerSample(finalvalues);
           console.log(data);
           if (data.success) {
             setLoading(false);

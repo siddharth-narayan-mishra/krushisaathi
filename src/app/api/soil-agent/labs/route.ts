@@ -3,6 +3,7 @@ import { connectToFirebase } from "@/utils/FirebaseConfig";
 import { collection, doc, getDocs, addDoc } from "firebase/firestore";
 import { Lab } from "@/models/Labs";
 import { Yard } from "@/models/Yard";
+import { v4 } from "uuid";
 
 const db = connectToFirebase();
 
@@ -29,19 +30,34 @@ export async function POST(req: NextRequest) {
   try {
     const body: Yard = await req.json();
     const { yardName ,samples,labId,userId } = body;
+    const generateId = () => {
+      const timestamp = Date.now().toString().slice(-5);
+      return `ST${timestamp}`;
+    };
 
-    const yardId = Math.floor(Math.random() * 1000000); 
+    const generatedId = generateId();
+    const SampleId = generatedId;
 
-    const docRef = await addDoc(collection(db, "labs"), {
+    const SamplesData = samples.map((sample) => ({
+      sampleId: SampleId,
+      sampleName: sample,
+      status: "pending"
+    }));
+     
+
+
+    const yardId = v4()
+
+    const docRef = await addDoc(collection(db, "yards"), {
       yardName,
-      samples,
+      samples: SamplesData,
       labId,
       userId,
       yardId
     });
     
     return new NextResponse(
-      JSON.stringify({ message: "Lab Created Successfully", success: true }),
+      JSON.stringify({ message: "Sample Registered Successfully", success: true }),
       { status: 201 }
     );
     } catch (error) {

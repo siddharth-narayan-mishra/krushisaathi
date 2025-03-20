@@ -127,7 +127,9 @@ const Page = () => {
 
                       <button
                         onClick={() => {
-                          handleProceedClick(location.username);
+                          console.log("Proceeding to:", location);
+                          
+                          handleProceedClick(location.id);
                         }}
                         className="bg-primary_green w-fit text-white text-sm font-light rounded-full px-4 py-0.5 flex mx-auto"
                       >
