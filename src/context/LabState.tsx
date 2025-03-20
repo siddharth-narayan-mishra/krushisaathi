@@ -36,10 +36,10 @@ const getLab = async (id: string) => {
   }
 };
 
-const registerSample = async (values: any, labId: string) => {
+const registerSample = async (values: any) => {
   try {
     console.log(values);
-    var url = `http://localhost:3000/api/soil-agent/labs/${labId}`;
+    var url = `http://localhost:3000/api/soil-agent/labs`;
     const response = await fetch(url, {
       method: "POST",
       headers: {

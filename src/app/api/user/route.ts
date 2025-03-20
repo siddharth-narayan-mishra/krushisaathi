@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { connectToFirebase } from "@/utils/FirebaseConfig";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
 const db = connectToFirebase();
 
@@ -10,6 +10,8 @@ export async function GET(req: NextRequest) {
   try {
     const token = req.cookies.get("token")?.value || "";
     const role = req.cookies.get("role")?.value || "";
+
+    console.log(token, role);
     if (!token) {
       return new NextResponse(
         JSON.stringify({ message: "User not authenticated", success: false }),
@@ -21,13 +23,17 @@ export async function GET(req: NextRequest) {
       process.env.NEXT_PUBLIC_TOKEN_SECRETE!
     );
 
-    if (typeof decodedToken !== "string" && "username" in decodedToken) {
+    if (typeof decodedToken !== "string" && "id" in decodedToken) {
+      console.log(decodedToken);
+      console.log("hello")
       const docRef = doc(
         db,
         role === "soil-agent" ? "labs" : "users",
-        decodedToken.username
+        decodedToken.id
       );
       const userDoc = await getDoc(docRef);
+
+      console.log(userDoc.data());
       if (userDoc.exists()) {
         const user = { ...userDoc.data() };
         delete user.password;

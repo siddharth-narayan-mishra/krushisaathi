@@ -80,6 +80,7 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
         router.push("/");
         return;
       }
+      console.log(values)
       setLoading(true);
       const response = await fetch("/api/auth/login", {
         method: "POST",

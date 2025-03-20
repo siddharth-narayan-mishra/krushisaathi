@@ -9,6 +9,7 @@ import {
   soil_sample_bg,
   soil_testing_bg
 } from "@/config/ImagesUrl";
+import { UserModel } from "@/models/User";
 
 const HomeComponent = () => {
   const router = useRouter();
@@ -33,7 +34,7 @@ const HomeComponent = () => {
     <section className="p-3 overflow-y-auto h-screen">
       <div className="flex justify-between">
         <h1 className="text-4xl font-bold">
-          {user ? `Hello  ${user.name}` : "Loading..."}
+          {user && !(user as any).props ? `Hello  ${(user as UserModel).name}` : "Loading..."}
         </h1>
         <Image src={globe} width={30} height={30} alt="globe" />
       </div>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToFirebase } from "@/utils/FirebaseConfig";
 import { collection, doc, getDocs, addDoc } from "firebase/firestore";
 import { Lab } from "@/models/Labs";
+import { Yard } from "@/models/Yard";
 
 const db = connectToFirebase();
 
@@ -26,29 +27,24 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const body: Lab = await req.json();
-    const { position, address, phone } = body;
+    const body: Yard = await req.json();
+    const { yardName ,samples,labId,userId } = body;
 
-    console.log(name, position, address, phone);
+    const yardId = Math.floor(Math.random() * 1000000); 
 
-    if (!position || !address || !phone) {
-      return new NextResponse(
-        JSON.stringify({ message: "Invalid data", success: false }),
-        { status: 400 }
-      );
-    }
-
-    const doc = await addDoc(collection(db, "labs"), {
-      position,
-      address,
-      phone
+    const docRef = await addDoc(collection(db, "labs"), {
+      yardName,
+      samples,
+      labId,
+      userId,
+      yardId
     });
-
+    
     return new NextResponse(
       JSON.stringify({ message: "Lab Created Successfully", success: true }),
       { status: 201 }
     );
-  } catch (error) {
+    } catch (error) {
     console.log(error);
 
     return new NextResponse(

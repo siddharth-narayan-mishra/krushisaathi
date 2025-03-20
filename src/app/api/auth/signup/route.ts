@@ -53,8 +53,12 @@ export async function POST(req: NextRequest) {
     //   );
     // }
 
+    const id = v4();
+    
+    console.log(id)
+
     const collection = role === "soil-agent" ? "labs" : "users";
-    const userDocRef = doc(db, collection, username);
+    const userDocRef = doc(db, collection, id);
     const userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
       return NextResponse.json(
@@ -66,13 +70,13 @@ export async function POST(req: NextRequest) {
 
     const fullAddress = `${streetAddress}, ${city}, ${district}, ${pincode}, ${state}, ${country}`;
 
-    const uuid = v4();
+   
     console.log(v4);
 
     const user =
       role === "soil-agent"
         ? new LabModel({
-            id: uuid.toString(),
+            id,
             username,
             password: hashedPassword,
             role,
@@ -91,6 +95,7 @@ export async function POST(req: NextRequest) {
             phone: phone
           })
         : new UserModel({
+            id,
             name,
             username,
             password: hashedPassword,

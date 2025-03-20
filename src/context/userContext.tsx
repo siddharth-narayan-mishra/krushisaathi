@@ -9,7 +9,7 @@ interface UserContextType {
   logout: () => void;
   login: (values: any) => void;
   getUserData: () => void;
-  user: UserModel | LabModel | ReactElement | null;
+  user: UserModel | ReactElement | null;
   isLoggedIn: () => Promise<boolean>;
 }
 

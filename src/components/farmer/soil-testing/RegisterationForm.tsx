@@ -16,13 +16,14 @@ interface RegisterationFormProps {
 const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
   const [loading, setLoading] = useState(false);
   const validationSchema = Yup.object({
-    farmName: Yup.string().required("Required"),
+    yardName: Yup.string().required("Required"),
     samples: Yup.array()
       .of(Yup.string().required("Sample name is required"))
       .min(1, "At least one sample is required")
   });
 
-  // console.log(lab.labName);
+
+  console.log(lab);
   const router = useRouter();
   const labContext = useContext(LabContext);
   if (!labContext) {
@@ -38,14 +39,15 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
     <>
       <Formik
         initialValues={{
-          farmName: "",
+          yardName: "",
           samples: ["", "", "", ""],
-          username: user?.username
+          userId: user?.id,
+          labId: lab.id
         }}
         validationSchema={validationSchema}
         onSubmit={async (values) => {
           setLoading(true);
-          const data = await registerSample(values, lab.username as string);
+          const data = await registerSample(values);
           console.log(data);
           if (data.success) {
             setLoading(false);
@@ -56,19 +58,19 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
       >
         {({ values }) => (
           <Form className="flex flex-col mx-auto w-[500px] px-1 mt-5 overflow-auto">
-            <label htmlFor="farmName" className="font-medium mb-2">
-              Enter Your Farm Name
+            <label htmlFor="yardName" className="font-medium mb-2">
+              Enter Your yard Name
             </label>
             <Field
               className="input-field custom-placeholder"
-              id="farmName"
-              name="farmName"
+              id="yardName"
+              name="yardName"
               type="text"
               placeholder="Ex. Gukesh Yard"
             />
             <div className="mb-7 h-5">
               <ErrorMessage
-                name="farmName"
+                name="yardName"
                 component="div"
                 className="text-sm text-red-400"
               />

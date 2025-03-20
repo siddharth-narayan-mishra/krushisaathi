@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
         token,
         process.env.NEXT_PUBLIC_TOKEN_SECRETE!
       );
-      if (typeof decodedToken !== "string" && "username" in decodedToken) {
+      if (typeof decodedToken !== "string" && "id" in decodedToken) {
         return new NextResponse(
           JSON.stringify({ message: "User authenticated", success: true }),
           { status: 200 }
