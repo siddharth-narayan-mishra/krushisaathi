@@ -9,6 +9,7 @@ import backArrow from "../../../../public/assets/icons/back-arrow.svg";
 import RegistrationForm from "@/components/farmer/soil-testing/RegisterationForm";
 import labContext from "@/context/labContext";
 import UserContext from "@/context/userContext";
+import RegistrationSuccess from "@/components/farmer/soil-testing/RegistrationSuccess";
 
 const page = () => {
   const navContext = useContext(navigationContext);
@@ -18,7 +19,7 @@ const page = () => {
   const params = useParams<{ id: string }>();
   const { id } = params;
   const [lab, setLab] = useState<any>({});
-  console.log("id",id);
+  const [createdYard, setCreatedYard] = useState(null);
 
   if (!navContext) {
     console.error("Navigation context is not provided");
@@ -39,13 +40,11 @@ const page = () => {
 
   useEffect(() => {
     if (!id) {
-      // router.push("/register-soil-sample");
-      console.error("Location is not provided");
+      router.push("/register-soil-sample");
       return;
     } else {
       getLab(id).then((data) => {
         setLab(data);
-        console.log("window", data);
       });
     }
   }, [router]);
@@ -66,12 +65,20 @@ const page = () => {
           <button onClick={() => setActive(prevActive)}>
             <Image src={backArrow} width={16} height={16} alt="back" />
           </button>
-          Sample Registeration
+          {createdYard ? "Registeration Successful!" : "Sample Registeration"}
           <button>
             <Image src={globe} width={30} height={30} alt="globe" />
           </button>
         </div>
-        <RegistrationForm lab={lab} user={user} />
+        {createdYard ? (
+          <RegistrationSuccess createdYard={createdYard} lab={lab}/>
+        ) : (
+          <RegistrationForm
+            lab={lab}
+            user={user}
+            setCreatedYard={setCreatedYard}
+          />
+        )}
       </div>
     </div>
   );

@@ -11,18 +11,21 @@ import toast from "react-hot-toast";
 interface RegisterationFormProps {
   lab: Lab;
   user: any;
+  setCreatedYard: any;
 }
 
-const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
+const RegisterationForm: React.FC<RegisterationFormProps> = ({
+  lab,
+  user,
+  setCreatedYard,
+}) => {
   const [loading, setLoading] = useState(false);
   const validationSchema = Yup.object({
     yardName: Yup.string().required("Required"),
     samples: Yup.array()
       .of(Yup.string().required("Sample name is required"))
-      .min(1, "At least one sample is required")
+      .min(1, "At least one sample is required"),
   });
-
-  const router = useRouter();
   const labContext = useContext(LabContext);
   if (!labContext) {
     console.log("Lab context is not provided", labContext);
@@ -45,13 +48,15 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
         onSubmit={async (values) => {
           setLoading(true);
           const finalvalues = { ...values, labId: lab.id };
-          console.log(values);
           const data = await registerSample(finalvalues);
           console.log(data);
           if (data.success) {
             setLoading(false);
-            toast.success("sample registered successfull");
-            router.push("/");
+            toast.success(data.message);
+            setCreatedYard(data.createdYard);
+          } else {
+            setLoading(false);
+            toast.error(data.message);
           }
         }}
       >
@@ -117,7 +122,7 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({ lab, user }) => {
 
             {lab.labName ? (
               <div className="bg-[#eeebeb] rounded-xl p-3 mt-6">
-                <h2 className="text-lg">
+                <h2 className="text-lg  font-medium">
                   {lab.labName}, {lab.address?.district}
                 </h2>
                 <p className=" mt-2 font-light">

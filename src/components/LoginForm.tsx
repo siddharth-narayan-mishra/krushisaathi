@@ -103,7 +103,10 @@ const LoginForm = () => {
               />
               <button
                 className="absolute right-2 top-1.5 text-red-600"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowPassword(!showPassword);
+                }}
               >
                 <Image
                   priority

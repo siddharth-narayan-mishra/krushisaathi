@@ -38,7 +38,6 @@ const getLab = async (id: string) => {
 
 const registerSample = async (values: any) => {
   try {
-    console.log(values);
     var url = `http://localhost:3000/api/soil-agent/labs`;
     const response = await fetch(url, {
       method: "POST",
@@ -48,13 +47,10 @@ const registerSample = async (values: any) => {
       body: JSON.stringify(values)
     });
     const data = await response.json();
-    console.log("updated Data", data);
     if (data.success) {
-      // toast.success("Sample registered successfully");
       return data;
     }
   } catch (error) {
-    console.log("Error: ", error);
     toast.error("Error: " + error);
   }
 };

@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import UserContext from "@/context/userContext";
 import { placeholder_lab } from "@/config/ImagesUrl";
 import LabContext from "@/context/labContext";
-// import { v4 } from "uuid";
 
 const Page = () => {
   const [destination, setDestination] = useState<{
@@ -24,14 +23,6 @@ const Page = () => {
     console.error("Google Maps subscription key is not defined in .env.local");
     return <div>Error: Google Maps subscription key is not defined.</div>;
   }
-
-  const navContext = useContext(navigationContext);
-
-  if (!navContext) {
-    console.error("Navigation context is not provided");
-    return <div>Error: Navigation context is not provided.</div>;
-  }
-  const { setActive, prevActive } = navContext;
 
   const [locations, setLocations] = useState<any[]>([]);
 
@@ -48,11 +39,8 @@ const Page = () => {
   };
 
   const getDirections = (position: { latitude: number; longitude: number }) => {
-    console.log("Getting directions to:", position);
-
     if (position && position.latitude && position.longitude) {
       setDestination(position);
-      console.log("Getting directions to:", position);
     } else {
       console.error("Invalid position data:", position);
     }
@@ -89,7 +77,7 @@ const Page = () => {
             </button>
             <span className="w-full text-center">Choose Location</span>
           </div>
-          <div className="overflow-auto h-full pb-10 lg:pb-0 ">
+          <div className="overflow-auto h-full pb-12">
             {locations.length > 0 &&
               locations.map((location) => (
                 <div key={location.id}>
@@ -127,8 +115,6 @@ const Page = () => {
 
                       <button
                         onClick={() => {
-                          console.log("Proceeding to:", location);
-                          
                           handleProceedClick(location.id);
                         }}
                         className="bg-primary_green w-fit text-white text-sm font-light rounded-full px-4 py-0.5 flex mx-auto"

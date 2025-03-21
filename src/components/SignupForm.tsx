@@ -53,7 +53,7 @@ const SignupForm = () => {
   const validationSchema = Yup.object({
     name: Yup.string().when("role", {
       is: "farmer",
-      then: (schema) => schema.required("Lab Name is required")
+      then: (schema) => schema.required("Lab Name is required"),
     }),
     username: Yup.string().required("Username is required"),
     password: Yup.string()
@@ -64,65 +64,65 @@ const SignupForm = () => {
       .oneOf([Yup.ref("password"), ""], "Passwords do not match"),
     labName: Yup.string().when("role", {
       is: "soil-agent",
-      then: (schema) => schema.required("Lab Name is required")
+      then: (schema) => schema.required("Lab Name is required"),
     }),
     latitude: Yup.number().when("role", {
       is: "soil-agent",
-      then: (schema) => schema.required("Latitude is required")
+      then: (schema) => schema.required("Latitude is required"),
     }),
     longitude: Yup.number().when("role", {
       is: "soil-agent",
-      then: (schema) => schema.required("Longitude is required")
+      then: (schema) => schema.required("Longitude is required"),
     }),
     country: Yup.string().when("role", {
       is: "soil-agent",
-      then: (schema) => schema.required("Country is required")
+      then: (schema) => schema.required("Country is required"),
     }),
     state: Yup.string().when("role", {
       is: "soil-agent",
-      then: (schema) => schema.required("State is required")
+      then: (schema) => schema.required("State is required"),
     }),
     district: Yup.string().when("role", {
       is: "soil-agent",
-      then: (schema) => schema.required("District is required")
+      then: (schema) => schema.required("District is required"),
     }),
     streetAddress: Yup.string().when("role", {
       is: "soil-agent",
-      then: (schema) => schema.required("Street Address is required")
+      then: (schema) => schema.required("Street Address is required"),
     }),
     city: Yup.string().when("role", {
       is: "soil-agent",
-      then: (schema) => schema.required("City is required")
+      then: (schema) => schema.required("City is required"),
     }),
     pincode: Yup.string().when("role", {
       is: "soil-agent",
-      then: (schema) => schema.required("Pincode is required")
+      then: (schema) => schema.required("Pincode is required"),
     }),
     phone: Yup.string().when("role", {
       is: "soil-agent",
-      then: (schema) => schema.required("Phone number is required")
+      then: (schema) => schema.required("Phone number is required"),
     }),
     // Farmer specific fields
     adhaar: Yup.string().when("role", {
       is: "farmer",
-      then: (schema) => schema.required("Aadhaar number is required")
+      then: (schema) => schema.required("Aadhaar number is required"),
     }),
     address: Yup.string().when("role", {
       is: "farmer",
-      then: (schema) => schema.required("Address is required")
+      then: (schema) => schema.required("Address is required"),
     }),
     passbook: Yup.string().when("role", {
       is: "farmer",
-      then: (schema) => schema.required("Passbook details are required")
+      then: (schema) => schema.required("Passbook details are required"),
     }),
     photo: Yup.string().when("role", {
       is: "farmer",
-      then: (schema) => schema.required("A photo is required")
+      then: (schema) => schema.required("A photo is required"),
     }),
     ekyf: Yup.string().when("role", {
       is: "farmer",
-      then: (schema) => schema.required("e-KYC verification is required")
-    })
+      then: (schema) => schema.required("e-KYC verification is required"),
+    }),
   });
 
   const FarmerInitialValues = {
@@ -135,7 +135,7 @@ const SignupForm = () => {
     address: "",
     passbook: "",
     photo: "",
-    ekyf: ""
+    ekyf: "",
   };
 
   const SoilAgentInitialValues = {
@@ -152,7 +152,7 @@ const SignupForm = () => {
     streetAddress: "",
     city: "",
     pincode: "",
-    phone: ""
+    phone: "",
   };
 
   const getInitialValues = () => {
@@ -285,7 +285,10 @@ const SignupForm = () => {
                     <button
                       type="button"
                       className="absolute right-2 top-1.5 text-red-600"
-                      onClick={() => setShowCPassword(!showCPassword)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowCPassword(!showCPassword);
+                      }}
                     >
                       {showCPassword ? (
                         <EyeOff size={20} color="green" />
@@ -342,7 +345,10 @@ const SignupForm = () => {
                     <span className="text-gray-500">or</span>
                     <button
                       type="button"
-                      onClick={() => handleAutoDetect(setFieldValue)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleAutoDetect(setFieldValue);
+                      }}
                       disabled={isGeolocating}
                       className="flex items-center gap-2 px-4 py-2 text-sm text-primary_green border border-primary_green rounded-md hover:bg-primary_green/20 disabled:opacity-50"
                     >
@@ -512,7 +518,10 @@ const SignupForm = () => {
                     <button
                       type="button"
                       className="absolute right-2 top-1.5 text-red-600"
-                      onClick={() => setShowPassword(!showPassword)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowPassword(!showPassword);
+                      }}
                     >
                       {showPassword ? (
                         <EyeOff size={20} color="green" />
@@ -539,7 +548,10 @@ const SignupForm = () => {
                     <button
                       type="button"
                       className="absolute right-2 top-1.5 text-red-600"
-                      onClick={() => setShowCPassword(!showCPassword)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowCPassword(!showCPassword);
+                      }}
                     >
                       {showCPassword ? (
                         <EyeOff size={20} color="green" />
