@@ -1,23 +1,16 @@
-import React, { useContext, useEffect } from "react";
-import globe from "../../../public/assets/icons/globe.svg";
-import Image from "next/image";
+"use client";
+
+import { Globe } from "lucide-react";
+import { useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import UserContext from "@/context/userContext";
-import {
-  register_sample_bg,
-  soil_result_bg,
-  soil_sample_bg,
-  soil_testing_bg
-} from "@/config/ImagesUrl";
 import { UserModel } from "@/models/User";
 
 const HomeComponent = () => {
   const router = useRouter();
-
   const userContext = useContext(UserContext);
-  if (!userContext) {
-    console.log("User context is not provided", userContext);
 
+  if (!userContext) {
     console.error("User context is not provided");
     return <div>Error: User context is not provided.</div>;
   }
@@ -30,122 +23,96 @@ const HomeComponent = () => {
     }
   }, [user]);
 
+  const mainFeatures = [
+    {
+      title: "Soil Testing",
+      description: "Get your soil analyzed by experts",
+      image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80",
+      action: () => router.push("/soil-testing")
+    },
+    {
+      title: "How to Take Soil Sample",
+      description: "Learn the correct way to collect soil",
+      image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&q=80",
+      action: () => router.push("/how-to")
+    },
+    {
+      title: "Register Your Sample",
+      description: "Submit your soil sample for testing",
+      image: "https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&q=80",
+      action: () => router.push("/register-soil-sample")
+    }
+  ];
+
+  const recentResults = [
+    { id: "ST100152", date: "12 June 2024", location: "North Field" },
+    { id: "ST100153", date: "15 June 2024", location: "South Field" },
+    { id: "ST100154", date: "18 June 2024", location: "East Field" },
+    { id: "ST100155", date: "20 June 2024", location: "West Field" }
+  ];
+
   return (
-    <section className="p-3 overflow-y-auto h-screen">
-      <div className="flex justify-between">
-        <h1 className="text-4xl font-bold">
-          {user && !(user as any).props ? `Hello  ${(user as UserModel).name}` : "Loading..."}
-        </h1>
-        <Image src={globe} width={30} height={30} alt="globe" />
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 text-white md:h-[500px] my-5">
-        <div
-          className="bg-cover col-span-2 h-[250px] md:h-auto md:col-span-1 bg-center bg-no-repeat rounded-lg text-center content-center text-3xl"
-          style={{
-            backgroundImage: `url(${soil_testing_bg})`
-          }}
-        >
-          Soil Testing
-        </div>
-        <div className="text-white col-span-2 md:col-span-3 my-5 md:my-0 md:ml-3">
-          <button
-            onClick={() => router.push("/how-to")}
-            className="bg-cover w-full bg-center bg-no-repeat rounded-lg text-center content-center text-3xl h-[250px] mb-3"
-            style={{
-              backgroundImage: `url(${soil_sample_bg})`
-            }}
-          >
-            How to Take Soil Sample
-          </button>
-          <button
-            className="bg-cover w-full bg-center bg-no-repeat rounded-lg text-center content-center text-3xl h-[250px]"
-            style={{
-              backgroundImage: `url(${register_sample_bg})`
-            }}
-            onClick={() => router.push("/register-soil-sample")}
-          >
-            Register Your Sample
-          </button>
-        </div>
-      </div>
-      <div className="flex flex-wrap mt-0 md:mt-7">
-        <div className="w-1/2 md:w-1/4 ">
-          <div
-            className="bg-cover bg-center bg-no-repeat rounded-lg text-center content-center p-3 mr-3 mb-3"
-            style={{
-              backgroundImage: `url(${soil_result_bg})`
-            }}
-          >
-            <h3 className="text-[#2DFF00] text-lg">Top left corner</h3>
-            <p className="text-primary_white">ST100152</p>
-            <p className="text-white">12 June 2024</p>
-            <button className="bg-primary_green rounded-full text-white px-10 mt-14">
-              View Results
-            </button>
+    <div className="min-h-screen bg-[#f7f8fa]">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900">
+              {user && !(user as any).props ? `नमस्ते, ${(user as UserModel).name}` : "Loading..."}
+            </h1>
+            <p className="text-gray-600 mt-1">Welcome to your soil management dashboard</p>
           </div>
+          <Globe className="w-8 h-8 text-green-600" />
         </div>
-        <div className="w-1/2 md:w-1/4 ">
-          <div
-            className="bg-cover bg-center bg-no-repeat rounded-lg text-center content-center p-3 mr-3 mb-3"
-            style={{
-              backgroundImage: `url(${soil_result_bg})`
-            }}
-          >
-            <h3 className="text-[#2DFF00] text-lg">Top left corner</h3>
-            <p className="text-primary_white">ST100152</p>
-            <p className="text-white">12 June 2024</p>
-            <button className="bg-primary_green rounded-full text-white px-10 mt-14">
-              View Results
+
+        {/* Main Features */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {mainFeatures.map((feature, index) => (
+            <button
+              key={index}
+              onClick={feature.action}
+              className="relative overflow-hidden rounded-2xl shadow-lg transition-transform hover:scale-[1.02] group"
+            >
+              <div className="aspect-[4/3] relative">
+                <div
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={{ backgroundImage: `url(${feature.image})` }}
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
+                <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                  <h3 className="text-2xl font-bold text-white mb-2">{feature.title}</h3>
+                  <p className="text-white/90 text-sm">{feature.description}</p>
+                </div>
+              </div>
             </button>
-          </div>
+          ))}
         </div>
-        <div className="w-1/2 md:w-1/4 ">
-          <div
-            className="bg-cover bg-center bg-no-repeat rounded-lg text-center content-center p-3 mr-3 mb-3"
-            style={{
-              backgroundImage: `url(${soil_result_bg})`
-            }}
-          >
-            <h3 className="text-[#2DFF00] text-lg">Top left corner</h3>
-            <p className="text-primary_white">ST100152</p>
-            <p className="text-white">12 June 2024</p>
-            <button className="bg-primary_green rounded-full text-white px-10 mt-14">
-              View Results
-            </button>
-          </div>
-        </div>
-        <div className="w-1/2 md:w-1/4 ">
-          <div
-            className="bg-cover bg-center bg-no-repeat rounded-lg text-center content-center p-3 mr-3 mb-3"
-            style={{
-              backgroundImage: `url(${soil_result_bg})`
-            }}
-          >
-            <h3 className="text-[#2DFF00] text-lg">Top left corner</h3>
-            <p className="text-primary_white">ST100152</p>
-            <p className="text-white">12 June 2024</p>
-            <button className="bg-primary_green rounded-full text-white px-10 mt-14">
-              View Results
-            </button>
-          </div>
-        </div>
-        <div className="w-1/2 md:w-1/4 ">
-          <div
-            className="bg-cover bg-center bg-no-repeat rounded-lg text-center content-center p-3 mr-3 mb-3"
-            style={{
-              backgroundImage: `url(${soil_result_bg})`
-            }}
-          >
-            <h3 className="text-[#2DFF00] text-lg">Top left corner</h3>
-            <p className="text-primary_white">ST100152</p>
-            <p className="text-white">12 June 2024</p>
-            <button className="bg-primary_green rounded-full text-white px-10 mt-14">
-              View Results
-            </button>
+
+        {/* Recent Results */}
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Recent Soil Test Results</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {recentResults.map((result, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="flex flex-col h-full">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-medium text-green-600 mb-1">{result.location}</h3>
+                    <p className="text-gray-600 text-sm mb-1">Sample ID: {result.id}</p>
+                    <p className="text-gray-500 text-sm">{result.date}</p>
+                  </div>
+                  <button className="mt-4 w-full bg-green-600 text-white rounded-full py-2 px-4 hover:bg-green-700 transition-colors">
+                    View Results
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

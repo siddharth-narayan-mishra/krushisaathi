@@ -1,11 +1,9 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
-import backArrow from "../../../public/assets/icons/back-arrow.svg";
-import globe from "../../../public/assets/icons/globe.svg";
-import Bookmark from "../../../public/assets/icons/Bookmark.svg";
-import clock from "../../../public/assets/icons/Clock.svg";
+import { ArrowLeft, Globe, Bookmark, Clock, ExternalLink, Loader2 } from "lucide-react";
 import Image from "next/image";
-import { customImageLoader } from "@/utils/customImageLoader";
-import { news_placeholder_bg } from "@/config/ImagesUrl";
+import { useRouter } from "next/navigation";
 
 interface NewsComponentProps {
   setActive: (active: string) => void;
@@ -16,13 +14,16 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
   setActive,
   prevActive
 }) => {
-  const [news, setNews] = useState([]);
+  const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const getNews = async () => {
       try {
         setLoading(true);
+        setError(null);
         const url =
           `https://newsapi.org/v2/everything?` +
           `q=farmer+india` +
@@ -31,98 +32,132 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
           `&apiKey=${process.env.NEXT_PUBLIC_NEWS_API_KEY}` +
           `&pageSize=30`;
 
-        const req = new Request(url);
-
-        fetch(req).then(async function (response) {
-          let data = await response.json();
-          setNews(data.articles);
-          setLoading(false);
-        });
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('Failed to fetch news');
+        }
+        const data = await response.json();
+        setNews(data.articles.filter((article: any) =>
+          article.title !== "[Removed]" &&
+          article.description !== "[Removed]" &&
+          article.url !== "[Removed]"
+        ));
       } catch (error) {
         console.error("Error:", error);
+        setError('Failed to load news. Please try again later.');
+      } finally {
+        setLoading(false);
       }
     };
+
     if (news.length === 0) {
       getNews();
     }
   }, []);
 
   const getTitle = (title: string) => {
-    if (title.length > 55) {
-      return title.slice(0, 55) + "...";
-    }
-    return title;
-  };
-
-  const goToNews = (url: string) => () => {
-    window.open(url, "_blank");
+    return title.length > 55 ? `${title.slice(0, 55)}...` : title;
   };
 
   const getMinutesRead = (description: string) => {
     return Math.ceil(description.split(" ").length / 200);
   };
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
   return (
-    <div className="h-screen overflow-hidden">
-      <div className="flex justify-between text-2xl px-3 py-2 border-b-2 border-b-gray-400">
-        <button onClick={() => setActive(prevActive)}>
-          {" "}
-          <Image src={backArrow} width={16} height={16} alt="back" />
-        </button>
-        News Feed
-        <button>
-          <Image src={globe} width={30} height={30} alt="globe" />
-        </button>
-      </div>
-      {loading ? (
-        <div>loading...</div>
-      ) : (
-        <div className="relative flex flex-wrap m-3 mb-10 overflow-auto h-screen">
-          {news.map((element: any) => {
-            if (
-              element.title !== "[Removed]" &&
-              element.description !== "[Removed]" &&
-              element.url !== "[Removed]"
-            ) {
-              return (
-                <div
-                  className="w-full sm:w-1/2 lg:w-1/4 cursor-pointer"
-                  key={element.url}
-                  onClick={goToNews(element.url)}
-                >
-                  <div className="mr-3 mb-3 ">
-                    <div className="relative">
-                      <Image
-                        className="rounded-t-lg h-[200px]"
-                        src={element.urlToImage || news_placeholder_bg}
-                        alt="news"
-                        width={500}
-                        height={300}
-                        loader={customImageLoader}
-                      />
-                      <span className="absolute rounded-full p-2 bg-[#27612B] top-2 right-2">
-                        <Image src={Bookmark} alt="mark" width={8} height={4} />
-                      </span>
-                      <div className="bg-secondary_green rounded-b-lg p-2 h-[134px]">
-                        <p className="text-lg">{getTitle(element.title)}</p>
-                        <span className="text-xs text-gray-500 flex mt-3">
-                          <Image
-                            src={clock}
-                            width={18}
-                            height={18}
-                            alt="clock"
-                          />
-                          {getMinutesRead(element.description)} minutes read
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-          })}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="sticky top-0 z-10 bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setActive(prevActive)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5 text-gray-600" />
+              </button>
+              <h1 className="text-xl font-semibold text-gray-900">Agriculture News</h1>
+            </div>
+            <Globe className="w-6 h-6 text-green-600" />
+          </div>
         </div>
-      )}
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 text-green-600 animate-spin" />
+            <p className="mt-4 text-gray-600">Loading latest news...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-red-600">{error}</p>
+            <button
+              onClick={() => setNews([])}
+              className="mt-4 px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {news.map((article, index) => (
+              <div
+                key={`${article.url}-${index}`}
+                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+              >
+                <div className="relative aspect-video">
+                  <Image
+                    src={article.urlToImage || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80"}
+                    alt={article.title}
+                    fill
+                    className="object-cover"
+                  />
+                  <button className="absolute top-3 right-3 p-2 bg-green-600 rounded-full text-white hover:bg-green-700 transition-colors">
+                    <Bookmark className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="p-4">
+                  <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                    <Clock className="w-4 h-4" />
+                    <span>{getMinutesRead(article.description)} min read</span>
+                    <span className="text-gray-300">•</span>
+                    <span>{formatDate(article.publishedAt)}</span>
+                  </div>
+
+                  <h2 className="text-lg font-medium text-gray-900 mb-2">
+                    {getTitle(article.title)}
+                  </h2>
+
+                  <p className="text-gray-600 text-sm mb-4">
+                    {article.description?.slice(0, 100)}...
+                  </p>
+
+                  <a
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 transition-colors"
+                  >
+                    Read More
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

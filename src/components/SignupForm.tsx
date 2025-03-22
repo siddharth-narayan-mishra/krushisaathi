@@ -1,13 +1,14 @@
 "use client";
+
 import React, { useContext, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import UploadWidget from "./farmer/UploadWidget";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import UserContext from "@/context/userContext";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, MapPin, FileText } from "lucide-react";
 import { indianStates } from "@/config/statesData";
+import { motion } from "framer-motion";
 
 interface ResultInfo {
   public_id: string;
@@ -19,9 +20,14 @@ const SignupForm = () => {
   const [initialRole, setInitialRole] = useState("farmer");
   const [isGeolocating, setIsGeolocating] = useState(false);
 
-  const handleAutoDetect = (
-    setFieldValue: (field: string, value: any) => void
-  ) => {
+  const userContext = useContext(UserContext);
+  if (!userContext) {
+    throw new Error("UserContext must be used within a RegisterationProvider");
+  }
+
+  const { signup, loading } = userContext;
+
+  const handleAutoDetect = (setFieldValue:any) => {
     setIsGeolocating(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -31,9 +37,7 @@ const SignupForm = () => {
           setIsGeolocating(false);
         },
         (error) => {
-          toast.error(
-            "Unable to retrieve your location. Please enable location permissions."
-          );
+          toast.error("Unable to retrieve your location. Please enable location permissions.");
           setIsGeolocating(false);
         }
       );
@@ -42,13 +46,6 @@ const SignupForm = () => {
       setIsGeolocating(false);
     }
   };
-
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("UserContext must be used within a RegisterationProvider");
-  }
-
-  const { signup, loading } = userContext;
 
   const validationSchema = Yup.object({
     name: Yup.string().when("role", {
@@ -102,7 +99,6 @@ const SignupForm = () => {
       is: "soil-agent",
       then: (schema) => schema.required("Phone number is required"),
     }),
-    // Farmer specific fields
     adhaar: Yup.string().when("role", {
       is: "farmer",
       then: (schema) => schema.required("Aadhaar number is required"),
@@ -124,6 +120,56 @@ const SignupForm = () => {
       then: (schema) => schema.required("e-KYC verification is required"),
     }),
   });
+
+  const farmersDocConfig = [
+    {
+      id: "adhaar",
+      label: "Aadhaar Card",
+      buttonText: "Upload Aadhaar",
+      successMessage: "Aadhaar card uploaded successfully"
+    },
+    {
+      id: "address",
+      label: "Address Proof",
+      buttonText: "Upload Address",
+      successMessage: "Address proof uploaded successfully"
+    },
+    {
+      id: "passbook",
+      label: "Bank Passbook",
+      buttonText: "Upload Passbook",
+      successMessage: "Bank passbook uploaded successfully"
+    },
+    {
+      id: "photo",
+      label: "Your Photo",
+      buttonText: "Upload Photo",
+      successMessage: "Photo uploaded successfully"
+    },
+    {
+      id: "ekyf",
+      label: "e-KYC Document",
+      buttonText: "Upload e-KYC",
+      successMessage: "e-KYC document uploaded successfully"
+    }
+  ];
+
+  const soilAgentLocationFields = [
+    { id: "streetAddress", label: "Street Address", type: "text", placeholder: "Enter street address", colSpan: "md:col-span-1" },
+    { id: "city", label: "City", type: "text", placeholder: "Enter city", colSpan: "md:col-span-1" },
+    { id: "district", label: "District", type: "text", placeholder: "Enter district", colSpan: "md:col-span-1" },
+    {
+      id: "state",
+      label: "State",
+      type: "select",
+      placeholder: "Select State",
+      options: indianStates,
+      colSpan: "md:col-span-1"
+    },
+    { id: "pincode", label: "Pincode", type: "text", placeholder: "Enter pincode", colSpan: "md:col-span-1" },
+    { id: "country", label: "Country", type: "text", placeholder: "Enter country", colSpan: "md:col-span-1" },
+    { id: "phone", label: "Phone Number", type: "tel", placeholder: "Enter phone number", colSpan: "md:col-span-2" }
+  ];
 
   const FarmerInitialValues = {
     role: "farmer",
@@ -156,14 +202,21 @@ const SignupForm = () => {
   };
 
   const getInitialValues = () => {
-    return initialRole === "farmer"
-      ? FarmerInitialValues
-      : SoilAgentInitialValues;
+    return initialRole === "farmer" ? FarmerInitialValues : SoilAgentInitialValues;
+  };
+
+  const handleUploadSuccess = (resultInfo:any, fieldName:any, setFieldValue:any, successMessage:any) => {
+    setFieldValue(fieldName, resultInfo.public_id);
+    toast.success(successMessage);
   };
 
   return (
-    <>
-      <h1 className="font-bold text-4xl text-center my-6">Create Account</h1>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <h1 className="text-3xl font-bold text-center mb-8 text-green-800">Create Your Account</h1>
       <Formik
         initialValues={getInitialValues()}
         validationSchema={validationSchema}
@@ -174,516 +227,304 @@ const SignupForm = () => {
         {({ values, setFieldValue }) => {
           const isSoilAgent = values.role === "soil-agent";
           return (
-            <Form className="flex flex-col mx-auto font-roboto">
-              {/* Radio buttons remain same */}
-              <div
-                role="group"
-                aria-labelledby="radio-group"
-                className="flex justify-around w-full mt-9"
-              >
-                <label>
+            <Form className="space-y-6">
+              <div className="flex justify-center gap-8 p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-lg shadow-sm">
+                <label className="flex items-center space-x-2 cursor-pointer">
                   <Field
                     type="radio"
                     name="role"
                     value="farmer"
-                    className="mx-2"
+                    className="w-4 h-4 text-green-600 focus:ring-green-500"
                     onChange={() => {
                       setInitialRole("farmer");
                       setFieldValue("role", "farmer");
                     }}
                   />
-                  Farmer
+                  <span className="text-lg font-medium text-gray-700">Farmer</span>
                 </label>
-                <label>
+                <label className="flex items-center space-x-2 cursor-pointer">
                   <Field
                     type="radio"
                     name="role"
                     value="soil-agent"
-                    className="mx-2"
+                    className="w-4 h-4 text-green-600 focus:ring-green-500"
                     onChange={() => {
                       setInitialRole("soil-agent");
                       setFieldValue("role", "soil-agent");
                     }}
                   />
-                  Soil Agent
+                  <span className="text-lg font-medium text-gray-700">Soil Agent</span>
                 </label>
               </div>
-              <div className="mb-7 h-5">
-                <ErrorMessage
-                  name="role"
-                  component="div"
-                  className="text-[12px] text-red-400 mb-2"
-                />
-              </div>
 
-              {isSoilAgent ? (
-                <>
-                  <Field
-                    className="input-field custom-placeholder"
-                    id="labName"
-                    name="labName"
-                    type="text"
-                    placeholder="Laboratory Name"
-                  />
-                  <div className="h-6">
-                    <ErrorMessage
-                      name="labName"
-                      component="div"
-                      className="text-[10px] text-red-400 mb-2"
-                    />
-                  </div>
-                  <Field
-                    className="input-field custom-placeholder"
-                    id="username"
-                    name="username"
-                    type="text"
-                    placeholder="Phone No/Username"
-                  />
-                  <div className="h-6">
-                    <ErrorMessage
-                      name="username"
-                      component="div"
-                      className="text-[12px] text-red-400 mb-2"
-                    />
-                  </div>
-
-                  <div className="relative">
-                    <Field
-                      className="input-field custom-placeholder"
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter Password"
-                    />
-                    <button
-                      type="button"
-                      className="absolute right-2 top-1.5 text-red-600"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeOff size={20} color="green" />
-                      ) : (
-                        <Eye size={20} color="green" />
-                      )}
-                    </button>
-                  </div>
-                  <div className="h-6">
-                    <ErrorMessage
-                      name="password"
-                      component="div"
-                      className="text-[12px] text-red-400 mb-2"
-                    />
-                  </div>
-                  <div className="relative">
-                    <Field
-                      className="input-field custom-placeholder"
-                      id="cpassword"
-                      name="cpassword"
-                      type={showCPassword ? "text" : "password"}
-                      placeholder="Confirm Password"
-                    />
-                    <button
-                      type="button"
-                      className="absolute right-2 top-1.5 text-red-600"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setShowCPassword(!showCPassword);
-                      }}
-                    >
-                      {showCPassword ? (
-                        <EyeOff size={20} color="green" />
-                      ) : (
-                        <Eye size={20} color="green" />
-                      )}
-                    </button>
-                  </div>
-                  <div className="h-6">
-                    <ErrorMessage
-                      name="cpassword"
-                      component="div"
-                      className="text-[12px] text-red-400 mb-2"
-                    />
-                  </div>
-
-                  <div className="flex gap-4">
-                    <div className="flex-1">
+              <motion.div
+                className="space-y-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {isSoilAgent ? (
+                  <>
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Laboratory Name</label>
                       <Field
-                        className="input-field custom-placeholder"
-                        id="latitude"
-                        name="latitude"
-                        type="number"
-                        placeholder="Latitude"
-                        step="any"
-                      />
-                      <div className="h-6">
-                        <ErrorMessage
-                          name="latitude"
-                          component="div"
-                          className="text-[10px] text-red-400 mb-2"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <Field
-                        className="input-field custom-placeholder"
-                        id="longitude"
-                        name="longitude"
-                        type="number"
-                        placeholder="Longitude"
-                        step="any"
-                      />
-                      <div className="h-6">
-                        <ErrorMessage
-                          name="longitude"
-                          component="div"
-                          className="text-[10px] text-red-400 mb-2"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex justify-center items-center gap-2 mb-4">
-                    <span className="text-gray-500">or</span>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleAutoDetect(setFieldValue);
-                      }}
-                      disabled={isGeolocating}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-primary_green border border-primary_green rounded-md hover:bg-primary_green/20 disabled:opacity-50"
-                    >
-                      {isGeolocating ? "Detecting..." : "Use Current Location"}
-                    </button>
-                  </div>
-
-                  <Field
-                    className="input-field custom-placeholder"
-                    id="streetAddress"
-                    name="streetAddress"
-                    type="text"
-                    placeholder="Street Address"
-                  />
-                  <div className="h-6">
-                    <ErrorMessage
-                      name="streetAddress"
-                      component="div"
-                      className="text-[10px] text-red-400 mb-2"
-                    />
-                  </div>
-
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <Field
-                        className="input-field custom-placeholder"
-                        id="city"
-                        name="city"
                         type="text"
-                        placeholder="City"
+                        id="labName"
+                        name="labName"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-shadow duration-200"
+                        placeholder="Enter laboratory name"
                       />
-                      <div className="h-6">
-                        <ErrorMessage
-                          name="city"
-                          component="div"
-                          className="text-[10px] text-red-400 mb-2"
-                        />
-                      </div>
+                      <ErrorMessage name="labName" component="div" className="text-sm text-red-500" />
                     </div>
-                    <div className="flex-1">
-                      <Field
-                        className="input-field custom-placeholder"
-                        id="district"
-                        name="district"
-                        type="text"
-                        placeholder="District"
-                      />
-                      <div className="h-6">
-                        <ErrorMessage
-                          name="district"
-                          component="div"
-                          className="text-[10px] text-red-400 mb-2"
-                        />
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="flex gap-4">
-                    <div className="flex-1">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Username/Phone</label>
                       <Field
-                        as="select"
-                        className="input-field custom-placeholder placeholder:text-black/[0.4] text-[10px]"
-                        name="state"
-                        placeholder="Select State"
+                        type="text"
+                        id="username"
+                        name="username"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-shadow duration-200"
+                        placeholder="Enter username or phone number"
+                      />
+                      <ErrorMessage name="username" component="div" className="text-sm text-red-500" />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Password field */}
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Password</label>
+                        <div className="relative">
+                          <Field
+                            type={showPassword ? "text" : "password"}
+                            id="password"
+                            name="password"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-shadow duration-200"
+                            placeholder="Enter password"
+                          />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700 transition-colors"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          </button>
+                        </div>
+                        <ErrorMessage name="password" component="div" className="text-sm text-red-500" />
+                      </div>
+
+                      {/* Confirm Password field */}
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <div className="relative">
+                          <Field
+                            type={showCPassword ? "text" : "password"}
+                            id="cpassword"
+                            name="cpassword"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-shadow duration-200"
+                            placeholder="Confirm password"
+                          />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700 transition-colors"
+                            onClick={() => setShowCPassword(!showCPassword)}
+                          >
+                            {showCPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          </button>
+                        </div>
+                        <ErrorMessage name="cpassword" component="div" className="text-sm text-red-500" />
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
+                      <div className="flex items-center space-x-2 mb-4">
+                        <MapPin className="w-5 h-5 text-green-600" />
+                        <h3 className="text-lg font-semibold text-gray-800">Location Details</h3>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium text-gray-700">Latitude</label>
+                          <Field
+                            type="number"
+                            id="latitude"
+                            name="latitude"
+                            step="any"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            placeholder="Enter latitude"
+                          />
+                          <ErrorMessage name="latitude" component="div" className="text-sm text-red-500" />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium text-gray-700">Longitude</label>
+                          <Field
+                            type="number"
+                            id="longitude"
+                            name="longitude"
+                            step="any"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            placeholder="Enter longitude"
+                          />
+                          <ErrorMessage name="longitude" component="div" className="text-sm text-red-500" />
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleAutoDetect(setFieldValue)}
+                        disabled={isGeolocating}
+                        className="w-full mt-2 py-2 px-4 bg-green-50 text-green-700 rounded-lg border border-green-200 hover:bg-green-100 transition-colors flex items-center justify-center gap-2"
                       >
-                        <option value="">Select State</option>
-                        {indianStates.map((state) => (
-                          <option key={state} value={state}>
-                            {state}
-                          </option>
+                        <MapPin size={18} />
+                        {isGeolocating ? "Detecting Location..." : "Use Current Location"}
+                      </button>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        {soilAgentLocationFields.map((field) => (
+                          <div key={field.id} className={`space-y-2 ${field.colSpan}`}>
+                            <label className="block text-sm font-medium text-gray-700">{field.label}</label>
+                            {field.type === "select" ? (
+                              <Field
+                                as="select"
+                                id={field.id}
+                                name={field.id}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                              >
+                                <option value="">{field.placeholder}</option>
+                                {field.options!.map((option) => (
+                                  <option key={option} value={option}>
+                                    {option}
+                                  </option>
+                                ))}
+                              </Field>
+                            ) : (
+                              <Field
+                                type={field.type}
+                                id={field.id}
+                                name={field.id}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                placeholder={field.placeholder}
+                              />
+                            )}
+                            <ErrorMessage name={field.id} component="div" className="text-sm text-red-500" />
+                          </div>
                         ))}
-                      </Field>
-                      <div className="h-6">
-                        <ErrorMessage
-                          name="state"
-                          component="div"
-                          className="text-[10px] text-red-400 mb-2"
-                        />
                       </div>
                     </div>
-                    <div className="flex-1">
+                  </>
+                ) : (
+                  <>
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Full Name</label>
                       <Field
-                        className="input-field custom-placeholder"
-                        id="pincode"
-                        name="pincode"
                         type="text"
-                        placeholder="Pincode"
+                        id="name"
+                        name="name"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-shadow duration-200"
+                        placeholder="Enter your full name"
                       />
-                      <div className="h-6">
-                        <ErrorMessage
-                          name="pincode"
-                          component="div"
-                          className="text-[10px] text-red-400 mb-2"
-                        />
+                      <ErrorMessage name="name" component="div" className="text-sm text-red-500" />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Username/Phone</label>
+                      <Field
+                        type="text"
+                        id="username"
+                        name="username"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-shadow duration-200"
+                        placeholder="Enter username or phone number"
+                      />
+                      <ErrorMessage name="username" component="div" className="text-sm text-red-500" />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Password</label>
+                        <div className="relative">
+                          <Field
+                            type={showPassword ? "text" : "password"}
+                            id="password"
+                            name="password"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-shadow duration-200"
+                            placeholder="Enter password"
+                          />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700 transition-colors"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          </button>
+                        </div>
+                        <ErrorMessage name="password" component="div" className="text-sm text-red-500" />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <div className="relative">
+                          <Field
+                            type={showCPassword ? "text" : "password"}
+                            id="cpassword"
+                            name="cpassword"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-shadow duration-200"
+                            placeholder="Confirm password"
+                          />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700 transition-colors"
+                            onClick={() => setShowCPassword(!showCPassword)}
+                          >
+                            {showCPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          </button>
+                        </div>
+                        <ErrorMessage name="cpassword" component="div" className="text-sm text-red-500" />
                       </div>
                     </div>
-                  </div>
 
-                  <Field
-                    className="input-field custom-placeholder"
-                    id="country"
-                    name="country"
-                    type="text"
-                    placeholder="Country"
-                  />
-                  <div className="h-6">
-                    <ErrorMessage
-                      name="country"
-                      component="div"
-                      className="text-[10px] text-red-400 mb-2"
-                    />
-                  </div>
-
-                  <Field
-                    className="input-field custom-placeholder"
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    placeholder="Phone Number"
-                  />
-                  <div className="h-6">
-                    <ErrorMessage
-                      name="phone"
-                      component="div"
-                      className="text-[10px] text-red-400 mb-2"
-                    />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <Field
-                    className="input-field custom-placeholder"
-                    id="name"
-                    name="name"
-                    type="text"
-                    placeholder="Enter Your Name"
-                  />
-                  <div className="h-6">
-                    <ErrorMessage
-                      name="name"
-                      component="div"
-                      className="text-[12px] text-red-400 mb-2"
-                    />
-                  </div>
-                  <Field
-                    className="input-field custom-placeholder"
-                    id="username"
-                    name="username"
-                    type="text"
-                    placeholder="Phone No/Username"
-                  />
-                  <div className="h-6">
-                    <ErrorMessage
-                      name="username"
-                      component="div"
-                      className="text-[12px] text-red-400 mb-2"
-                    />
-                  </div>
-                  <div className="relative">
-                    <Field
-                      className="input-field custom-placeholder"
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter Password"
-                    />
-                    <button
-                      type="button"
-                      className="absolute right-2 top-1.5 text-red-600"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setShowPassword(!showPassword);
-                      }}
+                    <motion.div
+                      className="bg-white rounded-lg border border-gray-200 p-6"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
                     >
-                      {showPassword ? (
-                        <EyeOff size={20} color="green" />
-                      ) : (
-                        <Eye size={20} color="green" />
-                      )}
-                    </button>
-                  </div>
-                  <div className="h-6">
-                    <ErrorMessage
-                      name="password"
-                      component="div"
-                      className="text-[12px] text-red-400 mb-2"
-                    />
-                  </div>
-                  <div className="relative">
-                    <Field
-                      className="input-field custom-placeholder"
-                      id="cpassword"
-                      name="cpassword"
-                      type={showCPassword ? "text" : "password"}
-                      placeholder="Confirm Password"
-                    />
-                    <button
-                      type="button"
-                      className="absolute right-2 top-1.5 text-red-600"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setShowCPassword(!showCPassword);
-                      }}
-                    >
-                      {showCPassword ? (
-                        <EyeOff size={20} color="green" />
-                      ) : (
-                        <Eye size={20} color="green" />
-                      )}
-                    </button>
-                  </div>
-                  <div className="h-6">
-                    <ErrorMessage
-                      name="cpassword"
-                      component="div"
-                      className="text-[12px] text-red-400 mb-2"
-                    />
-                  </div>
-                  <h1 className="font-bold text-xl text-center mb-2">
-                    Upload Document
-                  </h1>
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    <div className="uploadField">
-                      <label>Aadhar Card</label>
-                      <div className="upload-button">
-                        <UploadWidget
-                          text="Upload"
-                          onUploadSuccess={(resultInfo: ResultInfo) => {
-                            setFieldValue("adhaar", resultInfo.public_id);
-                          }}
-                        />
+                      <div className="flex items-center space-x-2 mb-6">
+                        <FileText className="w-5 h-5 text-green-600" />
+                        <h3 className="text-lg font-semibold text-gray-800">Required Documents</h3>
                       </div>
-                      <div className="h-6 absolute">
-                        <ErrorMessage
-                          name="adhaar"
-                          component="div"
-                          className="text-[10px] text-red-400 mb-2"
-                        />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {farmersDocConfig.map((doc) => (
+                          <div key={doc.id} className="space-y-3">
+                            <label className="block text-sm font-medium text-gray-700">{doc.label}</label>
+                            <UploadWidget
+                              text={doc.buttonText}
+                              onUploadSuccess={(resultInfo: ResultInfo) => {
+                                handleUploadSuccess(resultInfo, doc.id, setFieldValue, doc.successMessage);
+                              }}
+                            />
+                            <ErrorMessage name={doc.id} component="div" className="text-sm text-red-500" />
+                          </div>
+                        ))}
                       </div>
-                    </div>
+                    </motion.div>
+                  </>
+                )}
 
-                    <div className="uploadField mx-3 sm:mx-6">
-                      <label>Address</label>
-                      <div className="upload-button">
-                        <UploadWidget
-                          text="Upload"
-                          onUploadSuccess={(resultInfo: ResultInfo) => {
-                            setFieldValue("address", resultInfo.public_id);
-                          }}
-                        />
-                      </div>
-                      <div className="h-6 absolute">
-                        <ErrorMessage
-                          name="address"
-                          component="div"
-                          className="text-[10px] text-red-400 mb-2"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="uploadField">
-                      <label>Passbook Copy</label>
-                      <div className="upload-button">
-                        <UploadWidget
-                          text="Upload"
-                          onUploadSuccess={(resultInfo: ResultInfo) => {
-                            setFieldValue("passbook", resultInfo.public_id);
-                          }}
-                        />
-                      </div>
-                      <div className="h-6 absolute">
-                        <ErrorMessage
-                          name="passbook"
-                          component="div"
-                          className="text-[10px] text-red-400 mb-2"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex justify-center flex-wrap mx-3 gap-2 mt-5">
-                    <div className="uploadField ">
-                      <label>Photograph</label>
-                      <div className="upload-button">
-                        <UploadWidget
-                          text="Upload"
-                          onUploadSuccess={(resultInfo: ResultInfo) => {
-                            setFieldValue("photo", resultInfo.public_id);
-                          }}
-                        />
-                      </div>
-                      <div className="h-6 absolute">
-                        <ErrorMessage
-                          name="photo"
-                          component="div"
-                          className="text-[10px] text-red-400 mb-2"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="uploadField">
-                      <label>e-KYF ID</label>
-                      <div className="upload-button">
-                        <UploadWidget
-                          text="Upload"
-                          onUploadSuccess={(resultInfo: ResultInfo) => {
-                            setFieldValue("ekyf", resultInfo.public_id);
-                          }}
-                        />
-                      </div>
-                      <div className="h-6 absolute">
-                        <ErrorMessage
-                          name="ekyf"
-                          component="div"
-                          className="text-[10px] text-red-400 mb-2"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              <div className="flex justify-center">
-                <button
-                  disabled={loading}
+                <motion.button
                   type="submit"
-                  className="w-full mt-5 max-w-lg px-6 py-3 flex-none text-white bg-primary_green hover:bg-green-700 font-semibold rounded-3xl transition duration-300"
+                  className="w-full py-3 px-4 text-lg font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg transition-all duration-200 disabled:opacity-50 hover:shadow-lg"
+                  disabled={loading}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
                 >
-                  {loading ? "Creating..." : "Create an Account"}
-                </button>
-              </div>
+                  {loading ? "Creating Account..." : "Create Account"}
+                </motion.button>
+              </motion.div>
             </Form>
           );
         }}
       </Formik>
-    </>
+    </motion.div>
   );
 };
 

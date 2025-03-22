@@ -62,3 +62,26 @@ body {
 .marker-label {
   @apply text-xs translate-x-[65%];
 }
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.swiper-pagination-bullet {
+  @apply bg-green-600 !important;
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  @apply !text-2xl;
+}
