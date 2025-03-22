@@ -60,7 +60,7 @@ const HomeComponent = () => {
             <h1 className="text-4xl font-bold text-gray-900">
               {user && !(user as any).props ? `नमस्ते, ${(user as UserModel).name}` : "Loading..."}
             </h1>
-            <p className="text-gray-600 mt-1">Welcome to your soil management dashboard</p>
+            <p className="text-gray-600 mt-1">Welcome to Krushisaathi</p>
           </div>
           <Globe className="w-8 h-8 text-green-600" />
         </div>
