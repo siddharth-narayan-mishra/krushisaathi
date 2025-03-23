@@ -20,6 +20,7 @@ const page = () => {
   const { id } = params;
   const [lab, setLab] = useState<any>({});
   const [createdYard, setCreatedYard] = useState(null);
+  console.log(lab);
 
   if (!navContext) {
     console.error("Navigation context is not provided");

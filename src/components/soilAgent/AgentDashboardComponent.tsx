@@ -1,88 +1,92 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { CheckCircle, Users2, XCircle, Clock } from "lucide-react";
-import { getLabUsers, UseUser } from "@/utils/getuser";
+import { YardModel } from "@/models/Yard";
+import { getLabId, UseUser } from "@/utils/getData";
+import YardContext from "@/context/yardContext";
+import { StatCard } from "@/utils/ststs-card";
 
-function StatCard({
-  title,
-  value,
-  icon: Icon
-}: {
-  title: string;
-  value: number;
-  icon: React.ElementType;
-}) {
-  return (
-    <div className="rounded-xl shadow-lg p-6 w-full md:w-[280px] bg-white hover:shadow-xl transition-shadow duration-300 border border-gray-200">
-      <div className="flex items-center justify-between mb-4">
-        <div className="p-2 rounded-lg bg-primary_green">
-          <Icon className="w-6 h-6 text-white" strokeWidth={1.5} />
-        </div>
-        <span className="text-3xl font-bold text-gray-900">{value}</span>
-      </div>
-      <h3 className="text-sm font-medium text-gray-700">{title}</h3>
-    </div>
-  );
-}
+const AgentDashboardComponent = () => {
+  const [yardData, setYardData] = useState<YardModel | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-function AgentDashboardComponent() {
-  const user = UseUser();
-  const labUsers = getLabUsers(user);
+  const LabData = UseUser();
+  const yardContext = useContext(YardContext);
 
-  const [stats, setStats] = useState([
-    { title: "Total Farmers", value: 0, icon: Users2 },
-    { title: "Pending Requests", value: 0, icon: Clock },
-    { title: "Completed Requests", value: 0, icon: CheckCircle },
-    { title: "Rejected Requests", value: 0, icon: XCircle }
-  ]);
-
-  const countRequestsByStatus = (status: string) => {
-    if (!labUsers) return 0;
-
-    return labUsers.reduce((totalCount, user) => {
-      const userRequestCount = user.sampleNames.filter(
-        (sample) => sample.status === status
-      ).length;
-
-      return totalCount + userRequestCount;
-    }, 0);
-  };
+  const labId = getLabId(LabData);
+  console.log("labId:", labId);
 
   useEffect(() => {
-    if (labUsers) {
-      setStats([
-        {
-          title: "Total Farmers",
-          value: labUsers.length,
-          icon: Users2
-        },
-        {
-          title: "Pending Requests",
-          value: countRequestsByStatus("pending"),
-          icon: Clock
-        },
-        {
-          title: "Completed Requests",
-          value: countRequestsByStatus("complete"),
-          icon: CheckCircle
-        },
-        {
-          title: "Rejected Requests",
-          value: countRequestsByStatus("rejected"),
-          icon: XCircle
-        }
-      ]);
+    const fetchData = async () => {
+      if (!labId || !yardContext) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        console.log("Fetching yard data for labId:", labId);
+        console.log("Using yardContext.getYard:", yardContext.getYard);
+
+        const data = await yardContext.getYard(labId);
+        console.log("Data received:", data);
+        setYardData(data);
+      } catch (err) {
+        console.error("Error fetching yard data:", err);
+        setError("Failed to fetch yard data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [labId, yardContext]);
+
+  if (loading)
+    return <div className="p-8 text-center">Loading dashboard data...</div>;
+  if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
+  if (!yardData)
+    return <div className="p-8 text-center">No yard data available</div>;
+
+  const stats = [
+    {
+      title: "Total Samples",
+      value: yardData.samples?.length || 0,
+      icon: Users2,
+      color: "bg-primary_green"
+    },
+    {
+      title: "Pending Samples",
+      value:
+        yardData.samples?.filter((s) => s.status === "pending").length || 0,
+      icon: Clock,
+      color: "bg-primary_green"
+    },
+    {
+      title: "Completed Samples",
+      value:
+        yardData.samples?.filter((s) => s.status === "complete").length || 0,
+      icon: CheckCircle,
+      color: "bg-primary_green"
+    },
+    {
+      title: "Rejected Samples",
+      value:
+        yardData.samples?.filter((s) => s.status === "rejected").length || 0,
+      icon: XCircle,
+      color: "bg-primary_green"
     }
-  }, [labUsers]);
+  ];
 
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto p-6 sm:p-8">
         <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl text-gray-900 font-bold">
-            Welcome to Krushisaathi Soil Agent Dashboard
+            Soil Testing Dashboard
           </h1>
           <p className="mt-2 text-gray-600">
-            Monitor and manage your soil testing operations
+            Yard Name: {yardData.yardName} | Yard ID: {yardData.yardId}
           </p>
         </div>
 
@@ -93,12 +97,12 @@ function AgentDashboardComponent() {
               title={stat.title}
               value={stat.value}
               icon={stat.icon}
+              color={stat.color}
             />
           ))}
         </div>
       </div>
     </main>
   );
-}
-
+};
 export default AgentDashboardComponent;
