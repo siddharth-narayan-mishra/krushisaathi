@@ -2,20 +2,34 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import { Home, User, Settings, FlaskRound as Flask, Newspaper, HelpCircle, Shield, FileQuestion, LogOut, ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
+import {
+  Home,
+  User,
+  Settings,
+  FlaskRound as Flask,
+  Newspaper,
+  HelpCircle,
+  Shield,
+  FileQuestion,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
+  X
+} from "lucide-react";
 import navigationContext from "@/context/navigationContext";
 import UserContext from "@/context/userContext";
 import { logo, logo_small } from "@/config/ImagesUrl";
 
 const navigationItems = [
-  { id: 'home', label: 'Home', icon: Home },
-  { id: 'account', label: 'Account', icon: User },
-  { id: 'settings', label: 'Settings', icon: Settings },
-  { id: 'test', label: 'Soil Analysis', icon: Flask },
-  { id: 'news', label: 'News Feed', icon: Newspaper },
-  { id: 'support', label: 'Help and Support', icon: HelpCircle },
-  { id: 'privacy', label: 'Privacy Policy', icon: Shield },
-  { id: 'help', label: 'FAQs', icon: FileQuestion }
+  { id: "home", label: "Home", icon: Home },
+  { id: "account", label: "Account", icon: User },
+  { id: "settings", label: "Settings", icon: Settings },
+  { id: "test", label: "Soil Analysis", icon: Flask },
+  { id: "news", label: "News Feed", icon: Newspaper },
+  { id: "support", label: "Help and Support", icon: HelpCircle },
+  { id: "privacy", label: "Privacy Policy", icon: Shield },
+  { id: "help", label: "FAQs", icon: FileQuestion }
 ];
 
 const Sidebar = () => {
@@ -27,7 +41,8 @@ const Sidebar = () => {
     return <div>Error: Navigation context is not provided.</div>;
   }
 
-  const { active, setActive, setPrevActive, sidebarOpen, setSidebarOpen } = navContext;
+  const { active, setActive, setPrevActive, sidebarOpen, setSidebarOpen } =
+    navContext;
 
   const userContext = useContext(UserContext);
   if (!userContext) {
@@ -46,7 +61,13 @@ const Sidebar = () => {
     setShowMobileSidebar(false);
   };
 
-  const NavItem = ({ item, isDesktop = true }: { item: typeof navigationItems[0], isDesktop?: boolean }) => {
+  const NavItem = ({
+    item,
+    isDesktop = true
+  }: {
+    item: (typeof navigationItems)[0];
+    isDesktop?: boolean;
+  }) => {
     const isActive = active === item.id;
     const Icon = item.icon;
 
@@ -55,16 +76,21 @@ const Sidebar = () => {
         onClick={() => handleNavigation(item.id)}
         className={`
           group flex items-center w-full gap-3 px-3 py-2 rounded-lg transition-colors
-          ${isActive
-            ? 'bg-green-100 text-green-700'
-            : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
+          ${
+            isActive
+              ? "bg-green-100 text-green-700"
+              : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
           }
-          ${!isDesktop && 'justify-between'}
+          ${!isDesktop && "justify-between"}
         `}
       >
         <div className="flex items-center gap-3">
           <Icon
-            className={`w-5 h-5 ${isActive ? 'text-green-700' : 'text-gray-500 group-hover:text-gray-700'}`}
+            className={`w-5 h-5 ${
+              isActive
+                ? "text-green-700"
+                : "text-gray-500 group-hover:text-gray-700"
+            }`}
           />
           {(sidebarOpen || !isDesktop) && (
             <span className="text-sm font-medium">{item.label}</span>
@@ -77,12 +103,13 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Desktop Sidebar */}
-      <div className={`
-        hidden lg:flex flex-col h-screen border-r border-gray-200 bg-white
-        ${sidebarOpen ? 'w-64' : 'w-20'}
+      <div
+        className={`
+        hidden lg:flex flex-col h-screen overflow-y-auto border-r border-gray-200 bg-white
+        ${sidebarOpen ? "w-64" : "w-20"}
         transition-all duration-300
-      `}>
+      `}
+      >
         <div className="p-4 flex items-center justify-between border-b border-gray-200">
           <Image
             src={sidebarOpen ? logo : logo_small}
@@ -104,7 +131,7 @@ const Sidebar = () => {
         </div>
 
         <div className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {navigationItems.map(item => (
+          {navigationItems.map((item) => (
             <NavItem key={item.id} item={item} />
           ))}
         </div>
@@ -120,7 +147,6 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
       <div className="lg:hidden">
         <div className="flex items-center justify-between px-4 h-16 border-b border-gray-200 bg-white">
           <button
@@ -162,7 +188,7 @@ const Sidebar = () => {
               </div>
 
               <div className="p-4 space-y-1">
-                {navigationItems.map(item => (
+                {navigationItems.map((item) => (
                   <NavItem key={item.id} item={item} isDesktop={false} />
                 ))}
               </div>
