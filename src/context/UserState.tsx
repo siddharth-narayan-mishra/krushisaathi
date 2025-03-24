@@ -9,7 +9,7 @@ interface RegisterationStateProps {
 }
 
 const RegisterationState: React.FC<RegisterationStateProps> = ({
-  children
+  children,
 }) => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
@@ -25,8 +25,8 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/auth/logout", {
         method: "GET",
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
       const data = await response.json();
       console.log("logout data", data);
@@ -55,9 +55,9 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(values)
+        body: JSON.stringify(values),
       });
       const data = await response.json();
       console.log("signup data", data);
@@ -80,14 +80,14 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
         router.push("/");
         return;
       }
-      console.log(values)
+      console.log(values);
       setLoading(true);
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(values)
+        body: JSON.stringify(values),
       });
       const data = await response.json();
       if (data.success) {
@@ -109,8 +109,8 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/user/checkAuth", {
         method: "GET",
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
       const data = await response.json();
       return data.success;
@@ -130,8 +130,8 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/user", {
         method: "GET",
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
       const data = await response.json();
       if (data.success) {
@@ -147,6 +147,30 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
     }
   };
 
+  const getRecentResults = async (id: string) => {
+    try {
+      if (!(await isLoggedIn())) {
+        router.push("/login");
+        return;
+      }
+      const response = await fetch("/api/user/recent-results/" + id, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        console.log("Recent Results: ", data.yards);
+        return data.yards;
+      } else {
+        console.log("No recent results found");
+      }
+    } catch (error) {
+      toast.error("Error: " + error);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -157,7 +181,8 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
         login,
         getUserData,
         user,
-        isLoggedIn
+        isLoggedIn,
+        getRecentResults,
       }}
     >
       {children}

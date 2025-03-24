@@ -11,6 +11,7 @@ interface UserContextType {
   getUserData: () => void;
   user: UserModel | ReactElement | LabModel | null;
   isLoggedIn: () => Promise<boolean>;
+  getRecentResults: (id:string) => any;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
