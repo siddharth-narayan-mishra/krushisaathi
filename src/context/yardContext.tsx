@@ -1,3 +1,4 @@
+import { FormValues } from "@/components/soilAgent/TestResultsComponent";
 import { createContext } from "react";
 
 interface YardContextType {
@@ -12,15 +13,9 @@ interface YardContextType {
     labId: string;
     userId: string;
     sampleId: string;
-    status?: "pending" | "in-process" | "completed" | undefined;
+    status: "pending" | "in-process" | "completed";
   }) => Promise<any>;
-  sendYardReport: ({
-    labId,
-    userId
-  }: {
-    labId: string;
-    userId: string;
-  }) => Promise<boolean>;
+  sendYardReport: (result: FormValues) => Promise<boolean>;
   //   registerSample: (values: any) => Promise<any>;
 }
 

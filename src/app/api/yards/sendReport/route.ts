@@ -12,58 +12,13 @@ import {
 
 const db = connectToFirebase();
 
-export async function GET(req: NextRequest) {
-  try {
-    const id = req.nextUrl.pathname.split("/").pop();
-    console.log(id);
-    if (!id) {
-      return new NextResponse(
-        JSON.stringify({ message: "LabID is required", success: false }),
-        {
-          status: 400
-        }
-      );
-    }
-
-    const yardCollection = collection(db, "yards");
-    const yardQuery = query(yardCollection, where("labId", "==", id));
-    const querySnapshot = await getDocs(yardQuery);
-    const yardDoc = querySnapshot.docs[0];
-
-    console.log(yardDoc);
-
-    if (!yardDoc.exists()) {
-      return new NextResponse(
-        JSON.stringify({ message: "yard not found", success: false }),
-        {
-          status: 404
-        }
-      );
-    }
-
-    const yard = { id: yardDoc.id, ...yardDoc.data() };
-
-    return new NextResponse(JSON.stringify({ yard: yard, success: true }), {
-      status: 200
-    });
-  } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "An unknown error occurred";
-    return new NextResponse(
-      JSON.stringify({ error: errorMessage, success: false }),
-      {
-        status: 500
-      }
-    );
-  }
-}
-
 export async function PUT(req: NextRequest) {
   try {
     // console.log("hii");
     const body = await req.json();
     console.log(body);
-    const { sampleId, userId, status, labId, fileUrl } = body;
+
+    const { sampleId, userId, suggestions, labId, fileUrl } = body.result;
 
     if (!sampleId) {
       return new NextResponse(
@@ -72,20 +27,20 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    if (!status) {
-      return new NextResponse(
-        JSON.stringify({ message: "Status is required", success: false }),
-        { status: 400 }
-      );
-    }
+    // if (!status) {
+    //   return new NextResponse(
+    //     JSON.stringify({ message: "Status is required", success: false }),
+    //     { status: 400 }
+    //   );
+    // }
 
-    const validStatuses = ["pending", "in-process", "completed"];
-    if (!validStatuses.includes(status)) {
-      return new NextResponse(
-        JSON.stringify({ message: "Invalid status value", success: false }),
-        { status: 400 }
-      );
-    }
+    // const validStatuses = ["pending", "in-process", "completed"];
+    // if (!validStatuses.includes(status)) {
+    //   return new NextResponse(
+    //     JSON.stringify({ message: "Invalid status value", success: false }),
+    //     { status: 400 }
+    //   );
+    // }
 
     const yardCollection = collection(db, "yards");
     const yardQuery = query(yardCollection, where("labId", "==", labId));
@@ -114,7 +69,7 @@ export async function PUT(req: NextRequest) {
     }
     const updatedSamples = yardData.samples.map((sample: any) =>
       sample.sampleId === sampleId
-        ? { ...sample, status, pdfUrl: fileUrl }
+        ? { ...sample, pdfUrl: fileUrl, suggestions }
         : sample
     );
 

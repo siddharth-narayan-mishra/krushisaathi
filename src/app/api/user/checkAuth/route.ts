@@ -4,13 +4,14 @@ import jwt from "jsonwebtoken";
 export async function GET(req: NextRequest) {
   try {
     const token = req.cookies.get("token")?.value || "";
+
+    console.log("hello");
     if (!token) {
       return new NextResponse(
         JSON.stringify({ message: "User not authenticated", success: false }),
         { status: 401 }
       );
     } else {
-        
       const decodedToken = jwt.verify(
         token,
         process.env.NEXT_PUBLIC_TOKEN_SECRETE!

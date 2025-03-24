@@ -3,6 +3,7 @@ import React, { useState, ReactNode } from "react";
 import LabContext from "./labContext";
 import toast from "react-hot-toast";
 import YardContext from "./yardContext";
+import { FormValues } from "@/components/soilAgent/TestResultsComponent";
 
 interface YardStateProps {
   children: ReactNode;
@@ -86,24 +87,17 @@ const updateYardStatus = async ({
   }
 };
 
-const sendYardReport = async ({
-  labId,
-  userId
-}: {
-  labId: string;
-  userId: string;
-}) => {
+const sendYardReport = async (result: FormValues) => {
   try {
-    const url = "/api/yards/report";
+    const url = "/api/yards/sendReport";
 
     const response = await fetch(url, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        sampleId: labId,
-        userId
+        result
       })
     });
 

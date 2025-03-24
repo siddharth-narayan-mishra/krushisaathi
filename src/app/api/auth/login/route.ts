@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToFirebase } from "@/utils/FirebaseConfig";
-import { doc, setDoc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
-import { UserModel } from "@/models/User";
+import {
+  // doc,
+  // setDoc,
+  // getDoc,
+  collection,
+  query,
+  where,
+  getDocs
+} from "firebase/firestore";
+// import { UserModel } from "@/models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -9,16 +17,20 @@ const db = connectToFirebase();
 
 export async function POST(req: NextRequest) {
   try {
+    console.log("hii");
     const body = await req.json();
     const { username, password, role } = body;
 
-    console.log(username)
+    console.log(username);
 
-    const userCollection = collection(db, role === "soil-agent" ? "labs" : "users");
+    const userCollection = collection(
+      db,
+      role === "soil-agent" ? "labs" : "users"
+    );
     const userQuery = query(userCollection, where("username", "==", username));
     const querySnapshot = await getDocs(userQuery);
     const userDoc = querySnapshot.docs[0];
-   
+
     if (!userDoc.exists()) {
       return new NextResponse(
         JSON.stringify({ error: "User does not exists", success: false }),
@@ -43,7 +55,6 @@ export async function POST(req: NextRequest) {
       role: userDoc.data().role
     };
     console.log(tokenData);
-    
 
     const token = jwt.sign(tokenData, process.env.NEXT_PUBLIC_TOKEN_SECRETE!, {
       expiresIn: "1d"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
+// import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import YardContext from "@/context/yardContext";
+import { useRouter } from "next/navigation";
+import navigationContext from "@/context/navigationContext";
 
 export type StatusType = "pending" | "in-process" | "completed";
 
@@ -45,16 +47,19 @@ export function StatusUpdateModal({
   setOpen,
   status: initialStatus,
   sampleData,
-  onStatusChange,
-  apiEndpoint = "/api/samples/update-status"
-}: StatusUpdateModalProps) {
+  onStatusChange
+}: // apiEndpoint = "/api/samples/update-status"
+StatusUpdateModalProps) {
   const [status, setStatus] = useState<StatusType>(initialStatus);
   const [loading, setLoading] = useState<boolean>(false);
   const [animateIn, setAnimateIn] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const yardContext = useContext(YardContext);
-  const updateYardStatus = yardContext;
-
+  console.log(sampleData.labId);
+  const router = useRouter();
+  const navigationCtx = useContext(navigationContext);
+  const setActive = navigationCtx?.setActive;
+  const updateYardStatus = yardContext?.updateYardStatus;
   useEffect(() => setStatus(initialStatus), [initialStatus]);
   useEffect(() => {
     if (open) setTimeout(() => setAnimateIn(true), 100);
@@ -67,25 +72,29 @@ export function StatusUpdateModal({
     setError(null);
 
     try {
-      if (newStatus) {
-        const response = await updateYardStatus({
-          labId: sampleData.labId,
-          sampleId: sampleData.sampleId,
-          UserId: sampleData.userId,
-          status: newStatus
-        });
-        if (response.status === 200) {
-          setStatus(newStatus);
-          onStatusChange?.(newStatus);
-          toast.success(
-            `Sample ${
-              newStatus === "completed"
-                ? "analysis completed"
-                : "is now in process"
-            }`,
-            { description: `Sample ID: ${sampleData.sampleId}` }
-          );
-        }
+      if (!updateYardStatus) {
+        throw new Error(
+          "updateYardStatus function is not defined in the context."
+        );
+      }
+      const response = await updateYardStatus({
+        labId: sampleData.labId || "",
+        sampleId: sampleData.sampleId,
+        userId: sampleData.userId,
+        status: newStatus
+      });
+      if (response.status === 200) {
+        setStatus(newStatus);
+        onStatusChange?.(newStatus);
+        toast.success(
+          `Sample ${
+            newStatus === "completed"
+              ? "analysis completed"
+              : "is now in process"
+          }`,
+          { description: `Sample ID: ${sampleData.sampleId}` }
+        );
+        router.refresh();
       }
     } catch (err) {
       console.error("Error updating sample status:", err);
@@ -98,31 +107,16 @@ export function StatusUpdateModal({
     }
   };
 
-  const handleSendReport = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Send axios request to send the report
-      const response = await axios.post("/api/samples/send-report", {
-        sampleId: sampleData.sampleId,
-        userId: sampleData.userId
-      });
-
-      if (response.status === 200) {
-        toast.success("Report sent successfully", {
-          description: `Sent to ${sampleData.username}`
-        });
-        setOpen(false);
+  const handleSendReport = () => {
+    toast.success("Report sent successfully", {
+      description: `Sent to ${sampleData.username}`
+    });
+    if (sampleData.userId) {
+      if (setActive) {
+        setActive(
+          `testResults?userId=${sampleData.userId}&&sampleId=${sampleData.sampleId}&&labId=${sampleData.labId}`
+        );
       }
-    } catch (err) {
-      console.error("Error sending report:", err);
-      setError("Failed to send report. Please try again.");
-      toast.error("Report sending failed", {
-        description: "There was an error sending the report."
-      });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -167,7 +161,7 @@ export function StatusUpdateModal({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-[700px] p-0 h-auto md:h-[80%] overflow-auto rounded-xl border border-gray-100 shadow-xl">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary_green/20 to-white" />
+        {/* <div className="absolute inset-0 bg-gradient-to-br from-primary_green/20 to-white" /> */}
 
         <DialogHeader className="px-4 md:px-8 pt-6 md:pt-8 pb-3">
           <div className="flex items-center space-x-3">
@@ -332,7 +326,7 @@ export function StatusUpdateModal({
                             <Button
                               onClick={handleSendReport}
                               disabled={loading}
-                              className="text-xs sm:text-sm bg-soil-green hover:bg-soil-green-dark text-white"
+                              className="text-xs sm:text-sm bg-primary_green hover:bg-soil-green-dark text-white"
                               size="sm"
                             >
                               {loading ? (

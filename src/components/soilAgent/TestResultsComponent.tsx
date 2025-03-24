@@ -1,36 +1,133 @@
-import React, { useState } from "react";
-import { Upload, FileText, User, MessageSquare } from "lucide-react";
+import React, { useContext } from "react";
+import { useFormik } from "formik";
+import {
+  FileText,
+  User,
+  MessageSquare,
+  IdCard,
+  UploadCloud
+} from "lucide-react";
+import YardContext from "@/context/yardContext";
+import toast from "react-hot-toast";
 
-export default function TestResultsComponent() {
-  const [file, setFile] = useState<File | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
+interface TestResultsProps {
+  userId: string;
+  sampleId: string;
+  labId: string;
+}
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log(file);
+export interface FormValues {
+  userId: string;
+  sampleId: string;
+  suggestions: string;
+  file?: File | null;
+  fileUrl?: string;
+  labId: string;
+}
+
+interface CloudinaryResponse {
+  secure_url: string;
+}
+
+export default function TestResultsComponent({
+  userId,
+  sampleId,
+  labId
+}: TestResultsProps) {
+  const yardContext = useContext(YardContext);
+  const sendYardReport = yardContext?.sendYardReport;
+  const formik = useFormik<FormValues>({
+    initialValues: {
+      userId: userId,
+      sampleId: sampleId,
+      suggestions: "",
+      labId: labId,
+      file: null
+    },
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        if (!values.file) {
+          alert("Please upload a file");
+          return;
+        }
+
+        const cloudinaryUrl = await uploadToCloudinary(values.file);
+        const result = {
+          userId: values.userId,
+          sampleId: values.sampleId,
+          suggestions: values.suggestions,
+          fileUrl: cloudinaryUrl,
+          labId: values.labId
+        };
+        // console.log(result);
+        if (sendYardReport) {
+          const response = await sendYardReport(result);
+          if (response) {
+            toast.success("report sent successfully!");
+            window.location.reload();
+          }
+        } else {
+          console.error("sendYardReport is undefined");
+          alert("Unable to send the report. Please try again later.");
+        }
+
+        return result;
+      } catch (error) {
+        console.error("Submission error:", error);
+        alert("Error submitting form");
+      } finally {
+        setSubmitting(false);
+      }
+    }
+  });
+
+  const uploadToCloudinary = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("resource_type", "auto");
+    formData.append(
+      "upload_preset",
+      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || ""
+    );
+    formData.append(
+      "cloud_name",
+      process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || ""
+    );
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
+        {
+          method: "POST",
+          body: formData
+        }
+      );
+
+      if (!response.ok) throw new Error("Upload failed");
+
+      const data: CloudinaryResponse = await response.json();
+      console.log(data);
+      return data.secure_url;
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      throw error;
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragging(false);
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile?.type === "application/pdf") {
-      setFile(droppedFile);
+    const file = e.dataTransfer.files[0];
+    if (file?.type === "application/pdf") {
+      formik.setFieldValue("file", file);
     }
   };
 
   return (
-    <main className="bg-gray-50 min-h-screen font-['Roboto']">
+    <main className="bg-gray-50 font-roboto min-h-screen">
       <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
         <div className="flex items-center space-x-2">
           <FileText className="w-8 h-8 text-gray-700" />
@@ -41,67 +138,64 @@ export default function TestResultsComponent() {
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="p-6 sm:p-8">
-            <div className="flex items-center space-x-3 mb-8">
-              <Upload className="w-6 h-6 text-primary_green" />
-              <h2 className="text-2xl font-semibold text-gray-900">
-                Upload Test Results
-              </h2>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={formik.handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label
-                  htmlFor="farmer"
-                  className="flex items-center text-sm font-medium text-gray-700"
-                >
+                <label className="flex items-center text-sm font-medium text-gray-700">
                   <User className="w-4 h-4 mr-2" />
-                  Farmer Username
+                  Farmer ID
                 </label>
                 <input
+                  name="userId"
+                  value={formik.values.userId}
+                  disabled={userId ? true : false}
                   className="block w-full px-4 py-3 rounded-lg border border-gray-300 
-                           shadow-sm focus:ring-2 focus:ring-primary_green/[0.75] focus:primary_green
+                           shadow-sm focus:ring-2 focus:ring-primary_green/[0.75] 
                            placeholder:text-gray-400 transition duration-150 ease-in-out"
-                  type="text"
-                  id="farmer"
-                  placeholder="Enter farmer's username"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="flex items-center text-sm font-medium text-gray-700">
+                  <IdCard className="w-4 h-4 mr-2" />
+                  Sample ID
+                </label>
+                <input
+                  name="sampleId"
+                  value={formik.values.sampleId}
+                  disabled={sampleId ? true : false}
+                  onChange={formik.handleChange}
+                  className="block w-full px-4 py-3 rounded-lg border border-gray-300 
+                           shadow-sm focus:ring-2 focus:ring-primary_green/[0.75] 
+                           placeholder:text-gray-400 transition duration-150 ease-in-out"
+                  placeholder="Enter sample ID"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <label
-                  htmlFor="testResult"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label className="block text-sm font-medium text-gray-700">
                   Test Result File (PDF)
                 </label>
                 <div
                   className={`border-2 border-dashed rounded-lg p-6
-                            ${
-                              isDragging
-                                ? "border-primary_green bg-blue-50"
-                                : "border-gray-300"
-                            }
-                            ${file ? "bg-green-50" : "bg-gray-50"}
+                            ${formik.values.file ? "bg-green-50" : "bg-gray-50"}
                             transition-colors duration-150 ease-in-out`}
                   onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                 >
                   <div className="text-center">
-                    <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                    <UploadCloud className="mx-auto h-12 w-12 text-gray-400" />
                     <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                      <label
-                        htmlFor="testResult"
-                        className="relative cursor-pointer rounded-md font-semibold text-primary_green/[0.85] focus-within:outline-none focus-within:ring-2 focus-within:ring-primary_green/[0.85] focus-within:ring-offset-2 hover:text-primary_green/[0.85]"
-                      >
+                      <label className="relative cursor-pointer rounded-md font-semibold text-primary_green/[0.85] hover:text-primary_green/[0.85]">
                         <span>Upload a file</span>
                         <input
-                          id="testResult"
                           type="file"
                           className="sr-only"
                           accept=".pdf"
-                          onChange={(e) => setFile(e.target.files?.[0] || null)}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            formik.setFieldValue("file", file || null);
+                          }}
                           required
                         />
                       </label>
@@ -110,9 +204,9 @@ export default function TestResultsComponent() {
                     <p className="text-xs leading-5 text-gray-600">
                       PDF up to 10MB
                     </p>
-                    {file && (
+                    {formik.values.file && (
                       <p className="mt-2 text-sm text-green-600 font-medium">
-                        {file.name} selected
+                        {formik.values.file.name} selected
                       </p>
                     )}
                   </div>
@@ -120,19 +214,18 @@ export default function TestResultsComponent() {
               </div>
 
               <div className="space-y-2">
-                <label
-                  htmlFor="suggestions"
-                  className="flex items-center text-sm font-medium text-gray-700"
-                >
+                <label className="flex items-center text-sm font-medium text-gray-700">
                   <MessageSquare className="w-4 h-4 mr-2" />
                   Suggestions
                 </label>
                 <textarea
+                  name="suggestions"
+                  value={formik.values.suggestions}
+                  onChange={formik.handleChange}
                   className="block w-full px-4 py-3 rounded-lg border border-gray-300 
-                           shadow-sm focus:ring-2 focus:ring-primary_green/[0.75] focus:border-primary_green/[0.75]
+                           shadow-sm focus:ring-2 focus:ring-primary_green/[0.75]
                            placeholder:text-gray-400 transition duration-150 ease-in-out
                            min-h-[120px] resize-y"
-                  id="suggestions"
                   placeholder="Enter your suggestions based on test results"
                   required
                 />
@@ -140,12 +233,12 @@ export default function TestResultsComponent() {
 
               <button
                 type="submit"
+                disabled={formik.isSubmitting}
                 className="w-full bg-primary_green/[0.85] text-white py-3 px-4 rounded-lg font-medium
                          hover:bg-primary_green/[0.95] focus:outline-none focus:ring-2 focus:ring-primary_green/[0.90] 
-                         focus:ring-offset-2 transition duration-150 ease-in-out
-                         shadow-sm"
+                         transition duration-150 ease-in-out shadow-sm"
               >
-                Upload Results
+                {formik.isSubmitting ? "Uploading..." : "Upload Results"}
               </button>
             </form>
           </div>

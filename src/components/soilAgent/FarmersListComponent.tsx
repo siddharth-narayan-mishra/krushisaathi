@@ -39,6 +39,7 @@ const FarmerListComponent = () => {
   const LabData = UseUser();
   const yardContext = useContext(YardContext);
   const labId = getLabId(LabData);
+  console.log("mm", labId);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,12 +84,12 @@ const FarmerListComponent = () => {
     switch (status.toLowerCase()) {
       case "complete":
       case "completed":
-        return "bg-soil-completed";
+        return "bg-primary_green";
       case "pending":
         return "bg-soil-pending";
       case "in-process":
       case "in process":
-        return "bg-soil-inprocess";
+        return "bg-orange-500";
       case "rejected":
         return "bg-red-500";
       default:
@@ -134,12 +135,9 @@ const FarmerListComponent = () => {
   };
 
   const handleStatusChange = (newStatus: StatusType) => {
-    // In a real application, you would update the status in the database
     console.log(
       `Status updated for sample ${selectedSample?.sampleId} to ${newStatus}`
     );
-
-    // For demo purposes, update the status in the local state
     if (selectedSample && yardData) {
       const updatedSamples = yardData.samples.map((sample) => {
         if (sample.sampleId === selectedSample.sampleId) {
@@ -289,9 +287,9 @@ const FarmerListComponent = () => {
                         <div className="p-2 bg-soil-lightgreen rounded-md">
                           <BeakerIcon className="h-5 w-5 text-soil-green" />
                         </div>
-                        <div className="flex items-center space-x-1.5">
+                        <div className="flex items-center space-x-2">
                           <div
-                            className={`h-2.5 w-2.5 rounded-full ${getStatusDotColor(
+                            className={`h-2.5 w-2.5 rounded-full animate-pulse ${getStatusDotColor(
                               sample.status
                             )}`}
                           />
@@ -367,7 +365,8 @@ const FarmerListComponent = () => {
             sampleId: selectedSample.sampleId,
             userId: selectedSample.userId,
             position: selectedSample.yardName,
-            username: selectedSample.userId
+            username: selectedSample.userId,
+            labId: labId ?? undefined
           }}
           onStatusChange={handleStatusChange}
         />
