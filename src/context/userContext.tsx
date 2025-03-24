@@ -1,5 +1,6 @@
 import { LabModel } from "@/models/Labs";
 import { UserModel } from "@/models/User";
+import { Yard } from "@/models/Yard";
 import { createContext, ReactElement } from "react";
 
 interface UserContextType {
@@ -11,7 +12,10 @@ interface UserContextType {
   getUserData: () => void;
   user: UserModel | ReactElement | LabModel | null;
   isLoggedIn: () => Promise<boolean>;
-  getRecentResults: (id:string) => any;
+  getYards: (id:string) => any;
+  getYard: (id:string) => any;
+  yards: Yard[];
+
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);

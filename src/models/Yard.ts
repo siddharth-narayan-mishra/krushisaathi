@@ -1,4 +1,5 @@
 export interface Yard {
+  updatedAt: any;
   yardId: string;
   yardName: string;
   userId: string;
@@ -32,4 +33,5 @@ export class YardModel implements Yard {
     this.labId = yard.labId || "";
     this.samples = yard.samples || [];
   }
+  updatedAt: any;
 }

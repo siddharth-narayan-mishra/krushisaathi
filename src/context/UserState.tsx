@@ -3,6 +3,8 @@ import React, { useState, ReactNode } from "react";
 import UserContext from "./userContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { User } from "@/models/User";
+import { Yard } from "@/models/Yard";
 
 interface RegisterationStateProps {
   children: ReactNode;
@@ -12,7 +14,8 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
   children,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [yards, setYards] = useState<Yard[]>([]);
 
   const router = useRouter();
 
@@ -147,13 +150,13 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
     }
   };
 
-  const getRecentResults = async (id: string) => {
+  const getYards = async (id: string) => {
     try {
       if (!(await isLoggedIn())) {
         router.push("/login");
         return;
       }
-      const response = await fetch("/api/user/recent-results/" + id, {
+      const response = await fetch("/api/user/yards/" + id, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -162,7 +165,31 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const data = await response.json();
       if (data.success) {
         console.log("Recent Results: ", data.yards);
+        setYards(data.yards);
         return data.yards;
+      } else {
+        console.log("No recent results found");
+      }
+    } catch (error) {
+      toast.error("Error: " + error);
+    }
+  };
+
+  const getYard = async (id: string) => {
+    try {
+      if (!(await isLoggedIn())) {
+        router.push("/login");
+        return;
+      }
+      const response = await fetch("/api/user/yard/" + id, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        return data.yard;
       } else {
         console.log("No recent results found");
       }
@@ -182,7 +209,9 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
         getUserData,
         user,
         isLoggedIn,
-        getRecentResults,
+        getYards,
+        getYard,
+        yards
       }}
     >
       {children}

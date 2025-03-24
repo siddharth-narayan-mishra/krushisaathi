@@ -105,7 +105,7 @@ const Sidebar = () => {
     <>
       <div
         className={`
-        hidden lg:flex flex-col h-screen overflow-y-auto border-r border-gray-200 bg-white
+        sticky top-0 hidden lg:flex flex-col h-screen overflow-y-auto border-r border-gray-200 bg-white
         ${sidebarOpen ? "w-64" : "w-20"}
         transition-all duration-300
       `}

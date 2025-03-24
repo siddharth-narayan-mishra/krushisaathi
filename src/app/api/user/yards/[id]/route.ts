@@ -4,11 +4,10 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 
 const db = connectToFirebase();
 
-// get completed recent results data
+// get all yards data
 export async function GET(req: NextRequest) {
   try {
     const userId = req.nextUrl.pathname.split("/").pop();
-    console.log(userId);
     if (!userId) {
       return new NextResponse(
         JSON.stringify({ message: "UserId is required", success: false }),
@@ -31,11 +30,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const yards = querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      const completedSamples = data.samples.filter((sample: { status: string; }) => sample.status === "completed");
-      return { ...data, samples: completedSamples };
-    }).filter(yard => yard.samples.length > 0);
+    const yards = querySnapshot.docs.map(doc => doc.data());
 
     return new NextResponse(
       JSON.stringify({ yards, success: true }),
