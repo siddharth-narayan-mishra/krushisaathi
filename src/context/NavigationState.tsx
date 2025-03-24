@@ -29,7 +29,13 @@ const NavigationState: React.FC<NavigationStateProps> = ({ children }) => {
 
   useEffect(() => {
     const handleActiveChange = (active: string) => {
-      switch (active) {
+      const [basePath, queryString] = active.includes("?")
+        ? active.split("?")
+        : [active, ""];
+      const params = new URLSearchParams(queryString || "");
+      console.log(params);
+
+      switch (basePath) {
         case "account":
           setCurrentComponent(<AccountComponent />);
           break;
@@ -54,7 +60,13 @@ const NavigationState: React.FC<NavigationStateProps> = ({ children }) => {
           setCurrentComponent(<HelpComponent />);
           break;
         case "testResults":
-          setCurrentComponent(<TestResultsComponent />);
+          setCurrentComponent(
+            <TestResultsComponent
+              userId={params.get("userId") || ""}
+              sampleId={params.get("sampleId") || ""}
+              labId={params.get("labId") || ""}
+            />
+          );
           break;
         case "agentDashbaord":
           setCurrentComponent(<AgentDashboardComponent />);
@@ -79,7 +91,7 @@ const NavigationState: React.FC<NavigationStateProps> = ({ children }) => {
         setPrevActive,
         currentComponent,
         sidebarOpen,
-        setSidebarOpen,
+        setSidebarOpen
       }}
     >
       {children}

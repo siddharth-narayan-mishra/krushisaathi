@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
 
     if (typeof decodedToken !== "string" && "id" in decodedToken) {
       console.log(decodedToken);
-      console.log("hello")
+      console.log("hello");
       const docRef = doc(
         db,
         role === "soil-agent" ? "labs" : "users",
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
         delete user.verifyTokenExpiry;
         delete user.forgotPasswordTokenExpiry;
         delete user.forgotPasswordToken;
-
+        console.log(user);
         return new NextResponse(
           JSON.stringify({
             message: "User authenticated",

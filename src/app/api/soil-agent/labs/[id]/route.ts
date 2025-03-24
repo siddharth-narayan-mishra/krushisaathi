@@ -4,12 +4,11 @@ import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 
 const db = connectToFirebase();
 
-// get lab data
 export async function GET(req: NextRequest) {
   try {
-    const username = req.nextUrl.pathname.split("/").pop();
-    console.log(username);
-    if (!username) {
+    const id = req.nextUrl.pathname.split("/").pop();
+    console.log(id);
+    if (!id) {
       return new NextResponse(
         JSON.stringify({ message: "LabID is required", success: false }),
         {
@@ -18,7 +17,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const docRef = doc(db, "labs", username);
+    const docRef = doc(db, "labs", id);
     console.log(docRef);
     const docSnap = await getDoc(docRef);
     console.log(docSnap);

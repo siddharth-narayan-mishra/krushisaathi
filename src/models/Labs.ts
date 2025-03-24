@@ -4,11 +4,6 @@ export interface Lab {
   password: string;
   role: string;
   labName: string;
-  users: {
-    userId: string;
-    farmName: string;
-    sampleNames: { position: string; status: string }[];
-  }[];
 
   position?: {
     latitude: number;
@@ -46,12 +41,6 @@ export class LabModel implements Lab {
     district: string;
     fulladdress: string;
   };
-  users: {
-    userId: string;
-    farmName: string;
-    sampleNames: { position: string; status: string }[];
-    // status: "rejected" | "pending" | "complete";
-  }[];
   phone?: number;
 
   constructor(lab: Partial<Lab>) {
@@ -62,7 +51,7 @@ export class LabModel implements Lab {
     this.position = lab.position;
     this.address = lab.address;
     this.phone = lab.phone;
-    this.users = lab.users ?? [];
+    // this.users = lab.users ?? [];
     this.id = lab.id || "";
   }
 }

@@ -26,7 +26,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/utils/getuser.tsx"
-, "src/components/farmer/UploadWidget.jsx"  ],
+    "src/utils/getData.tsx",
+    "src/components/farmer/UploadWidget.jsx"
+  ],
   "exclude": ["node_modules"]
 }
