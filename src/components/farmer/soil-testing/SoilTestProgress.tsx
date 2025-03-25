@@ -1,42 +1,75 @@
 "use client";
 import UserContext from "@/context/userContext";
-import { Yard } from "@/models/Yard";
+import { UserModel } from "@/models/User";
+import { Yard, YardModel } from "@/models/Yard";
 import {
   ChevronRight,
   Check,
   Clock,
   Leaf,
   Calendar,
-  MapPin,
+  MapPin
 } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { SoilTestLoader } from "./SkeletonLoader";
+import { useRouter } from "next/navigation";
 
 interface SoilTestProgressProps {
   yardId: string;
 }
 
 const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
-  // const progressPercent = 75;
-
   const userContext = useContext(UserContext);
   if (!userContext) {
     console.error("User context is not provided");
     return <div>Error: User context is not provided.</div>;
   }
-
-  const { user, yards } = userContext;
-
+  const router = useRouter();
+  const { user, getYards, getUserData } = userContext;
+  const [yards, setYards] = useState<YardModel[]>([]);
   const [yard, setYard] = useState<Yard | undefined>();
   const [activeSample, setActiveSample] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!yards.length || !yardId) return;
-    const givenYard = yards.find((yard) => yard.yardId === yardId);
-    console.log("yard", givenYard);
-    setYard(givenYard);
-    if (!givenYard) toast.error("Yard not found");
-  }, []);
+    const fetchData = async () => {
+      try {
+        if (!user) {
+          getUserData();
+        }
+
+        if (user) {
+          const yardData = await getYards((user as UserModel).id);
+
+          if (yardData && yardData.length > 0) {
+            setYards(yardData);
+
+            const givenYard = yardData.find(
+              (y: YardModel) => y.yardId === yardId
+            );
+
+            if (givenYard) {
+              setYard(givenYard);
+            } else {
+              setYard(yardData[0]);
+              toast.success("Selected first available yard");
+            }
+          } else {
+            toast.error("No yards found");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching yard data:", error);
+        toast.error("Failed to fetch yard data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [user, yardId]);
 
   const getProgress = () => {
     const totalSamples = yard?.samples.length || 1;
@@ -48,10 +81,9 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
 
   const getSampleProgress = () => {
     const status = yard?.samples[activeSample - 1].status;
-    if (status === "registered") return 1;
-    else if (status === "sampleReceived") return 2;
-    else if (status === "labProcessing") return 3;
-    else if (status === "completed") return 4;
+    if (status === "pending") return 1;
+    else if (status === "in-progress") return 2;
+    else if (status === "completed") return 3;
     return 0;
   };
 
@@ -63,36 +95,38 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
     }
   };
 
+  if (isLoading && !yard) {
+    return (
+      <div>
+        <SoilTestLoader />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 antialiased">
-      <div className="max-w-5xl mx-auto px-4 py-8 sm:py-12">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-1.5 py-1.5 px-4 rounded-full bg-green-100 text-green-800 text-xs font-semibold mb-3">
-            <Leaf size={14} className="opacity-80" />
+    <div className="soil-test-container">
+      <div className="max-w-5xl mx-auto px-4 py-12 sm:py-16">
+        <div className="text-center mb-16 soil-fade-in">
+          <div className="soil-header-badge mb-3">
+            <Leaf size={14} className="opacity-90" />
             <span>Soil Health Analysis</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mb-3">
-            Your Soil Testing Dashboard
-          </h1>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <h1 className="soil-title">Your Soil Testing Dashboard</h1>
+          <p className="soil-subtitle">
             Monitor your soil analysis progress and access comprehensive test
             results to optimize your crop yield
           </p>
         </div>
 
-        {/* In Progress Section */}
-        <div className="mb-16">
+        <div className="mb-16 soil-fade-in" style={{ animationDelay: "0.1s" }}>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">
-              In Progress Tests
-            </h2>
-            <div className="relative w-[220px]">
+            <h2 className="soil-section-title">In Progress Tests</h2>
+            <div className="relative">
               <select
-                className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500"
-                value={yard?.yardName}
+                className="soil-select"
+                value={yard?.yardId}
                 onChange={(e) => {
-                  const newYard = yards.find(
+                  const newYard = yards?.find(
                     (yard) => yard.yardId === e.target.value
                   );
                   setYard(newYard);
@@ -102,7 +136,7 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                 <option value="" disabled>
                   Select a yard
                 </option>
-                {yards.map((yard) => (
+                {yards?.map((yard) => (
                   <option key={yard.yardId} value={yard.yardId}>
                     {yard.yardName} ({yard.samples.length} samples)
                   </option>
@@ -110,218 +144,280 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
               </select>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 sm:p-8 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
-              <div>
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-sm text-gray-500 font-medium">
-                    Sample {activeSample} of {yard?.samples.length}
-                  </span>
-                  <span className="h-4 w-0.5 bg-gray-200 rounded-full"></span>
-                  <span className="text-xl font-bold text-gray-900">
-                    {yard?.yardName}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-bold text-gray-500">
-                    {yard?.samples[activeSample - 1].sampleName}
-                  </h3>
-                  <div className="py-1 px-2.5 rounded-md bg-gray-100 text-gray-700 text-xs font-mono">
-                    {yard?.samples[activeSample - 1].sampleId}
+          <div className="soil-card">
+            <div className="soil-card-header">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-sm text-gray-500 font-medium">
+                      Sample {activeSample} of {yard?.samples.length}
+                    </span>
+                    <div className="soil-sample-div"></div>
+                    <span className="text-xl font-bold text-gray-900">
+                      {yard?.yardName}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xl font-bold text-gray-600">
+                      {yard?.samples[activeSample - 1]?.sampleName}
+                    </h3>
+                    <div className="soil-sample-badge">
+                      {yard?.samples[activeSample - 1]?.sampleId}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Progress steps */}
-            <div className="mb-8 relative">
-              <div className="absolute top-5 left-0 w-full h-1 bg-gray-200 rounded-full -z-10"></div>
-
-              <div className="flex justify-between">
-                <div className="w-1/4 flex flex-col items-center text-center">
-                  <div
-                    className={`w-10 h-10 mb-2 rounded-full ${
-                      getSampleProgress() >= 1 ? "bg-green-600" : "bg-gray-200"
-                    } text-white flex items-center justify-center`}
-                  >
-                    {getSampleProgress() >= 1 ? (
-                      <Check size={18} />
-                    ) : (
-                      <span className="text-sm font-semibold">1</span>
-                    )}
-                  </div>
-                  <div
-                    className={`text-sm font-medium ${
-                      getSampleProgress() >= 1
-                        ? "text-gray-900"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    Registered
-                  </div>
-                  <div className="text-xs text-gray-500 mt-0.5">
-                    {getSampleProgress() >= 1 ? "completed" : "Pending"}
-                  </div>
-                </div>
-
-                <div className="w-1/4 flex flex-col items-center text-center">
-                  <div
-                    className={`w-10 h-10 mb-2 rounded-full ${
-                      getSampleProgress() >= 2 ? "bg-green-600" : "bg-gray-200"
-                    } text-white flex items-center justify-center`}
-                  >
-                    {getSampleProgress() >= 2 ? (
-                      <Check size={18} />
-                    ) : (
-                      <span className="text-sm font-semibold">2</span>
-                    )}
-                  </div>
-                  <div
-                    className={`text-sm font-medium ${
-                      getSampleProgress() >= 2
-                        ? "text-gray-900"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    Sample Received
-                  </div>
-                  <div className="text-xs text-gray-500 mt-0.5">
-                    {getSampleProgress() >= 1 ? "completed" : "Pending"}
-                  </div>
-                </div>
-
-                <div className="w-1/4 flex flex-col items-center text-center">
-                  <div
-                    className={`w-10 h-10 mb-2 rounded-full ${
-                      getSampleProgress() >= 3 ? "bg-green-600" : "bg-gray-200"
-                    } text-white flex items-center justify-center`}
-                  >
-                    {getSampleProgress() >= 3 ? (
-                      <Check size={18} />
-                    ) : (
-                      <span className="text-sm font-semibold">3</span>
-                    )}
-                  </div>
-                  <div
-                    className={`text-sm font-medium ${
+              <div className="mb-10 relative soil-progress-step">
+                <div className="soil-progress-track"></div>
+                <div
+                  className="soil-progress-track-completed "
+                  style={{
+                    width:
                       getSampleProgress() >= 3
-                        ? "text-gray-900"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    Lab Processing
-                  </div>
-                  <div className="text-xs text-gray-500 mt-0.5">
-                    {getSampleProgress() >= 1 ? "completed" : "Pending"}
-                  </div>
-                </div>
+                        ? "100%"
+                        : getSampleProgress() >= 2
+                        ? "66%"
+                        : getSampleProgress() >= 1
+                        ? "33%"
+                        : "0%"
+                  }}
+                ></div>
 
-                <div className="w-1/4 flex flex-col items-center text-center">
-                  <div
-                    className={`w-10 h-10 mb-2 rounded-full ${
-                      getSampleProgress() >= 4 ? "bg-green-600" : "bg-gray-200"
-                    } text-white flex items-center justify-center`}
-                  >
-                    {getSampleProgress() >= 4 ? (
-                      <Check size={18} />
-                    ) : (
-                      <span className="text-sm font-semibold">4</span>
-                    )}
+                <div className="flex justify-between ">
+                  <div className="w-1/4 flex flex-col items-center text-center">
+                    <div
+                      className={`soil-step-circle ${
+                        getSampleProgress() >= 1
+                          ? "soil-step-circle-completed"
+                          : "soil-step-circle-pending"
+                      }`}
+                    >
+                      {getSampleProgress() >= 1 ? (
+                        <Check size={18} />
+                      ) : (
+                        <span>1</span>
+                      )}
+                    </div>
+                    <div
+                      className={`soil-step-label ${
+                        getSampleProgress() >= 1
+                          ? "text-gray-900"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      Sample Received
+                    </div>
+                    <div className="soil-step-status">
+                      {getSampleProgress() >= 1 ? "Completed" : "Pending"}
+                    </div>
                   </div>
-                  <div
-                    className={`text-sm font-medium ${
-                      getSampleProgress() >= 4
-                        ? "text-gray-900"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    Result Ready
+
+                  <div className="w-1/4 flex flex-col items-center text-center">
+                    <div
+                      className={`soil-step-circle ${
+                        getSampleProgress() >= 2
+                          ? "soil-step-circle-completed"
+                          : getSampleProgress() === 1
+                          ? "soil-step-circle-active"
+                          : "soil-step-circle-pending"
+                      }`}
+                    >
+                      {getSampleProgress() >= 2 ? (
+                        <Check size={18} />
+                      ) : (
+                        <span>2</span>
+                      )}
+                    </div>
+                    <div
+                      className={`soil-step-label ${
+                        getSampleProgress() >= 2
+                          ? "text-gray-900"
+                          : getSampleProgress() === 1
+                          ? "text-gray-700"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      Analysis
+                    </div>
+                    <div className="soil-step-status">
+                      {getSampleProgress() >= 2
+                        ? "Completed"
+                        : getSampleProgress() === 1
+                        ? "In Progress"
+                        : "Pending"}
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-400 mt-0.5">
-                    {getSampleProgress() >= 1 ? "completed" : "Pending"}
+
+                  <div className="w-1/4 flex flex-col items-center text-center">
+                    <div
+                      className={`soil-step-circle ${
+                        getSampleProgress() >= 3
+                          ? "soil-step-circle-completed"
+                          : getSampleProgress() === 2
+                          ? "soil-step-circle-active"
+                          : "soil-step-circle-pending"
+                      }`}
+                    >
+                      {getSampleProgress() >= 3 ? (
+                        <Check size={18} />
+                      ) : (
+                        <span>3</span>
+                      )}
+                    </div>
+                    <div
+                      className={`soil-step-label ${
+                        getSampleProgress() >= 3
+                          ? "text-gray-900"
+                          : getSampleProgress() === 2
+                          ? "text-gray-700"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      Processing
+                    </div>
+                    <div className="soil-step-status">
+                      {getSampleProgress() >= 3
+                        ? "Completed"
+                        : getSampleProgress() === 2
+                        ? "In Progress"
+                        : "Pending"}
+                    </div>
+                  </div>
+
+                  <div className="w-1/4 flex flex-col items-center text-center">
+                    <div
+                      className={`soil-step-circle ${
+                        getSampleProgress() >= 4
+                          ? "soil-step-circle-completed"
+                          : getSampleProgress() === 3
+                          ? "soil-step-circle-active"
+                          : "soil-step-circle-pending"
+                      }`}
+                    >
+                      {getSampleProgress() >= 4 ? (
+                        <Check size={18} />
+                      ) : (
+                        <span>4</span>
+                      )}
+                    </div>
+                    <div
+                      className={`soil-step-label ${
+                        getSampleProgress() >= 4
+                          ? "text-gray-900"
+                          : getSampleProgress() === 3
+                          ? "text-gray-700"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      Result Ready
+                    </div>
+                    <div className="soil-step-status">
+                      {getSampleProgress() >= 4
+                        ? "Completed"
+                        : getSampleProgress() === 3
+                        ? "Processing"
+                        : "Pending"}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="text-sm font-medium text-gray-700">
-                  Processing:{" "}
-                  <span className="text-green-700">{getProgress()}%</span>
+            <div className="soil-card-content">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="text-sm font-medium text-gray-700">
+                    Processing:{" "}
+                    <span className="text-green-700 font-semibold">
+                      {getProgress().toFixed(0)}%
+                    </span>
+                  </div>
+                  <div className="soil-progress-bar-container">
+                    <div
+                      className="soil-progress-bar"
+                      style={{ width: `${getProgress()}%` }}
+                    ></div>
+                  </div>
+                  <button
+                    className="soil-button soil-button-primary"
+                    onClick={handleNextSample}
+                  >
+                    Next Sample
+                    <ChevronRight size={16} />
+                  </button>
                 </div>
-                <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-green-600 rounded-full"
-                    style={{ width: `${getProgress()}%` }}
-                  ></div>
-                </div>
-                <button
-                  className="bg-green-600 hover:bg-green-700 text-white shadow-sm"
-                  onClick={handleNextSample}
-                >
-                  Next Sample
-                  <ChevronRight size={16} />
-                </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Completed Tests Section */}
-        <div>
+        <div className="soil-fade-in" style={{ animationDelay: "0.2s" }}>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">
-              Completed Reports
-            </h2>
+            <h2 className="soil-section-title">Completed Reports</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Field 1 */}
-            {yards.length > 0 &&
-              yards.map((yard) => {
-                return (
-                  <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
-                    <div className="flex items-center justify-between mb-5">
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {yard.yardName}
-                      </h3>
-                      <div className="bg-green-100 py-1 px-3 rounded-full text-green-700 text-xs font-medium">
-                        {yard.samples.length} samples
-                      </div>
+            {yards &&
+              yards?.length > 0 &&
+              yards?.map((yard) => (
+                <div key={yard.yardId} className="soil-report-card">
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {yard.yardName}
+                    </h3>
+                    <div className="soil-sample-count">
+                      {yard.samples.length} samples
                     </div>
-
-                    <div className="space-y-3 mb-5">
-                      {yard.samples.map((sample, index) => (
-                        <button
-                          onClick={() => console.log("TODO: View report PDF")}
-                          key={index}
-                          className="flex w-full items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
-                        >
-                          <div>
-                            <div className="text-gray-900 font-medium">
-                              {sample.sampleName}
-                            </div>
-                            <div className="text-gray-500 text-xs font-mono">
-                              {sample.sampleId}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="text-gray-500 text-sm">
-                              view report
-                            </div>
-                            <ChevronRight size={16} className="text-gray-400" />
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-
-                    <button className="w-full py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors shadow-sm">
-                      View Recommendations
-                    </button>
                   </div>
-                );
-              })}
+
+                  <div className="space-y-3 mb-5">
+                    {yard.samples.map((sample, index) => (
+                      <button
+                        onClick={() => console.log("TODO: View report PDF")}
+                        key={index}
+                        className="soil-report-item"
+                      >
+                        <div>
+                          <div className="text-gray-900 font-medium">
+                            {sample.sampleName}
+                          </div>
+                          <div className="text-gray-500 text-xs font-mono">
+                            {sample.sampleId}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <a
+                            href={sample.pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="soil-view-report"
+                            onClick={() => {
+                              if (!sample.pdfUrl) {
+                                toast.error("report not send yet");
+                              }
+                              console.log("ww", sample.pdfUrl);
+                            }}
+                          >
+                            view report
+                          </a>
+
+                          <ChevronRight size={16} className="soil-chevron" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      router.push("/smart-recommendations");
+                    }}
+                    className="soil-recommendations-button"
+                  >
+                    View Recommendations
+                  </button>
+                </div>
+              ))}
           </div>
         </div>
       </div>

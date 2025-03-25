@@ -17,7 +17,7 @@ const LoginForm = () => {
     username: Yup.string().required("Required"),
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
-      .required("Required"),
+      .required("Required")
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -37,12 +37,10 @@ const LoginForm = () => {
           role: "farmer",
           username: "",
           password: "",
-          agree: false,
+          agree: false
         }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          console.log("ONSUBMIT", values);
-
           login(values);
         }}
       >

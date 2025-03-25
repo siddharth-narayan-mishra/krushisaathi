@@ -8,6 +8,8 @@ const db = connectToFirebase();
 export async function GET(req: NextRequest) {
   try {
     const userId = req.nextUrl.pathname.split("/").pop();
+    console.log(req.nextUrl.pathname.split("/").pop());
+    console.log(userId);
     if (!userId) {
       return new NextResponse(
         JSON.stringify({ message: "UserId is required", success: false }),
@@ -23,22 +25,22 @@ export async function GET(req: NextRequest) {
 
     if (querySnapshot.empty) {
       return new NextResponse(
-        JSON.stringify({ message: "No yards found for the given userId", success: false }),
+        JSON.stringify({
+          message: "No yards found for the given userId",
+          success: false
+        }),
         {
           status: 404
         }
       );
     }
 
-    const yards = querySnapshot.docs.map(doc => doc.data());
+    const yards = querySnapshot.docs.map((doc) => doc.data());
+    console.log("tt", yards);
 
-    return new NextResponse(
-      JSON.stringify({ yards, success: true }),
-      {
-        status: 200
-      }
-    );
-
+    return new NextResponse(JSON.stringify({ yards, success: true }), {
+      status: 200
+    });
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "An unknown error occurred";

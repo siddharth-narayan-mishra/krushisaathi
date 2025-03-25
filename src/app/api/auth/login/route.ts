@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const querySnapshot = await getDocs(userQuery);
     const userDoc = querySnapshot.docs[0];
 
-    if (!userDoc.exists()) {
+    if (!userDoc) {
       return new NextResponse(
         JSON.stringify({ error: "User does not exists", success: false }),
         { status: 400 }

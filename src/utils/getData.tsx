@@ -22,7 +22,7 @@ export const UseUser = () => {
       router.push("/login");
     }
   }, [user, router]);
-
+  console.log(user);
   return user;
 };
 

@@ -1,10 +1,11 @@
+"use client";
 import React from "react";
 import Sidebar from "@/components/farmer/Sidebar";
 import SoilTestProgress from "@/components/farmer/soil-testing/SoilTestProgress";
 
 const Page = ({ params }: { params: { id: string } }) => {
   return (
-    <main className="lg:flex ">
+    <main className="lg:flex">
       <div>
         <Sidebar />
       </div>

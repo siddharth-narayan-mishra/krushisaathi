@@ -148,7 +148,7 @@ export default function TestResultsComponent({
                   name="userId"
                   value={formik.values.userId}
                   disabled={userId ? true : false}
-                  className="block w-full px-4 py-3 rounded-lg border border-gray-300 
+                  className="block focus:outline-primary_green w-full px-4 py-3 rounded-lg border border-gray-300 
                            shadow-sm focus:ring-2 focus:ring-primary_green/[0.75] 
                            placeholder:text-gray-400 transition duration-150 ease-in-out"
                 />

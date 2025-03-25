@@ -63,7 +63,7 @@ export async function PUT(req: NextRequest) {
     // console.log("hii");
     const body = await req.json();
     console.log(body);
-    const { sampleId, userId, status, labId, fileUrl } = body;
+    const { sampleId, userId, status, labId } = body;
 
     if (!sampleId) {
       return new NextResponse(
@@ -113,9 +113,7 @@ export async function PUT(req: NextRequest) {
       );
     }
     const updatedSamples = yardData.samples.map((sample: any) =>
-      sample.sampleId === sampleId
-        ? { ...sample, status, pdfUrl: fileUrl }
-        : sample
+      sample.sampleId === sampleId ? { ...sample, status } : sample
     );
 
     const sampleFound = updatedSamples.some(

@@ -11,7 +11,7 @@ interface RegisterationStateProps {
 }
 
 const RegisterationState: React.FC<RegisterationStateProps> = ({
-  children,
+  children
 }) => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -28,8 +28,8 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/auth/logout", {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       });
       const data = await response.json();
       console.log("logout data", data);
@@ -58,9 +58,9 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(values)
       });
       const data = await response.json();
       console.log("signup data", data);
@@ -88,9 +88,9 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(values)
       });
       const data = await response.json();
       if (data.success) {
@@ -112,8 +112,8 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/user/checkAuth", {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       });
       const data = await response.json();
       return data.success;
@@ -133,8 +133,8 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/user", {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       });
       const data = await response.json();
       if (data.success) {
@@ -156,13 +156,15 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
         router.push("/login");
         return;
       }
+      console.log("id", id);
       const response = await fetch("/api/user/yards/" + id, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       });
       const data = await response.json();
+      console.log("data", data);
       if (data.success) {
         console.log("Recent Results: ", data.yards);
         setYards(data.yards);
@@ -184,8 +186,8 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/user/yard/" + id, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       });
       const data = await response.json();
       if (data.success) {
