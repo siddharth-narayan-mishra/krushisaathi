@@ -8,12 +8,13 @@ import {
   Clock,
   Leaf,
   Calendar,
-  MapPin
+  MapPin,
 } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { SoilTestLoader } from "./SkeletonLoader";
 import { useRouter } from "next/navigation";
+import YardContext from "@/context/yardContext";
 
 interface SoilTestProgressProps {
   yardId: string;
@@ -25,8 +26,16 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
     console.error("User context is not provided");
     return <div>Error: User context is not provided.</div>;
   }
+
+  const yardContext = useContext(YardContext);
+  if (!yardContext) {
+    console.error("Yard context is not provided");
+    return <div>Error: Yard context is not provided.</div>;
+  }
+
   const router = useRouter();
-  const { user, getYards, getUserData } = userContext;
+  const { user, getUserData } = userContext;
+  const { getYard, getYards } = yardContext;
   const [yards, setYards] = useState<YardModel[]>([]);
   const [yard, setYard] = useState<Yard | undefined>();
   const [activeSample, setActiveSample] = useState(1);
@@ -41,7 +50,10 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
         }
 
         if (user) {
-          const yardData = await getYards((user as UserModel).id);
+          const yardData = await getYards(
+            (user as UserModel).id,
+            (user as UserModel).role
+          );
 
           if (yardData && yardData.length > 0) {
             setYards(yardData);
@@ -180,7 +192,7 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                         ? "66%"
                         : getSampleProgress() >= 1
                         ? "33%"
-                        : "0%"
+                        : "0%",
                   }}
                 ></div>
 

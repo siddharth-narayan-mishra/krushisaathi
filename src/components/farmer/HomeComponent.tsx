@@ -6,11 +6,13 @@ import { useRouter } from "next/navigation";
 import UserContext from "@/context/userContext";
 import { UserModel } from "@/models/User";
 import { Yard } from "@/models/Yard";
+import YardContext from "@/context/yardContext";
 // import YardContext from "@/context/yardContext";
 
 const HomeComponent = () => {
   const router = useRouter();
   const userContext = useContext(UserContext);
+  const yardContext = useContext(YardContext);
   const [inProgressYards, setInProgressYards] = useState<Yard[]>([]);
   const [completedyards, setCompletedYards] = useState<Yard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +22,14 @@ const HomeComponent = () => {
     return <div>Error: User context is not provided.</div>;
   }
 
-  const { user, getUserData, getYards, yards } = userContext;
+  const { user, getUserData } = userContext;
+
+  if (!yardContext) {
+    console.error("Yard context is not provided");
+    return <div>Error: Yard context is not provided.</div>;
+  }
+
+  const { getYards } = yardContext;
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -30,8 +39,8 @@ const HomeComponent = () => {
           getUserData();
         }
 
-        if ((user as UserModel).id && yards.length === 0) {
-          const res = await getYards((user as UserModel).id);
+        if ((user as UserModel).id) {
+          const res = await getYards((user as UserModel).id, (user as UserModel).role);
           const inProgress: Yard[] = res.filter((yard: { samples: any[] }) =>
             yard.samples.some((sample) => sample.status !== "completed")
           );
@@ -57,22 +66,22 @@ const HomeComponent = () => {
       description: "Get your soil analyzed by experts",
       image:
         "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80",
-      link: "/soil-testing"
+      link: "/soil-testing",
     },
     {
       title: "How to Take Soil Sample",
       description: "Learn the correct way to collect soil",
       image:
         "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&q=80",
-      link: "/how-to"
+      link: "/how-to",
     },
     {
       title: "Register Your Sample",
       description: "Submit your soil sample for testing",
       image:
         "https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&q=80",
-      link: "/register-soil-sample"
-    }
+      link: "/register-soil-sample",
+    },
   ];
 
   const formatReadableDate = (isoString: string | number | Date) =>
@@ -82,7 +91,7 @@ const HomeComponent = () => {
       day: "numeric",
       hour: "numeric",
       minute: "2-digit",
-      hour12: true
+      hour12: true,
     });
 
   // const getStatusBadge = () => {
@@ -136,7 +145,6 @@ const HomeComponent = () => {
             </h3>
             <p className="text-primary_black text-sm">ID: {yard.yardId}</p>
           </div>
-          {/* {getStatusBadge()} */}
         </div>
 
         <div className="flex-grow">
@@ -207,7 +215,7 @@ const HomeComponent = () => {
         <div className="flex flex-col gap-7">
           {[
             { title: "Your completed Soil Tests", yards: completedyards },
-            { title: "Your Ongoing Soil Tests", yards: inProgressYards }
+            { title: "Your Ongoing Soil Tests", yards: inProgressYards },
           ].map(({ title, yards }, index) => (
             <div key={index}>
               <h2 className="text-2xl font-semibold text-gray-900 mb-6">

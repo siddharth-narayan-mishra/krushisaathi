@@ -2,7 +2,7 @@ import { FormValues } from "@/components/soilAgent/TestResultsComponent";
 import { createContext } from "react";
 
 interface YardContextType {
-  getYards: () => Promise<any>;
+  getYards: (id:string, type:string) => Promise<any>;
   getYard: (id: string) => Promise<any>;
   updateYardStatus: ({
     labId,

@@ -17,7 +17,6 @@ const db = connectToFirebase();
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("hii");
     const body = await req.json();
     const { username, password, role } = body;
 

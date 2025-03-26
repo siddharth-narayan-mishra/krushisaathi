@@ -1,81 +1,118 @@
 import React, { useEffect, useState, useContext } from "react";
 import { CheckCircle, Users2, XCircle, Clock } from "lucide-react";
-import { YardModel } from "@/models/Yard";
-import { getLabId, UseUser } from "@/utils/getData";
+import { Yard } from "@/models/Yard";
 import YardContext from "@/context/yardContext";
+
 import { StatCard } from "@/utils/ststs-card";
+import UserContext from "@/context/userContext";
+import { LabModel } from "@/models/Labs";
 
 const AgentDashboardComponent = () => {
-  const [yardData, setYardData] = useState<YardModel | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [yardsData, setYardsData] = useState<Yard[] | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const LabData = UseUser();
+  const userContext = useContext(UserContext);
   const yardContext = useContext(YardContext);
 
-  const labId = getLabId(LabData);
-  console.log("labId:", labId);
+  if (!userContext) {
+    console.error("User context is not provided");
+    return <div>Error: User context is not provided.</div>;
+  }
+
+  const { user, getUserData } = userContext;
+
+  if (!yardContext) {
+    console.error("Yard context is not provided");
+    return <div>Error: Yard context is not provided.</div>;
+  }
+
+  const { getYards } = yardContext;
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!labId || !yardContext) {
-        setLoading(false);
-        return;
-      }
-
       try {
-        setLoading(true);
-        console.log("Fetching yard data for labId:", labId);
-        console.log("Using yardContext.getYard:", yardContext.getYard);
+        setIsLoading(true);
+        if (!user) {
+          getUserData();
+        }
 
-        const data = await yardContext.getYard(labId);
-        console.log("Data received:", data);
-        setYardData(data);
-      } catch (err) {
-        console.error("Error fetching yard data:", err);
-        setError("Failed to fetch yard data");
+        if ((user as LabModel).id) {
+          const yards = await getYards(
+            (user as LabModel).id,
+            (user as LabModel).role
+          );
+          setYardsData(yards);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
-
     fetchData();
-  }, [labId, yardContext]);
+  }, [user]);
 
-  if (loading)
+  const getTotalSamples = () => {
+    let total = 0;
+    yardsData?.forEach((yard) => {
+      total += yard.samples.length;
+    });
+    return total;
+  };
+
+  const getPendingSamples = () => {
+    let total = 0;
+    yardsData?.forEach((yard) => {
+      total += yard.samples.filter((s) => s.status === "pending").length;
+    });
+    return total;
+  };
+  const getInProgressSamples = () => {
+    let total = 0;
+    yardsData?.forEach((yard) => {
+      total += yard.samples.filter((s) => s.status === "in-progress").length;
+    });
+    return total;
+  };
+
+  const getCompletedSamples = () => {
+    let total = 0;
+    yardsData?.forEach((yard) => {
+      total += yard.samples.filter((s) => s.status === "completed").length;
+    });
+    return total;
+  };
+
+  if (isLoading)
     return <div className="p-8 text-center">Loading dashboard data...</div>;
-  if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
-  if (!yardData)
+  if (!yardsData)
     return <div className="p-8 text-center">No yard data available</div>;
 
   const stats = [
     {
       title: "Total Samples",
-      value: yardData.samples?.length || 0,
+      value: getTotalSamples() || 0,
       icon: Users2,
-      color: "bg-primary_green"
+      color: "bg-primary_green",
     },
     {
       title: "Pending Samples",
-      value:
-        yardData.samples?.filter((s) => s.status === "pending").length || 0,
+      value: getPendingSamples() || 0,
       icon: Clock,
-      color: "bg-primary_green"
+      color: "bg-primary_green",
+    },
+    {
+      title: "In Progress",
+      value: getInProgressSamples() || 0,
+      icon: XCircle,
+      color: "bg-primary_green",
     },
     {
       title: "Completed Samples",
-      value:
-        yardData.samples?.filter((s) => s.status === "complete").length || 0,
+      value: getCompletedSamples() || 0,
       icon: CheckCircle,
-      color: "bg-primary_green"
+      color: "bg-primary_green",
     },
-    {
-      title: "Rejected Samples",
-      value:
-        yardData.samples?.filter((s) => s.status === "rejected").length || 0,
-      icon: XCircle,
-      color: "bg-primary_green"
-    }
   ];
 
   return (
@@ -86,7 +123,8 @@ const AgentDashboardComponent = () => {
             Soil Testing Dashboard
           </h1>
           <p className="mt-2 text-gray-600">
-            Yard Name: {yardData.yardName} | Yard ID: {yardData.yardId}
+            Lab Name: {(user as LabModel).labName} | Lab ID:{" "}
+            {(user as LabModel).id}
           </p>
         </div>
 

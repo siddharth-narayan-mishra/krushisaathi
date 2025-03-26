@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToFirebase } from "@/utils/FirebaseConfig";
-import { collection, doc, getDocs, addDoc } from "firebase/firestore";
-// import { Lab } from "@/models/Labs";
+import { collection, doc, getDocs, addDoc, setDoc } from "firebase/firestore";
 import { Yard } from "@/models/Yard";
 import { v4 } from "uuid";
 
@@ -13,15 +12,15 @@ export async function GET(req: NextRequest) {
     const labsSnapshot = await getDocs(labsCollection);
     const labsList = labsSnapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
 
     return new NextResponse(JSON.stringify({ labs: labsList, success: true }), {
-      status: 200
+      status: 200,
     });
   } catch (error) {
     return new NextResponse(JSON.stringify({ error, success: false }), {
-      status: 500
+      status: 500,
     });
   }
 }
@@ -39,33 +38,26 @@ export async function POST(req: NextRequest) {
     const SamplesData = samples.map((sample) => ({
       sampleId: generateId(),
       sampleName: sample,
-      status: "pending"
+      status: "registered",
     }));
 
     const yardId = v4();
 
-    const docRef = await addDoc(collection(db, "yards"), {
+    const yardData = {
       yardName,
       samples: SamplesData,
       labId,
       userId,
-      yardId
-    });
-
-    const createdYard = {
-      id: docRef.id,
-      yardName,
-      samples: SamplesData,
-      labId,
-      userId,
-      yardId
+      yardId,
     };
+
+    await setDoc(doc(db, "yards", yardId), yardData);
 
     return new NextResponse(
       JSON.stringify({
-        message: "Sample Registered Successfully",
-        createdYard,
-        success: true
+        message: "Yard created successfully",
+        createdYard: yardData,
+        success: true,
       }),
       { status: 201 }
     );
@@ -75,7 +67,7 @@ export async function POST(req: NextRequest) {
     return new NextResponse(
       JSON.stringify({ message: "Internal Error", success: false }),
       {
-        status: 500
+        status: 500,
       }
     );
   }

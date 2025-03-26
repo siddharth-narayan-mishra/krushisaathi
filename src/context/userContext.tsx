@@ -12,9 +12,6 @@ interface UserContextType {
   getUserData: () => void;
   user: UserModel | ReactElement | LabModel | null;
   isLoggedIn: () => Promise<boolean>;
-  getYards: (id:string) => any;
-  getYard: (id:string) => any;
-  yards: Yard[];
 
 }
 

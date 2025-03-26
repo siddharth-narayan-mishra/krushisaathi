@@ -1,87 +1,77 @@
 import React, { useEffect, useState, useContext } from "react";
-import {
-  Search,
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  Pencil,
-  BeakerIcon
-} from "lucide-react";
-import { YardModel } from "@/models/Yard";
-import { getLabId, UseUser } from "@/utils/getData";
+import { Search, ChevronDown, ChevronUp, Eye, BeakerIcon } from "lucide-react";
+import { Yard } from "@/models/Yard";
 import YardContext from "@/context/yardContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { StatusType, StatusUpdateModal } from "./StatusUpdateModal";
-// import { StatusUpdateModal, StatusType } from "@/components/StatusUpdateModal";
+import UserContext from "@/context/userContext";
+import { LabModel } from "@/models/Labs";
 
 interface SampleRow {
-  yardId: string;
-  yardName: string;
-  userId: string;
-  sampleId: string;
-  sampleName: string;
-  status: string;
+  yardId?: string;
+  yardName?: string;
+  userId?: string;
+  sampleId?: string;
+  sampleName?: string;
+  status?: string;
 }
 
 const FarmerListComponent = () => {
-  const [yardData, setYardData] = useState<YardModel | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [yardsData, setYardsData] = useState<Yard[] | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortField, setSortField] = useState<keyof SampleRow>("sampleId");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSample, setSelectedSample] = useState<SampleRow | null>(null);
 
-  const LabData = UseUser();
   const yardContext = useContext(YardContext);
-  const labId = getLabId(LabData);
-  console.log("mm", labId);
+  const userContext = useContext(UserContext);
+
+  if (!userContext) {
+    console.error("User context is not provided");
+    return <div>Error: User context is not provided.</div>;
+  }
+
+  const { user, getUserData } = userContext;
+
+  if (!yardContext) {
+    console.error("Yard context is not provided");
+    return <div>Error: Yard context is not provided.</div>;
+  }
+
+  const { getYards } = yardContext;
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!labId || !yardContext) {
-        setLoading(false);
-        return;
-      }
-
       try {
-        setLoading(true);
-        const data = await yardContext.getYard(labId);
-        setYardData(data);
-      } catch (err) {
-        console.error("Error fetching yard data:", err);
-        setError("Failed to fetch yard data");
+        setIsLoading(true);
+        if (!user) {
+          getUserData();
+        }
+
+        if ((user as LabModel).id) {
+          const yards = await getYards(
+            (user as LabModel).id,
+            (user as LabModel).role
+          );
+          setYardsData(yards);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [labId, yardContext]);
-
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "complete":
-      case "completed":
-        return "bg-soil-lightgreen text-soil-green";
-      case "pending":
-        return "bg-yellow-100 text-yellow-700";
-      case "in-process":
-      case "in process":
-        return "bg-blue-100 text-blue-700";
-      case "rejected":
-        return "bg-red-100 text-red-700";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
-  };
+  }, [user, getUserData, getYards]);
 
   const getStatusDotColor = (status: string) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case "complete":
       case "completed":
         return "bg-primary_green";
@@ -116,7 +106,7 @@ const FarmerListComponent = () => {
   };
 
   const mapStatusToModalStatus = (status: string): StatusType => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case "complete":
       case "completed":
         return "completed";
@@ -138,32 +128,36 @@ const FarmerListComponent = () => {
     console.log(
       `Status updated for sample ${selectedSample?.sampleId} to ${newStatus}`
     );
-    if (selectedSample && yardData) {
-      const updatedSamples = yardData.samples.map((sample) => {
-        if (sample.sampleId === selectedSample.sampleId) {
-          return { ...sample, status: newStatus };
-        }
-        return sample;
-      });
-
-      setYardData({ ...yardData, samples: updatedSamples });
+    if (selectedSample && yardsData) {
+      setYardsData(
+        yardsData.map((yard) => ({
+          ...yard,
+          samples: yard.samples.map((sample) =>
+            sample.sampleId === selectedSample.sampleId
+              ? { ...sample, status: newStatus }
+              : sample
+          ),
+        }))
+      );
     }
   };
 
-  const flattenedSamples =
-    yardData?.samples?.map((sample) => ({
-      yardId: yardData.yardId,
-      yardName: yardData.yardName,
-      userId: yardData.userId,
-      sampleId: sample.sampleId,
-      sampleName: sample.sampleName,
-      status: sample.status
-    })) || [];
+  const flattenedSamples: SampleRow[] =
+    yardsData?.flatMap((yard) =>
+      yard.samples.map((sample) => ({
+        yardId: yard.yardId,
+        yardName: yard.yardName,
+        userId: yard.userId,
+        sampleId: sample.sampleId,
+        sampleName: sample.sampleName,
+        status: sample.status,
+      }))
+    ) || [];
 
   const sortedAndFilteredSamples = flattenedSamples
     .filter((sample) =>
       Object.values(sample).some((value) =>
-        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        value?.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
     )
     .sort((a, b) => {
@@ -174,7 +168,7 @@ const FarmerListComponent = () => {
         : bValue.localeCompare(aValue);
     });
 
-  if (loading)
+  if (isLoading)
     return (
       <Card className="w-full max-w-7xl mx-auto mt-8">
         <CardContent className="p-6">
@@ -186,18 +180,7 @@ const FarmerListComponent = () => {
       </Card>
     );
 
-  if (error)
-    return (
-      <Card className="w-full max-w-7xl mx-auto mt-8 border-red-200">
-        <CardContent className="p-6">
-          <div className="p-8 text-center text-red-500 font-medium">
-            {error}
-          </div>
-        </CardContent>
-      </Card>
-    );
-
-  if (!yardData)
+  if (!yardsData)
     return (
       <Card className="w-full max-w-7xl mx-auto mt-8">
         <CardContent className="p-6">
@@ -290,12 +273,12 @@ const FarmerListComponent = () => {
                         <div className="flex items-center space-x-2">
                           <div
                             className={`h-2.5 w-2.5 rounded-full animate-pulse ${getStatusDotColor(
-                              sample.status
+                              sample.status || ""
                             )}`}
                           />
                           <span className="text-xs font-medium text-gray-500 capitalize">
-                            {sample.status.charAt(0).toUpperCase() +
-                              sample.status.slice(1)}
+                            {(sample.status ?? "").charAt(0).toUpperCase() +
+                              sample.status?.slice(1)}
                           </span>
                         </div>
                       </div>
@@ -360,13 +343,13 @@ const FarmerListComponent = () => {
         <StatusUpdateModal
           open={isModalOpen}
           setOpen={setIsModalOpen}
-          status={mapStatusToModalStatus(selectedSample.status)}
+          status={mapStatusToModalStatus(selectedSample.status || "pending")}
           sampleData={{
-            sampleId: selectedSample.sampleId,
-            userId: selectedSample.userId,
-            position: selectedSample.yardName,
-            username: selectedSample.userId,
-            labId: labId ?? undefined
+            sampleId: selectedSample.sampleId || "",
+            userId: selectedSample.userId || "",
+            position: selectedSample.yardName || "",
+            username: selectedSample.userId || "",
+            labId: (user as LabModel).id ?? undefined,
           }}
           onStatusChange={handleStatusChange}
         />

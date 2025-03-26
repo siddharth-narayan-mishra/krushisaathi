@@ -9,9 +9,9 @@ interface YardStateProps {
   children: ReactNode;
 }
 
-const getYards = async () => {
+const getYards = async (id:string, role:string) => {
   try {
-    var url = "api/yards";
+    var url = `api/yards?${role}=${id}`;
     const response = await fetch(url);
     const data = await response.json();
     if (data.success) {

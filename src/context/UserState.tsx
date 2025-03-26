@@ -15,7 +15,6 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [yards, setYards] = useState<Yard[]>([]);
 
   const router = useRouter();
 
@@ -150,56 +149,6 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
     }
   };
 
-  const getYards = async (id: string) => {
-    try {
-      if (!(await isLoggedIn())) {
-        router.push("/login");
-        return;
-      }
-      console.log("id", id);
-      const response = await fetch("/api/user/yards/" + id, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-      const data = await response.json();
-      console.log("data", data);
-      if (data.success) {
-        console.log("Recent Results: ", data.yards);
-        setYards(data.yards);
-        return data.yards;
-      } else {
-        console.log("No recent results found");
-      }
-    } catch (error) {
-      toast.error("Error: " + error);
-    }
-  };
-
-  const getYard = async (id: string) => {
-    try {
-      if (!(await isLoggedIn())) {
-        router.push("/login");
-        return;
-      }
-      const response = await fetch("/api/user/yard/" + id, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-      const data = await response.json();
-      if (data.success) {
-        return data.yard;
-      } else {
-        console.log("No recent results found");
-      }
-    } catch (error) {
-      toast.error("Error: " + error);
-    }
-  };
-
   return (
     <UserContext.Provider
       value={{
@@ -211,9 +160,6 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
         getUserData,
         user,
         isLoggedIn,
-        getYards,
-        getYard,
-        yards
       }}
     >
       {children}

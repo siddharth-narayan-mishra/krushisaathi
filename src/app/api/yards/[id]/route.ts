@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     console.log(id);
     if (!id) {
       return new NextResponse(
-        JSON.stringify({ message: "LabID is required", success: false }),
+        JSON.stringify({ message: "yardId is required", success: false }),
         {
           status: 400
         }
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
     }
 
     const yardCollection = collection(db, "yards");
-    const yardQuery = query(yardCollection, where("labId", "==", id));
+    const yardQuery = query(yardCollection, where("yardId", "==", id));
     const querySnapshot = await getDocs(yardQuery);
     const yardDoc = querySnapshot.docs[0];
 
