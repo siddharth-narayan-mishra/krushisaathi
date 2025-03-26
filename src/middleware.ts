@@ -8,7 +8,7 @@ export async function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value || "";
 
   if (!token && path !== "/login" && path !== "/signup") {
-    return NextResponse.redirect(new URL("/login", req.nextUrl));
+    return NextResponse.redirect(new URL("/landing", req.nextUrl));
   }
 
   if (token) {
