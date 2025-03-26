@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Sidebar from "@/components/common/Sidebar";
-import SoilTestProgress from "@/components/soilTesting/SoilTestProgress";
+import SoilTestProgress from "@/components/soilTestingRegistration/SoilTestProgress";
 
 const Page = ({ params }: { params: { id: string } }) => {
   return (

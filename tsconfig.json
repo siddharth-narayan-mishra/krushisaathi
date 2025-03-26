@@ -34,7 +34,7 @@
     ".next/types/**/*.ts",
     "src/utils/getData.tsx",
     "src/components/common/UploadWidget.jsx"
-  ],
+, "src/components/landing/AboutUs"  ],
   "exclude": [
     "node_modules"
   ]

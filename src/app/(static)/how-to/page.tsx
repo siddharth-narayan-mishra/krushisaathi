@@ -11,9 +11,6 @@ import {
   step_2_sampling,
   step_3_sampling
 } from "@/config/ImagesUrl";
-// import step1 from "../../../public/assets/images/step-1-sampling.jpg";
-// import step2 from "../../../public/assets/images/step-2-sampling.jpg";
-// import step3 from "../../../public/assets/images/step-3-sampling.jpg";
 
 const VideoComponent = React.lazy(
   () => import("@/components/common/VideoComponent")

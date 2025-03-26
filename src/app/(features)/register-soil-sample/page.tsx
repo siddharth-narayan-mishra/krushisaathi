@@ -4,7 +4,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { ArrowLeft, MapPin, Navigation2, Phone } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import GoogleMap from "@/components/soilTesting/GoogleMap";
+import GoogleMap from "@/components/soilTestingRegistration/GoogleMap";
 import Sidebar from "@/components/common/Sidebar";
 import UserContext from "@/context/UserContext";
 import LabContext from "@/context/LabContext";

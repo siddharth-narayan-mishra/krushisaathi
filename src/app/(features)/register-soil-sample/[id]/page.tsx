@@ -6,10 +6,10 @@ import navigationContext from "@/context/NavigationContext";
 import Image from "next/image";
 import globe from "../../../../../public/assets/icons/globe.svg";
 import backArrow from "../../../../../public/assets/icons/back-arrow.svg";
-import RegistrationForm from "@/components/soilTesting/RegisterationForm";
+import RegistrationForm from "@/components/soilTestingRegistration/RegisterationForm";
 import labContext from "@/context/LabContext";
 import UserContext from "@/context/UserContext";
-import RegistrationSuccess from "@/components/soilTesting/RegistrationSuccess";
+import RegistrationSuccess from "@/components/soilTestingRegistration/RegistrationSuccess";
 
 const page = () => {
   const navContext = useContext(navigationContext);
