@@ -2,8 +2,8 @@
 import React, { useContext, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import eyeClosed from "../../public/assets/icons/eyeClosed.svg";
-import eyeOpen from "../../public/assets/icons/eyeOpen.svg";
+import eyeClosed from "../../../public/assets/icons/eyeClosed.svg"
+import eyeOpen from "../../../public/assets/icons/eyeOpen.svg";
 import Image from "next/image";
 import UserContext from "@/context/UserContext";
 

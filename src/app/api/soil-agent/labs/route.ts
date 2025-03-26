@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectToFirebase } from "@/utils/FirebaseConfig";
-import { collection, doc, getDocs, addDoc, setDoc } from "firebase/firestore";
+import { connectToFirebase } from "@/lib/firebase/FirebaseConfig";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { Yard } from "@/models/Yard";
 import { v4 } from "uuid";
 

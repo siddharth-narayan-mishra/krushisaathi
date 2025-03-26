@@ -1,15 +1,13 @@
 "use client";
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import LoginForm from "@/components/auth/LoginForm";
 import Image from "next/image";
 import Link from "next/link";
 import UserContext from "@/context/UserContext";
-import { useRouter } from "next/navigation";
 import { logo, mission } from "@/config/ImagesUrl";
 import { Globe, ChevronDown, Tractor, Sprout } from "lucide-react";
 
 const LoginPage = () => {
-  const router = useRouter();
   const userContext = useContext(UserContext);
 
   if (!userContext) {
@@ -27,16 +25,6 @@ const LoginPage = () => {
       </div>
     );
   }
-
-  // const { isLoggedIn } = userContext;
-
-  // useEffect(() => {
-  //   isLoggedIn().then((loggedIn) => {
-  //     if (loggedIn) {
-  //       router.push("/");
-  //     }
-  //   });
-  // }, [isLoggedIn, router]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

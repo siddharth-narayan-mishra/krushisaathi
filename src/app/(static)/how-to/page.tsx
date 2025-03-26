@@ -1,10 +1,10 @@
 "use client";
 import Sidebar from "@/components/common/Sidebar";
-import React, { Suspense, useContext } from "react";
+import React, { Suspense } from "react";
 import Image from "next/image";
-import backArrow from "../../../public/assets/icons/back-arrow.svg";
-import globe from "../../../public/assets/icons/globe.svg";
-import arrow from "../../../public/assets/icons/arrow.svg";
+import backArrow from "../../../../public/assets/icons/back-arrow.svg";
+import globe from "../../../../public/assets/icons/globe.svg";
+import arrow from "../../../../public/assets/icons/arrow.svg";
 import { useRouter } from "next/navigation";
 import {
   step_1_sampling,

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { connectToFirebase } from "@/utils/FirebaseConfig";
+import { connectToFirebase } from "@/lib/firebase/FirebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 
 const db = connectToFirebase();

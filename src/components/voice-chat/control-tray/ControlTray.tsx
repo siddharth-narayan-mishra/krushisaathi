@@ -1,11 +1,11 @@
-import { memo, ReactNode, RefObject, useEffect, useRef, useState } from "react";
+import { memo, ReactNode, RefObject, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import cn from "classnames";
 import { useLiveAPIContext } from "@/context/LiveAPIContext";
 import { UseMediaStreamResult } from "@/hooks/use-media-stream-mux";
 import { useScreenCapture } from "@/hooks/use-screen-capture";
 import { useWebcam } from "@/hooks/use-webcam";
-import { AudioRecorder } from "@/lib/audio-recorder";
+import { AudioRecorder } from "@/lib/multimodal-api/audio-recorder";
 import {
   CameraIcon,
   CameraOffIcon,

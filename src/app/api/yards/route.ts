@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectToFirebase } from "@/utils/FirebaseConfig";
+import { connectToFirebase } from "@/lib/firebase/FirebaseConfig";
 import {
   collection,
   getDocs,
