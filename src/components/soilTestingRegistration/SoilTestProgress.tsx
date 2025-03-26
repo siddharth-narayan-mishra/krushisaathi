@@ -402,14 +402,14 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                     ))}
                   </div>
 
-                  <button
-                    onClick={() => {
-                      router.push("/smart-recommendations");
-                    }}
-                    className="soil-recommendations-button"
+                  <a
+                    href="https://agriappai.streamlit.app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block soil-recommendations-button"
                   >
-                    View Recommendations
-                  </button>
+                    View Smart Recommendations
+                  </a>
                 </div>
               ))}
           </div>

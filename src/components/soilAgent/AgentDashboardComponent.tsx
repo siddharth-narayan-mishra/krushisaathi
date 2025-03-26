@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { CheckCircle, Users2, XCircle, Clock } from "lucide-react";
+import { CheckCircle, Users2, Paperclip, Clock } from "lucide-react";
 import { Yard } from "@/models/Yard";
 import YardContext from "@/context/YardContext";
 
@@ -58,17 +58,17 @@ const AgentDashboardComponent = () => {
     return total;
   };
 
-  const getPendingSamples = () => {
+  const getRegisteredSamples = () => {
     let total = 0;
     yardsData?.forEach((yard) => {
-      total += yard.samples.filter((s) => s.status === "pending").length;
+      total += yard.samples.filter((s) => s.status === "registered").length;
     });
     return total;
   };
   const getInProgressSamples = () => {
     let total = 0;
     yardsData?.forEach((yard) => {
-      total += yard.samples.filter((s) => s.status === "in-progress").length;
+      total += yard.samples.filter((s) => s.status === "in-process").length;
     });
     return total;
   };
@@ -94,15 +94,15 @@ const AgentDashboardComponent = () => {
       color: "bg-primary_green",
     },
     {
-      title: "Pending Samples",
-      value: getPendingSamples() || 0,
-      icon: Clock,
+      title: "Registered Samples",
+      value: getRegisteredSamples() || 0,
+      icon: Paperclip,
       color: "bg-primary_green",
     },
     {
       title: "In Progress",
       value: getInProgressSamples() || 0,
-      icon: XCircle,
+      icon: Clock,
       color: "bg-primary_green",
     },
     {

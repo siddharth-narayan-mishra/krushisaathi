@@ -10,7 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  X
+  X,
 } from "lucide-react";
 import navigationContext from "@/context/NavigationContext";
 import UserContext from "@/context/UserContext";
@@ -19,7 +19,7 @@ import { logo, logo_small } from "@/config/ImagesUrl";
 const navigationItems = [
   { id: "agentDashbaord", label: "Dashboard", icon: Home },
   { id: "farmersList", label: "Farmers", icon: List },
-  { id: "testResults", label: "Test", icon: FileText }
+  { id: "testResults", label: "Test", icon: FileText },
 ];
 
 const Sidebar = () => {
@@ -53,7 +53,7 @@ const Sidebar = () => {
 
   const NavItem = ({
     item,
-    isDesktop = true
+    isDesktop = true,
   }: {
     item: (typeof navigationItems)[0];
     isDesktop?: boolean;
@@ -66,19 +66,21 @@ const Sidebar = () => {
         onClick={() => handleNavigation(item.id)}
         className={`
           group flex items-center w-full gap-3 px-3 py-2 rounded-lg transition-colors
-          ${isActive
-            ? "bg-green-100 text-green-700"
-            : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
+          ${
+            isActive
+              ? "bg-green-100 text-green-700"
+              : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
           }
           ${!isDesktop && "justify-between"}
         `}
       >
         <div className="flex items-center gap-3">
           <Icon
-            className={`w-5 h-5 ${isActive
-              ? "text-green-700"
-              : "text-gray-500 group-hover:text-gray-700"
-              }`}
+            className={`w-5 h-5 ${
+              isActive
+                ? "text-green-700"
+                : "text-gray-500 group-hover:text-gray-700"
+            }`}
           />
           {(sidebarOpen || !isDesktop) && (
             <span className="text-sm font-medium">{item.label}</span>
@@ -94,10 +96,10 @@ const Sidebar = () => {
       {/* Desktop Sidebar */}
       <div
         className={`
-        sticky top-0 hidden lg:flex flex-col h-screen overflow-y-auto border-r border-gray-200 bg-white
-        ${sidebarOpen ? "w-64" : "w-20"}
-        transition-all duration-300
-      `}
+            sticky top-0 hidden lg:flex flex-col h-screen overflow-y-auto border-r border-gray-200 bg-white
+            ${sidebarOpen ? "w-64" : "w-20"}
+            transition-all duration-300
+          `}
       >
         <div className="p-4 flex items-center justify-between border-b border-gray-200">
           <Image

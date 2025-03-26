@@ -75,7 +75,8 @@ const updateYardStatus = async ({
   } catch (error) {
     console.log("Error updating yard status: ", error);
     toast.error(
-      `Error updating status: ${error instanceof Error ? error.message : String(error)
+      `Error updating status: ${
+        error instanceof Error ? error.message : String(error)
       }`
     );
     return null;
@@ -100,7 +101,6 @@ const sendYardReport = async (result: FormValues) => {
     console.log("Report sending response:", data);
 
     if (data.success) {
-      toast.success("Report sent successfully");
       return true;
     } else {
       toast.error(data.message || "Failed to send report");
@@ -109,7 +109,8 @@ const sendYardReport = async (result: FormValues) => {
   } catch (error) {
     console.log("Error sending yard report: ", error);
     toast.error(
-      `Error sending report: ${error instanceof Error ? error.message : String(error)
+      `Error sending report: ${
+        error instanceof Error ? error.message : String(error)
       }`
     );
     return false;

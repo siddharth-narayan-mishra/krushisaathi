@@ -30,7 +30,13 @@ const ViewReportPage = () => {
 
   const [sampleData, setSampleData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const { getYard } = useContext(YardContext);
+  const yardContext = useContext(YardContext);
+
+  if (!yardContext || !yardContext.getYard) {
+    throw new Error("YardContext is not properly initialized.");
+  }
+
+  const { getYard } = yardContext;
 
   useEffect(() => {
     const fetchSampleData = async () => {
@@ -67,7 +73,7 @@ const ViewReportPage = () => {
 
   // Nutrient Optimal Ranges
   const getNutrientStatus = (name: string, value: number): string => {
-    const optimalRanges = {
+    const optimalRanges: Record<string, { min: number; max: number; unit?: string }> = {
       // Macronutrients (kg/ha)
       "Nitrogen (N)": { min: 40, max: 60, unit: "kg/ha" },
       "Phosphorus (P)": { min: 20, max: 40, unit: "kg/ha" },
