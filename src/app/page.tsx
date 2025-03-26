@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useContext } from "react";
-import Sidebar from "../components/farmer/Sidebar";
+import React, { useContext } from "react";
+import Sidebar from "../components/farmerDashboard/Sidebar";
 import navigationContext from "@/context/navigationContext";
+import VoiceChat from "@/components/voice-chat/voiceChat";
 
 const page = () => {
   const navContext = useContext(navigationContext);
@@ -21,6 +22,7 @@ const page = () => {
         <Sidebar />
       </div>
       <div className="w-full">{currentComponent}</div>
+        <VoiceChat/>
     </main>
   );
 };

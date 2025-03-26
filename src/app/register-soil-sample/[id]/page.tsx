@@ -1,15 +1,15 @@
 "use client";
 import React, { useEffect, useContext, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import Sidebar from "@/components/farmer/Sidebar";
+import Sidebar from "@/components/farmerDashboard/Sidebar";
 import navigationContext from "@/context/navigationContext";
 import Image from "next/image";
 import globe from "../../../../public/assets/icons/globe.svg";
 import backArrow from "../../../../public/assets/icons/back-arrow.svg";
-import RegistrationForm from "@/components/farmer/soil-testing/RegisterationForm";
+import RegistrationForm from "@/components/soilTesting/RegisterationForm";
 import labContext from "@/context/labContext";
 import UserContext from "@/context/userContext";
-import RegistrationSuccess from "@/components/farmer/soil-testing/RegistrationSuccess";
+import RegistrationSuccess from "@/components/soilTesting/RegistrationSuccess";
 
 const page = () => {
   const navContext = useContext(navigationContext);

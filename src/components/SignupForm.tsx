@@ -3,7 +3,7 @@
 import React, { useContext, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import UploadWidget from "./farmer/UploadWidget";
+import UploadWidget from "./farmerDashboard/UploadWidget";
 import toast from "react-hot-toast";
 import UserContext from "@/context/userContext";
 import { Eye, EyeOff, MapPin, FileText } from "lucide-react";
@@ -27,7 +27,7 @@ const SignupForm = () => {
 
   const { signup, loading } = userContext;
 
-  const handleAutoDetect = (setFieldValue:any) => {
+  const handleAutoDetect = (setFieldValue: any) => {
     setIsGeolocating(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -205,7 +205,7 @@ const SignupForm = () => {
     return initialRole === "farmer" ? FarmerInitialValues : SoilAgentInitialValues;
   };
 
-  const handleUploadSuccess = (resultInfo:any, fieldName:any, setFieldValue:any, successMessage:any) => {
+  const handleUploadSuccess = (resultInfo: any, fieldName: any, setFieldValue: any, successMessage: any) => {
     setFieldValue(fieldName, resultInfo.public_id);
     toast.success(successMessage);
   };

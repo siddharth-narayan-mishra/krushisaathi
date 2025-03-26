@@ -1,8 +1,8 @@
 import { type FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { useEffect, useRef, useState, memo } from "react";
 import vegaEmbed from "vega-embed";
-import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
-import { ToolCall } from "../../multimodal-live-types";
+import { useLiveAPIContext } from "@/context/LiveAPIContext";
+import { ToolCall } from "@/types/multimodal-live-types";
 
 const declaration: FunctionDeclaration = {
   name: "render_altair",
@@ -84,7 +84,7 @@ function AltairComponent() {
       vegaEmbed(embedRef.current, JSON.parse(jsonString));
     }
   }, [embedRef, jsonString]);
-  return <div className="vega-embed" ref={embedRef} />;
+  return <div ref={embedRef} />;
 }
 
 export const Altair = memo(AltairComponent);

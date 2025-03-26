@@ -1,22 +1,21 @@
 "use client"
 
 import { useRef, useState } from "react";
-import "./chat.scss";
-import { LiveAPIProvider } from "./contexts/LiveAPIContext";
-import SidePanel from "./components/side-panel/SidePanel";
-import { Altair } from "./components/altair/Altair";
-import ControlTray from "./components/control-tray/ControlTray";
+import { LiveAPIProvider } from "@/context/LiveAPIContext";
+import { Altair } from "./altair/Altair";
+import ControlTray from "./control-tray/ControlTray";
 import cn from "classnames";
 
 const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string;
-if (typeof API_KEY !== "string") {
+if (typeof API_KEY !== "string"
+) {
   throw new Error("set NEXT_PUBLIC_GEMINI_API_KEY in .env");
 }
 
 const host = "generativelanguage.googleapis.com";
 const uri = `wss://${host}/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent`;
 
-function App() {
+function VoiceChat() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
 
@@ -50,4 +49,4 @@ function App() {
   );
 }
 
-export default App;
+export default VoiceChat;
