@@ -28,15 +28,15 @@ const SignupPage = () => {
     );
   }
 
-  const { isLoggedIn } = userContext;
+  // const { isLoggedIn } = userContext;
 
-  useEffect(() => {
-    isLoggedIn().then((loggedIn) => {
-      if (loggedIn) {
-        router.push("/");
-      }
-    });
-  }, [isLoggedIn, router]);
+  // useEffect(() => {
+  //   isLoggedIn().then((loggedIn) => {
+  //     if (loggedIn) {
+  //       router.push("/");
+  //     }
+  //   });
+  // }, [isLoggedIn, router]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,7 @@ import {
   CheckCircle2,
   SendIcon,
   Loader2,
-  Leaf
+  Leaf,
 } from "lucide-react";
 import { toast } from "sonner";
 import YardContext from "@/context/yardContext";
@@ -27,9 +27,9 @@ export type StatusType = "pending" | "in-process" | "completed";
 
 export interface SampleData {
   sampleId: string;
-  userId: string;
   position: string;
-  username?: string;
+  userId?: string;
+  yardId?: string;
   labId?: string;
 }
 
@@ -47,7 +47,7 @@ export function StatusUpdateModal({
   setOpen,
   status: initialStatus,
   sampleData,
-  onStatusChange
+  onStatusChange,
 }: // apiEndpoint = "/api/samples/update-status"
 StatusUpdateModalProps) {
   const [status, setStatus] = useState<StatusType>(initialStatus);
@@ -55,7 +55,6 @@ StatusUpdateModalProps) {
   const [animateIn, setAnimateIn] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const yardContext = useContext(YardContext);
-  console.log(sampleData.labId);
   const router = useRouter();
   const navigationCtx = useContext(navigationContext);
   const setActive = navigationCtx?.setActive;
@@ -67,6 +66,7 @@ StatusUpdateModalProps) {
   }, [open]);
 
   const handleStatusChange = async (newStatus: StatusType) => {
+    console.log("HANDLLING UPDTE")
     if (status === newStatus) return;
     setLoading(true);
     setError(null);
@@ -78,12 +78,11 @@ StatusUpdateModalProps) {
         );
       }
       const response = await updateYardStatus({
-        labId: sampleData.labId || "",
         sampleId: sampleData.sampleId,
-        userId: sampleData.userId,
-        status: newStatus
+        yardId: sampleData.yardId ?? "",
+        status: newStatus,
       });
-      if (response.status === 200) {
+      if (response) {
         setStatus(newStatus);
         onStatusChange?.(newStatus);
         toast.success(
@@ -94,13 +93,12 @@ StatusUpdateModalProps) {
           }`,
           { description: `Sample ID: ${sampleData.sampleId}` }
         );
-        router.refresh();
       }
     } catch (err) {
       console.error("Error updating sample status:", err);
       setError("Failed to update sample status. Please try again.");
       toast.error("Status update failed", {
-        description: "There was an error updating the sample status."
+        description: "There was an error updating the sample status.",
       });
     } finally {
       setLoading(false);
@@ -109,7 +107,7 @@ StatusUpdateModalProps) {
 
   const handleSendReport = () => {
     toast.success("Report sent successfully", {
-      description: `Sent to ${sampleData.username}`
+      description: `Sent to ${sampleData.userId}`,
     });
     if (sampleData.userId) {
       if (setActive) {
@@ -131,7 +129,7 @@ StatusUpdateModalProps) {
       color: (current: StatusType) =>
         current === "pending"
           ? "text-soil-pending bg-soil-pending/10"
-          : "text-soil-completed bg-soil-completed/10"
+          : "text-soil-completed bg-soil-completed/10",
     },
     "in-process": {
       icon: (current: StatusType) =>
@@ -147,15 +145,15 @@ StatusUpdateModalProps) {
           ? "text-soil-inprocess bg-soil-inprocess/10"
           : current === "completed"
           ? "text-soil-completed bg-soil-completed/10"
-          : "text-gray-300 bg-gray-50"
+          : "text-gray-300 bg-gray-50",
     },
     completed: {
       icon: () => <CheckCircle2 className="size-4 sm:size-5" />,
       color: (current: StatusType) =>
         current === "completed"
           ? "text-soil-completed bg-soil-completed/10"
-          : "text-gray-300 bg-gray-50"
-    }
+          : "text-gray-300 bg-gray-50",
+    },
   };
 
   return (
@@ -195,7 +193,7 @@ StatusUpdateModalProps) {
                     User
                   </p>
                   <p className="text-sm sm:text-base font-medium text-gray-800">
-                    {sampleData.username}
+                    {sampleData.userId}
                   </p>
                 </div>
                 <div className="min-w-[45%] flex-1">
@@ -249,7 +247,7 @@ StatusUpdateModalProps) {
                       ? "100%"
                       : status === "in-process"
                       ? "50%"
-                      : "0%"
+                      : "0%",
                 }}
               />
             </div>

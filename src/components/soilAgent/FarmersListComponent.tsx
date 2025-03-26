@@ -17,6 +17,7 @@ interface SampleRow {
   sampleId?: string;
   sampleName?: string;
   status?: string;
+  labId?: string;
 }
 
 const FarmerListComponent = () => {
@@ -348,8 +349,8 @@ const FarmerListComponent = () => {
             sampleId: selectedSample.sampleId || "",
             userId: selectedSample.userId || "",
             position: selectedSample.yardName || "",
-            username: selectedSample.userId || "",
-            labId: (user as LabModel).id ?? undefined,
+            yardId: selectedSample.yardId || "",
+            labId: selectedSample.labId || "",
           }}
           onStatusChange={handleStatusChange}
         />

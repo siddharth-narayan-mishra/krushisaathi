@@ -37,10 +37,11 @@ const HomeComponent = () => {
         setIsLoading(true);
         if (!user) {
           getUserData();
-        }
-
-        if ((user as UserModel).id) {
-          const res = await getYards((user as UserModel).id, (user as UserModel).role);
+        } else {
+          const res = await getYards(
+            (user as UserModel).id,
+            (user as UserModel).role
+          );
           const inProgress: Yard[] = res.filter((yard: { samples: any[] }) =>
             yard.samples.some((sample) => sample.status !== "completed")
           );

@@ -9,7 +9,7 @@ interface YardStateProps {
   children: ReactNode;
 }
 
-const getYards = async (id:string, role:string) => {
+const getYards = async (id: string, role: string) => {
   try {
     var url = `api/yards?${role}=${id}`;
     const response = await fetch(url);
@@ -40,13 +40,11 @@ const getYard = async (id: string) => {
 };
 
 const updateYardStatus = async ({
-  labId,
-  userId,
+  yardId,
   status,
-  sampleId
+  sampleId,
 }: {
-  labId: string;
-  userId: string;
+  yardId: string;
   status: "pending" | "in-process" | "completed";
   sampleId: string;
 }) => {
@@ -56,14 +54,13 @@ const updateYardStatus = async ({
     const response = await fetch(url, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         sampleId,
-        labId,
-        userId,
-        status
-      })
+        yardId,
+        status,
+      }),
     });
 
     const data = await response.json();
@@ -94,11 +91,11 @@ const sendYardReport = async (result: FormValues) => {
     const response = await fetch(url, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        result
-      })
+        result,
+      }),
     });
 
     const data = await response.json();
@@ -121,25 +118,6 @@ const sendYardReport = async (result: FormValues) => {
     return false;
   }
 };
-
-// const registerSample = async (values: any) => {
-//   try {
-//     var url = `/api/soil-agent/labs`;
-//     const response = await fetch(url, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json"
-//       },
-//       body: JSON.stringify(values)
-//     });
-//     const data = await response.json();
-//     if (data.success) {
-//       return data;
-//     }
-//   } catch (error) {
-//     toast.error("Error: " + error);
-//   }
-// };
 
 const YardState: React.FC<YardStateProps> = ({ children }) => {
   return (

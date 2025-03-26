@@ -5,18 +5,15 @@ interface YardContextType {
   getYards: (id:string, type:string) => Promise<any>;
   getYard: (id: string) => Promise<any>;
   updateYardStatus: ({
-    labId,
-    userId,
+    yardId,
     status,
     sampleId
   }: {
-    labId: string;
-    userId: string;
+    yardId: string;
     sampleId: string;
     status: "pending" | "in-process" | "completed";
   }) => Promise<any>;
   sendYardReport: (result: FormValues) => Promise<boolean>;
-  //   registerSample: (values: any) => Promise<any>;
 }
 
 const YardContext = createContext<YardContextType | undefined>(undefined);

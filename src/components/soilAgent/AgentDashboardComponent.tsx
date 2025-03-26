@@ -34,9 +34,7 @@ const AgentDashboardComponent = () => {
         setIsLoading(true);
         if (!user) {
           getUserData();
-        }
-
-        if ((user as LabModel).id) {
+        } else {
           const yards = await getYards(
             (user as LabModel).id,
             (user as LabModel).role

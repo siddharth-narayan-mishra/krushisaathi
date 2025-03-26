@@ -11,7 +11,7 @@ interface RegisterationStateProps {
 }
 
 const RegisterationState: React.FC<RegisterationStateProps> = ({
-  children
+  children,
 }) => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -27,13 +27,11 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/auth/logout", {
         method: "GET",
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
       const data = await response.json();
-      console.log("logout data", data);
       if (data.success) {
-        console.log("logout success");
         toast.success(data.message);
       }
       router.push("/login");
@@ -46,10 +44,10 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
 
   const signup = async (values: any) => {
     try {
-      if (await isLoggedIn()) {
-        router.push("/");
-        return;
-      }
+      // if (await isLoggedIn()) {
+      //   router.push("/");
+      //   return;
+      // }
 
       const isLab = values.role;
       setLoading(true);
@@ -57,9 +55,9 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(values)
+        body: JSON.stringify(values),
       });
       const data = await response.json();
       console.log("signup data", data);
@@ -78,18 +76,18 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
 
   const login = async (values: any) => {
     try {
-      if (await isLoggedIn()) {
-        router.push("/");
-        return;
-      }
+      // if (await isLoggedIn()) {
+      //   router.push("/");
+      //   return;
+      // }
       console.log(values);
       setLoading(true);
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(values)
+        body: JSON.stringify(values),
       });
       const data = await response.json();
       if (data.success) {
@@ -111,8 +109,8 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/user/checkAuth", {
         method: "GET",
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
       const data = await response.json();
       return data.success;
@@ -132,8 +130,8 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       const response = await fetch("/api/user", {
         method: "GET",
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
       const data = await response.json();
       if (data.success) {

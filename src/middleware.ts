@@ -18,7 +18,6 @@ export async function middleware(req: NextRequest) {
       );
       const { payload } = await jwtVerify(token, secret);
       const { role } = payload as { role: string };
-      console.log("payload", payload);
 
       if (path === "/login" || path === "/signup") {
         if (role === "soil-agent") {
