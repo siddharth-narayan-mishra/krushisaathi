@@ -3,7 +3,7 @@
 import React, { useContext, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import UploadWidget from "./farmerDashboard/UploadWidget";
+import UploadWidget from "../common/UploadWidget";
 import toast from "react-hot-toast";
 import UserContext from "@/context/UserContext";
 import { Eye, EyeOff, MapPin, FileText } from "lucide-react";
