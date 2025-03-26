@@ -3,10 +3,10 @@
 import { ArrowRight, CalendarDays } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import UserContext from "@/context/userContext";
+import UserContext from "@/context/UserContext";
 import { UserModel } from "@/models/User";
 import { Yard } from "@/models/Yard";
-import YardContext from "@/context/yardContext";
+import YardContext from "@/context/YardContext";
 // import YardContext from "@/context/yardContext";
 
 const HomeComponent = () => {

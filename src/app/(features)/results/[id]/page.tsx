@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useContext } from "react";
-import Sidebar from "@/components/farmerDashboard/Sidebar";
+import Sidebar from "@/components/common/Sidebar";
 
 const page = () => {
   return (

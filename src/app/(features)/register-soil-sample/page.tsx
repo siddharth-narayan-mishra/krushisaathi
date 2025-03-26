@@ -5,10 +5,10 @@ import { ArrowLeft, MapPin, Navigation2, Phone } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import GoogleMap from "../../components/soilTesting/GoogleMap";
-import Sidebar from "@/components/farmerDashboard/Sidebar";
-import UserContext from "@/context/userContext";
-import LabContext from "@/context/labContext";
-import navigationContext from "@/context/navigationContext";
+import Sidebar from "@/components/common/Sidebar";
+import UserContext from "@/context/UserContext";
+import LabContext from "@/context/LabContext";
+import navigationContext from "@/context/NavigationContext";
 
 const Page = () => {
   const [destination, setDestination] = useState<{

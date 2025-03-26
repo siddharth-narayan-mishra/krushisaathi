@@ -33,7 +33,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/utils/getData.tsx",
-    "src/components/farmerDashboard/UploadWidget.jsx"
+    "src/components/common/UploadWidget.jsx"
   ],
   "exclude": [
     "node_modules"

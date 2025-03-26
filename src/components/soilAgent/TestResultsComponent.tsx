@@ -7,7 +7,7 @@ import {
   IdCard,
   UploadCloud
 } from "lucide-react";
-import YardContext from "@/context/yardContext";
+import YardContext from "@/context/YardContext";
 import toast from "react-hot-toast";
 
 interface TestResultsProps {

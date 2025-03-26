@@ -5,7 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import UploadWidget from "./farmerDashboard/UploadWidget";
 import toast from "react-hot-toast";
-import UserContext from "@/context/userContext";
+import UserContext from "@/context/UserContext";
 import { Eye, EyeOff, MapPin, FileText } from "lucide-react";
 import { indianStates } from "@/config/statesData";
 import { motion } from "framer-motion";

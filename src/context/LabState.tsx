@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, ReactNode } from "react";
-import LabContext from "./labContext";
+import LabContext from "./LabContext";
 import toast from "react-hot-toast";
 
 interface LabStateProps {

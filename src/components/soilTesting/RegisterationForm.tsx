@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lab } from "@/models/Labs";
-import LabContext from "@/context/labContext";
+import LabContext from "@/context/LabContext";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Sprout, Trash2, Plus, MapPin, Phone } from "lucide-react";
@@ -178,8 +178,8 @@ const RegisterationForm: React.FC<RegisterationFormProps> = ({
               type="submit"
               disabled={loading}
               className={`w-full mt-8 py-4 rounded-xl text-white font-medium transition duration-200 ${loading
-                  ? "bg-green-400 cursor-not-allowed"
-                  : "bg-green-600 hover:bg-green-700"
+                ? "bg-green-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700"
                 }`}
             >
               {loading ? (

@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import { CheckCircle, Users2, XCircle, Clock } from "lucide-react";
 import { Yard } from "@/models/Yard";
-import YardContext from "@/context/yardContext";
+import YardContext from "@/context/YardContext";
 
 import { StatCard } from "@/utils/ststs-card";
-import UserContext from "@/context/userContext";
+import UserContext from "@/context/UserContext";
 import { LabModel } from "@/models/Labs";
 
 const AgentDashboardComponent = () => {

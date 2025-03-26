@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useContext } from "react";
 import Sidebar from "@/components/soilAgent/Sidebar";
-import navigationContext from "@/context/navigationContext";
+import navigationContext from "@/context/NavigationContext";
 
 const page = () => {
   const navContext = useContext(navigationContext);

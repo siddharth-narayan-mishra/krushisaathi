@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from "react";
 import SignupForm from "@/components/SignupForm";
 import Image from "next/image";
 import Link from "next/link";
-import UserContext from "@/context/userContext";
+import UserContext from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import { logo, mission } from "@/config/ImagesUrl";
 import { Globe, ChevronDown, Tractor, Sprout } from "lucide-react";

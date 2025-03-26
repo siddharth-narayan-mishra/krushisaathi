@@ -5,7 +5,7 @@ import {
 } from "../lib/multimodal-live-client";
 import { LiveConfig } from "../multimodal-live-types";
 import { AudioStreamer } from "../lib/audio-streamer";
-import { audioContext } from "../lib/utils";
+import { audioContext } from "../utils/utils";
 import VolMeterWorket from "../lib/worklets/vol-meter";
 
 export type UseLiveAPIResults = {

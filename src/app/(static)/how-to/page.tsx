@@ -1,5 +1,5 @@
 "use client";
-import Sidebar from "@/components/farmerDashboard/Sidebar";
+import Sidebar from "@/components/common/Sidebar";
 import React, { Suspense, useContext } from "react";
 import Image from "next/image";
 import backArrow from "../../../public/assets/icons/back-arrow.svg";
@@ -16,7 +16,7 @@ import {
 // import step3 from "../../../public/assets/images/step-3-sampling.jpg";
 
 const VideoComponent = React.lazy(
-  () => import("@/components/farmerDashboard/VideoComponent")
+  () => import("@/components/common/VideoComponent")
 );
 
 const page = () => {

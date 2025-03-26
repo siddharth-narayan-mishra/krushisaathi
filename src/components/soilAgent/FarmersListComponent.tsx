@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Search, ChevronDown, ChevronUp, Eye, BeakerIcon } from "lucide-react";
 import { Yard } from "@/models/Yard";
-import YardContext from "@/context/yardContext";
+import YardContext from "@/context/YardContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { StatusType, StatusUpdateModal } from "./StatusUpdateModal";
-import UserContext from "@/context/userContext";
+import UserContext from "@/context/UserContext";
 import { LabModel } from "@/models/Labs";
 
 interface SampleRow {
@@ -218,9 +218,8 @@ const FarmerListComponent = () => {
             <Button
               variant="outline"
               size="sm"
-              className={`flex items-center gap-1 ${
-                sortField === "sampleId" ? "bg-gray-100" : ""
-              }`}
+              className={`flex items-center gap-1 ${sortField === "sampleId" ? "bg-gray-100" : ""
+                }`}
               onClick={() => handleSort("sampleId")}
             >
               Sample ID
@@ -229,9 +228,8 @@ const FarmerListComponent = () => {
             <Button
               variant="outline"
               size="sm"
-              className={`flex items-center gap-1 ${
-                sortField === "yardName" ? "bg-gray-100" : ""
-              }`}
+              className={`flex items-center gap-1 ${sortField === "yardName" ? "bg-gray-100" : ""
+                }`}
               onClick={() => handleSort("yardName")}
             >
               Yard Name
@@ -240,9 +238,8 @@ const FarmerListComponent = () => {
             <Button
               variant="outline"
               size="sm"
-              className={`flex items-center gap-1 ${
-                sortField === "status" ? "bg-gray-100" : ""
-              }`}
+              className={`flex items-center gap-1 ${sortField === "status" ? "bg-gray-100" : ""
+                }`}
               onClick={() => handleSort("status")}
             >
               Status

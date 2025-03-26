@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, ReactNode } from "react";
-import UserContext from "./userContext";
+import UserContext from "./UserContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { User } from "@/models/User";

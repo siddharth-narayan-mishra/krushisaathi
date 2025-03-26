@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import eyeClosed from "../../public/assets/icons/eyeClosed.svg";
 import eyeOpen from "../../public/assets/icons/eyeOpen.svg";
 import Image from "next/image";
-import UserContext from "@/context/userContext";
+import UserContext from "@/context/UserContext";
 
 const LoginForm = () => {
   const validationSchema = Yup.object({

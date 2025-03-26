@@ -17,8 +17,8 @@ import {
   Menu,
   X
 } from "lucide-react";
-import navigationContext from "@/context/navigationContext";
-import UserContext from "@/context/userContext";
+import navigationContext from "@/context/NavigationContext";
+import UserContext from "@/context/UserContext";
 import { logo, logo_small } from "@/config/ImagesUrl";
 
 const navigationItems = [
@@ -76,21 +76,19 @@ const Sidebar = () => {
         onClick={() => handleNavigation(item.id)}
         className={`
           group flex items-center w-full gap-3 px-3 py-2 rounded-lg transition-colors
-          ${
-            isActive
-              ? "bg-green-100 text-green-700"
-              : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
+          ${isActive
+            ? "bg-green-100 text-green-700"
+            : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
           }
           ${!isDesktop && "justify-between"}
         `}
       >
         <div className="flex items-center gap-3">
           <Icon
-            className={`w-5 h-5 ${
-              isActive
-                ? "text-green-700"
-                : "text-gray-500 group-hover:text-gray-700"
-            }`}
+            className={`w-5 h-5 ${isActive
+              ? "text-green-700"
+              : "text-gray-500 group-hover:text-gray-700"
+              }`}
           />
           {(sidebarOpen || !isDesktop) && (
             <span className="text-sm font-medium">{item.label}</span>

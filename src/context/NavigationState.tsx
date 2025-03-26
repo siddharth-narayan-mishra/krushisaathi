@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, ReactNode } from "react";
-import NavigationContext from "./navigationContext";
+import NavigationContext from "./NavigationContext";
 import HomeComponent from "../components/farmerDashboard/HomeComponent";
 import AccountComponent from "../components/farmerDashboard/AccountComponent";
 import SettingsComponent from "../components/farmerDashboard/SettingsComponent";
