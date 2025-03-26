@@ -1,5 +1,5 @@
 export interface Yard {
-  updatedAt: any;
+  updatedAt: string;
   yardId: string;
   yardName: string;
   userId: string;
@@ -10,6 +10,12 @@ export interface Yard {
     status: string;
     suggestions: string;
     pdfUrl: string;
+    nutrients: {
+      macroNutrients: Record<string, string>;
+      secondaryNutrients: Record<string, string>;
+      microNutrients: Record<string, string>;
+      physicalParameters: Record<string, string>;
+    };
   }[];
 }
 
@@ -18,12 +24,19 @@ export class YardModel implements Yard {
   yardName: string;
   userId: string;
   labId: string;
+  updatedAt: string;
   samples: {
     sampleId: string;
     sampleName: string;
     status: string;
     suggestions: string;
     pdfUrl: string;
+    nutrients: {
+      macroNutrients: Record<string, string>;
+      secondaryNutrients: Record<string, string>;
+      microNutrients: Record<string, string>;
+      physicalParameters: Record<string, string>;
+    };
   }[];
 
   constructor(yard: Partial<Yard>) {
@@ -31,7 +44,36 @@ export class YardModel implements Yard {
     this.yardName = yard.yardName || "";
     this.userId = yard.userId || "";
     this.labId = yard.labId || "";
-    this.samples = yard.samples || [];
+    this.updatedAt = yard.updatedAt || new Date().toISOString();
+    
+    this.samples = yard.samples?.map(sample => ({
+      sampleId: sample.sampleId || "",
+      sampleName: sample.sampleName || "",
+      status: sample.status || "pending",
+      suggestions: sample.suggestions || "",
+      pdfUrl: sample.pdfUrl || "",
+      nutrients: {
+        macroNutrients: sample.nutrients?.macroNutrients || {
+          'Nitrogen (N)': '',
+          'Phosphorus (P)': '',
+          'Potassium (K)': ''
+        },
+        secondaryNutrients: sample.nutrients?.secondaryNutrients || {
+          'Sulfur (S)': ''
+        },
+        microNutrients: sample.nutrients?.microNutrients || {
+          'Zinc (Zn)': '',
+          'Iron (Fe)': '',
+          'Copper (Cu)': '',
+          'Manganese (Mn)': '',
+          'Boron (Bo)': ''
+        },
+        physicalParameters: sample.nutrients?.physicalParameters || {
+          'pH': '',
+          'Electrical Conductivity (EC)': '',
+          'Organic Content (OC)': ''
+        }
+      }
+    })) || [];
   }
-  updatedAt: any;
 }

@@ -1,6 +1,5 @@
 "use client";
-import React, { useState, ReactNode } from "react";
-import LabContext from "./LabContext";
+import React, { ReactNode } from "react";
 import toast from "react-hot-toast";
 import YardContext from "./YardContext";
 import { FormValues } from "@/components/soilAgent/TestResultsComponent";
@@ -11,7 +10,7 @@ interface YardStateProps {
 
 const getYards = async (id: string, role: string) => {
   try {
-    var url = `api/yards?${role}=${id}`;
+    var url = `http://localhost:3000/api/yards?${role}=${id}`;
     const response = await fetch(url);
     const data = await response.json();
     if (data.success) {
@@ -26,7 +25,7 @@ const getYards = async (id: string, role: string) => {
 
 const getYard = async (id: string) => {
   try {
-    var url = "/api/yards/" + id;
+    var url = "http://localhost:3000/api/yards/" + id;
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
@@ -49,7 +48,7 @@ const updateYardStatus = async ({
   sampleId: string;
 }) => {
   try {
-    const url = "/api/yards/status";
+    const url = "http://localhost:3000/api/yards/status";
 
     const response = await fetch(url, {
       method: "PUT",
@@ -85,7 +84,7 @@ const updateYardStatus = async ({
 
 const sendYardReport = async (result: FormValues) => {
   try {
-    const url = "/api/yards/sendReport";
+    const url = "http://localhost:3000/api/yards/sendReport";
 
     const response = await fetch(url, {
       method: "PUT",

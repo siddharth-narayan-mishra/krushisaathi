@@ -1,25 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToFirebase } from "@/lib/firebase/FirebaseConfig";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  updateDoc,
-  where
-} from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 const db = connectToFirebase();
 
 export async function PUT(req: NextRequest) {
   try {
-    // console.log("hii");
     const body = await req.json();
     console.log(body);
 
-    const { sampleId, userId, suggestions, labId, fileUrl } = body.result;
+    const { sampleId, yardId, suggestions, fileUrl, nutrients } = body.result;
 
+    // Validate required fields
     if (!sampleId) {
       return new NextResponse(
         JSON.stringify({ message: "Sample ID is required", success: false }),
@@ -27,49 +19,40 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    // if (!status) {
-    //   return new NextResponse(
-    //     JSON.stringify({ message: "Status is required", success: false }),
-    //     { status: 400 }
-    //   );
-    // }
+    if (!yardId) {
+      return new NextResponse(
+        JSON.stringify({ message: "Yard ID is required", success: false }),
+        { status: 400 }
+      );
+    }
 
-    // const validStatuses = ["pending", "in-process", "completed"];
-    // if (!validStatuses.includes(status)) {
-    //   return new NextResponse(
-    //     JSON.stringify({ message: "Invalid status value", success: false }),
-    //     { status: 400 }
-    //   );
-    // }
+    // Directly reference the yard document using yardId
+    const yardRef = doc(db, "yards", yardId);
+    const yardDoc = await getDoc(yardRef);
 
-    const yardCollection = collection(db, "yards");
-    const yardQuery = query(yardCollection, where("labId", "==", labId));
-    const querySnapshot = await getDocs(yardQuery);
-
-    if (querySnapshot.empty) {
+    if (!yardDoc.exists()) {
       return new NextResponse(
         JSON.stringify({ message: "Yard not found", success: false }),
         { status: 404 }
       );
     }
 
-    const yardDoc = querySnapshot.docs[0];
-    console.log(yardDoc);
-    const yardRef = doc(db, "yards", yardDoc.id);
     const yardData = yardDoc.data();
 
     if (!yardData.samples || !Array.isArray(yardData.samples)) {
       return new NextResponse(
         JSON.stringify({
           message: "No samples found in this yard",
-          success: false
+          success: false,
         }),
         { status: 404 }
       );
     }
+
+    // Update the specific sample
     const updatedSamples = yardData.samples.map((sample: any) =>
       sample.sampleId === sampleId
-        ? { ...sample, pdfUrl: fileUrl, suggestions }
+        ? { ...sample, pdfUrl: fileUrl, suggestions, nutrients }
         : sample
     );
 
@@ -84,17 +67,17 @@ export async function PUT(req: NextRequest) {
       );
     }
 
+    // Update the yard document
     await updateDoc(yardRef, {
       samples: updatedSamples,
       updatedAt: new Date().toISOString(),
-      updatedBy: userId || "system"
     });
 
     return new NextResponse(
       JSON.stringify({
         message: "Sample status updated successfully",
-        yard: { id: yardDoc.id, ...yardData, samples: updatedSamples },
-        success: true
+        yard: { id: yardId, ...yardData, samples: updatedSamples },
+        success: true,
       }),
       { status: 200 }
     );
@@ -104,7 +87,7 @@ export async function PUT(req: NextRequest) {
       JSON.stringify({
         error:
           error instanceof Error ? error.message : "An unknown error occurred",
-        success: false
+        success: false,
       }),
       { status: 500 }
     );

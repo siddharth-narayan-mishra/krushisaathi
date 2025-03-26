@@ -1,28 +1,57 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
 import {
   FileText,
   User,
   MessageSquare,
   IdCard,
-  UploadCloud
+  UploadCloud,
+  Droplet,
+  FlaskRound,
+  Ruler
 } from "lucide-react";
 import YardContext from "@/context/YardContext";
 import toast from "react-hot-toast";
 
+// Macro Nutrients
+const MACRO_NUTRIENTS = ['Nitrogen (N)', 'Phosphorus (P)', 'Potassium (K)'];
+
+// Secondary Nutrient
+const SECONDARY_NUTRIENTS = ['Sulfur (S)'];
+
+// Micro Nutrients
+const MICRO_NUTRIENTS = [
+  'Zinc (Zn)', 
+  'Iron (Fe)', 
+  'Copper (Cu)', 
+  'Manganese (Mn)', 
+  'Boron (Bo)'
+];
+
+// Physical Parameters
+const PHYSICAL_PARAMETERS = [
+  'pH', 
+  'Electrical Conductivity (EC)', 
+  'Organic Content (OC)'
+];
+
 interface TestResultsProps {
-  userId: string;
+  yardId: string;
   sampleId: string;
-  labId: string;
 }
 
 export interface FormValues {
-  userId: string;
+  yardId: string;
   sampleId: string;
   suggestions: string;
   file?: File | null;
   fileUrl?: string;
-  labId: string;
+  nutrients: {
+    macroNutrients: Record<string, string>;
+    secondaryNutrients: Record<string, string>;
+    microNutrients: Record<string, string>;
+    physicalParameters: Record<string, string>;
+  };
 }
 
 interface CloudinaryResponse {
@@ -30,19 +59,36 @@ interface CloudinaryResponse {
 }
 
 export default function TestResultsComponent({
-  userId,
-  sampleId,
-  labId
+  yardId,
+  sampleId
 }: TestResultsProps) {
   const yardContext = useContext(YardContext);
   const sendYardReport = yardContext?.sendYardReport;
+
   const formik = useFormik<FormValues>({
     initialValues: {
-      userId: userId,
+      yardId: yardId,
       sampleId: sampleId,
       suggestions: "",
-      labId: labId,
-      file: null
+      file: null,
+      nutrients: {
+        macroNutrients: MACRO_NUTRIENTS.reduce((acc, nutrient) => {
+          acc[nutrient] = '';
+          return acc;
+        }, {} as Record<string, string>),
+        secondaryNutrients: SECONDARY_NUTRIENTS.reduce((acc, nutrient) => {
+          acc[nutrient] = '';
+          return acc;
+        }, {} as Record<string, string>),
+        microNutrients: MICRO_NUTRIENTS.reduce((acc, nutrient) => {
+          acc[nutrient] = '';
+          return acc;
+        }, {} as Record<string, string>),
+        physicalParameters: PHYSICAL_PARAMETERS.reduce((acc, param) => {
+          acc[param] = '';
+          return acc;
+        }, {} as Record<string, string>)
+      }
     },
     onSubmit: async (values, { setSubmitting }) => {
       try {
@@ -53,18 +99,17 @@ export default function TestResultsComponent({
 
         const cloudinaryUrl = await uploadToCloudinary(values.file);
         const result = {
-          userId: values.userId,
+          yardId: values.yardId,
           sampleId: values.sampleId,
           suggestions: values.suggestions,
           fileUrl: cloudinaryUrl,
-          labId: values.labId
+          nutrients: values.nutrients
         };
-        // console.log(result);
+
         if (sendYardReport) {
           const response = await sendYardReport(result);
           if (response) {
-            toast.success("report sent successfully!");
-            window.location.reload();
+            toast.success("Report sent successfully!");
           }
         } else {
           console.error("sendYardReport is undefined");
@@ -126,31 +171,73 @@ export default function TestResultsComponent({
     }
   };
 
+  const renderNutrientInputs = (
+    title: string, 
+    nutrients: string[], 
+    category: 'macroNutrients' | 'secondaryNutrients' | 'microNutrients' | 'physicalParameters'
+  ) => {
+    const IconMap = {
+      macroNutrients: Droplet,
+      secondaryNutrients: FlaskRound,
+      microNutrients: Ruler,
+      physicalParameters: Ruler
+    };
+    const Icon = IconMap[category];
+
+    return (
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+          <Icon className="w-6 h-6 mr-2 text-primary_green" />
+          {title}
+        </h2>
+        <div className="grid md:grid-cols-2 gap-4">
+          {nutrients.map((nutrient) => (
+            <div key={nutrient} className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                {nutrient}
+              </label>
+              <input
+                type="text"
+                name={`nutrients.${category}.${nutrient}`}
+                value={formik.values.nutrients[category][nutrient]}
+                onChange={formik.handleChange}
+                className="block w-full px-3 py-2 rounded-lg border border-gray-300 
+                         shadow-sm focus:ring-2 focus:ring-primary_green/[0.75] 
+                         placeholder:text-gray-400 transition duration-150 ease-in-out"
+                placeholder={`Enter ${nutrient} value`}
+                required
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <main className="bg-gray-50 font-roboto min-h-screen">
       <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
         <div className="flex items-center space-x-2">
           <FileText className="w-8 h-8 text-gray-700" />
           <h1 className="text-3xl text-gray-900 font-bold tracking-tight">
-            Test Results
+            Comprehensive Soil Test Results
           </h1>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="p-6 sm:p-8">
             <form onSubmit={formik.handleSubmit} className="space-y-6">
+              {/* Existing Yard and Sample ID inputs */}
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-medium text-gray-700">
                   <User className="w-4 h-4 mr-2" />
-                  Farmer ID
+                  Yard ID
                 </label>
                 <input
-                  name="userId"
-                  value={formik.values.userId}
-                  disabled={userId ? true : false}
-                  className="block focus:outline-primary_green w-full px-4 py-3 rounded-lg border border-gray-300 
-                           shadow-sm focus:ring-2 focus:ring-primary_green/[0.75] 
-                           placeholder:text-gray-400 transition duration-150 ease-in-out"
+                  name="yardId"
+                  value={formik.values.yardId}
+                  disabled={!!yardId}
+                  className="block focus:outline-primary_green w-full px-4 py-3 rounded-lg border border-gray-300"
                 />
               </div>
 
@@ -162,16 +249,23 @@ export default function TestResultsComponent({
                 <input
                   name="sampleId"
                   value={formik.values.sampleId}
-                  disabled={sampleId ? true : false}
+                  disabled={!!sampleId}
                   onChange={formik.handleChange}
-                  className="block w-full px-4 py-3 rounded-lg border border-gray-300 
-                           shadow-sm focus:ring-2 focus:ring-primary_green/[0.75] 
-                           placeholder:text-gray-400 transition duration-150 ease-in-out"
+                  className="block w-full px-4 py-3 rounded-lg border border-gray-300"
                   placeholder="Enter sample ID"
                   required
                 />
               </div>
 
+              {/* Nutrient Sections */}
+              <div className="space-y-6">
+                {renderNutrientInputs('Macro Nutrients', MACRO_NUTRIENTS, 'macroNutrients')}
+                {renderNutrientInputs('Secondary Nutrients', SECONDARY_NUTRIENTS, 'secondaryNutrients')}
+                {renderNutrientInputs('Micro Nutrients', MICRO_NUTRIENTS, 'microNutrients')}
+                {renderNutrientInputs('Physical Parameters', PHYSICAL_PARAMETERS, 'physicalParameters')}
+              </div>
+
+              {/* File Upload */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
                   Test Result File (PDF)
@@ -213,6 +307,7 @@ export default function TestResultsComponent({
                 </div>
               </div>
 
+              {/* Suggestions */}
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-medium text-gray-700">
                   <MessageSquare className="w-4 h-4 mr-2" />
@@ -231,6 +326,7 @@ export default function TestResultsComponent({
                 />
               </div>
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={formik.isSubmitting}

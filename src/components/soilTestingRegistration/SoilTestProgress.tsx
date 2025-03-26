@@ -2,11 +2,7 @@
 import UserContext from "@/context/UserContext";
 import { UserModel } from "@/models/User";
 import { Yard, YardModel } from "@/models/Yard";
-import {
-  ChevronRight,
-  Check,
-  Leaf,
-} from "lucide-react";
+import { ChevronRight, Check, Leaf } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { SoilTestLoader } from "../common/SkeletonLoader";
@@ -186,20 +182,21 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                       getSampleProgress() >= 3
                         ? "100%"
                         : getSampleProgress() >= 2
-                          ? "66%"
-                          : getSampleProgress() >= 1
-                            ? "33%"
-                            : "0%",
+                        ? "66%"
+                        : getSampleProgress() >= 1
+                        ? "33%"
+                        : "0%",
                   }}
                 ></div>
 
                 <div className="flex justify-between ">
                   <div className="w-1/4 flex flex-col items-center text-center">
                     <div
-                      className={`soil-step-circle ${getSampleProgress() >= 1
-                        ? "soil-step-circle-completed"
-                        : "soil-step-circle-pending"
-                        }`}
+                      className={`soil-step-circle ${
+                        getSampleProgress() >= 1
+                          ? "soil-step-circle-completed"
+                          : "soil-step-circle-pending"
+                      }`}
                     >
                       {getSampleProgress() >= 1 ? (
                         <Check size={18} />
@@ -208,10 +205,11 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                       )}
                     </div>
                     <div
-                      className={`soil-step-label ${getSampleProgress() >= 1
-                        ? "text-gray-900"
-                        : "text-gray-400"
-                        }`}
+                      className={`soil-step-label ${
+                        getSampleProgress() >= 1
+                          ? "text-gray-900"
+                          : "text-gray-400"
+                      }`}
                     >
                       Sample Received
                     </div>
@@ -222,12 +220,13 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
 
                   <div className="w-1/4 flex flex-col items-center text-center">
                     <div
-                      className={`soil-step-circle ${getSampleProgress() >= 2
-                        ? "soil-step-circle-completed"
-                        : getSampleProgress() === 1
+                      className={`soil-step-circle ${
+                        getSampleProgress() >= 2
+                          ? "soil-step-circle-completed"
+                          : getSampleProgress() === 1
                           ? "soil-step-circle-active"
                           : "soil-step-circle-pending"
-                        }`}
+                      }`}
                     >
                       {getSampleProgress() >= 2 ? (
                         <Check size={18} />
@@ -236,12 +235,13 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                       )}
                     </div>
                     <div
-                      className={`soil-step-label ${getSampleProgress() >= 2
-                        ? "text-gray-900"
-                        : getSampleProgress() === 1
+                      className={`soil-step-label ${
+                        getSampleProgress() >= 2
+                          ? "text-gray-900"
+                          : getSampleProgress() === 1
                           ? "text-gray-700"
                           : "text-gray-400"
-                        }`}
+                      }`}
                     >
                       Analysis
                     </div>
@@ -249,19 +249,20 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                       {getSampleProgress() >= 2
                         ? "Completed"
                         : getSampleProgress() === 1
-                          ? "In Progress"
-                          : "Pending"}
+                        ? "In Progress"
+                        : "Pending"}
                     </div>
                   </div>
 
                   <div className="w-1/4 flex flex-col items-center text-center">
                     <div
-                      className={`soil-step-circle ${getSampleProgress() >= 3
-                        ? "soil-step-circle-completed"
-                        : getSampleProgress() === 2
+                      className={`soil-step-circle ${
+                        getSampleProgress() >= 3
+                          ? "soil-step-circle-completed"
+                          : getSampleProgress() === 2
                           ? "soil-step-circle-active"
                           : "soil-step-circle-pending"
-                        }`}
+                      }`}
                     >
                       {getSampleProgress() >= 3 ? (
                         <Check size={18} />
@@ -270,12 +271,13 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                       )}
                     </div>
                     <div
-                      className={`soil-step-label ${getSampleProgress() >= 3
-                        ? "text-gray-900"
-                        : getSampleProgress() === 2
+                      className={`soil-step-label ${
+                        getSampleProgress() >= 3
+                          ? "text-gray-900"
+                          : getSampleProgress() === 2
                           ? "text-gray-700"
                           : "text-gray-400"
-                        }`}
+                      }`}
                     >
                       Processing
                     </div>
@@ -283,19 +285,20 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                       {getSampleProgress() >= 3
                         ? "Completed"
                         : getSampleProgress() === 2
-                          ? "In Progress"
-                          : "Pending"}
+                        ? "In Progress"
+                        : "Pending"}
                     </div>
                   </div>
 
                   <div className="w-1/4 flex flex-col items-center text-center">
                     <div
-                      className={`soil-step-circle ${getSampleProgress() >= 4
-                        ? "soil-step-circle-completed"
-                        : getSampleProgress() === 3
+                      className={`soil-step-circle ${
+                        getSampleProgress() >= 4
+                          ? "soil-step-circle-completed"
+                          : getSampleProgress() === 3
                           ? "soil-step-circle-active"
                           : "soil-step-circle-pending"
-                        }`}
+                      }`}
                     >
                       {getSampleProgress() >= 4 ? (
                         <Check size={18} />
@@ -304,12 +307,13 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                       )}
                     </div>
                     <div
-                      className={`soil-step-label ${getSampleProgress() >= 4
-                        ? "text-gray-900"
-                        : getSampleProgress() === 3
+                      className={`soil-step-label ${
+                        getSampleProgress() >= 4
+                          ? "text-gray-900"
+                          : getSampleProgress() === 3
                           ? "text-gray-700"
                           : "text-gray-400"
-                        }`}
+                      }`}
                     >
                       Result Ready
                     </div>
@@ -317,8 +321,8 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                       {getSampleProgress() >= 4
                         ? "Completed"
                         : getSampleProgress() === 3
-                          ? "Processing"
-                          : "Pending"}
+                        ? "Processing"
+                        : "Pending"}
                     </div>
                   </div>
                 </div>
@@ -375,7 +379,10 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                   <div className="space-y-3 mb-5">
                     {yard.samples.map((sample, index) => (
                       <button
-                        onClick={() => console.log("TODO: View report PDF")}
+                        onClick={() => {
+                          if (!sample.sampleId || !yard.yardId) return;
+                          router.push(`/view-report?sampleId=${sample.sampleId}&&yardId=${yard.yardId}`);
+                        }}
                         key={index}
                         className="soil-report-item"
                       >
@@ -388,21 +395,7 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
-                          <a
-                            href={sample.pdfUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="soil-view-report"
-                            onClick={() => {
-                              if (!sample.pdfUrl) {
-                                toast.error("report not send yet");
-                              }
-                              console.log("ww", sample.pdfUrl);
-                            }}
-                          >
-                            view report
-                          </a>
-
+                          <p className="soil-view-report">view report</p>
                           <ChevronRight size={16} className="soil-chevron" />
                         </div>
                       </button>

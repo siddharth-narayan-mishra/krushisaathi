@@ -49,7 +49,7 @@ export function StatusUpdateModal({
   sampleData,
   onStatusChange,
 }: // apiEndpoint = "/api/samples/update-status"
-  StatusUpdateModalProps) {
+StatusUpdateModalProps) {
   const [status, setStatus] = useState<StatusType>(initialStatus);
   const [loading, setLoading] = useState<boolean>(false);
   const [animateIn, setAnimateIn] = useState<boolean>(false);
@@ -66,7 +66,6 @@ export function StatusUpdateModal({
   }, [open]);
 
   const handleStatusChange = async (newStatus: StatusType) => {
-    console.log("HANDLLING UPDTE")
     if (status === newStatus) return;
     setLoading(true);
     setError(null);
@@ -86,9 +85,10 @@ export function StatusUpdateModal({
         setStatus(newStatus);
         onStatusChange?.(newStatus);
         toast.success(
-          `Sample ${newStatus === "completed"
-            ? "analysis completed"
-            : "is now in process"
+          `Sample ${
+            newStatus === "completed"
+              ? "analysis completed"
+              : "is now in process"
           }`,
           { description: `Sample ID: ${sampleData.sampleId}` }
         );
@@ -111,7 +111,7 @@ export function StatusUpdateModal({
     if (sampleData.userId) {
       if (setActive) {
         setActive(
-          `testResults?userId=${sampleData.userId}&&sampleId=${sampleData.sampleId}&&labId=${sampleData.labId}`
+          `testResults?yardId=${sampleData.yardId}&&sampleId=${sampleData.sampleId}`
         );
       }
     }
@@ -143,8 +143,8 @@ export function StatusUpdateModal({
         current === "in-process"
           ? "text-soil-inprocess bg-soil-inprocess/10"
           : current === "completed"
-            ? "text-soil-completed bg-soil-completed/10"
-            : "text-gray-300 bg-gray-50",
+          ? "text-soil-completed bg-soil-completed/10"
+          : "text-gray-300 bg-gray-50",
     },
     completed: {
       icon: () => <CheckCircle2 className="size-4 sm:size-5" />,
@@ -172,10 +172,11 @@ export function StatusUpdateModal({
 
           <div className="mt-3 md:mt-6 space-y-2">
             <div
-              className={`transition-all ${animateIn
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-4"
-                }`}
+              className={`transition-all ${
+                animateIn
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4"
+              }`}
             >
               <div className="flex flex-wrap gap-3 md:grid md:grid-cols-4 md:gap-6">
                 <div className="min-w-[45%] flex-1">
@@ -208,12 +209,13 @@ export function StatusUpdateModal({
                   </p>
                   <div className="flex items-center space-x-1.5 mt-0.5 sm:mt-1">
                     <div
-                      className={`size-2 sm:size-2.5 rounded-full ${status === "pending"
-                        ? "bg-soil-pending"
-                        : status === "in-process"
+                      className={`size-2 sm:size-2.5 rounded-full ${
+                        status === "pending"
+                          ? "bg-soil-pending"
+                          : status === "in-process"
                           ? "bg-soil-inprocess"
                           : "bg-soil-completed"
-                        }`}
+                      }`}
                     />
                     <p className="text-sm sm:text-base font-medium text-gray-800 capitalize">
                       {status.replace("-", " ")}
@@ -235,15 +237,16 @@ export function StatusUpdateModal({
           <div className="relative mx-auto max-w-3xl">
             <div className="absolute left-4 sm:left-5 top-8 h-[calc(100%-4rem)] w-px bg-gray-200">
               <div
-                className={`absolute w-px bg-soil-completed transition-all duration-700 ${animateIn ? "opacity-100" : "opacity-0"
-                  }`}
+                className={`absolute w-px bg-soil-completed transition-all duration-700 ${
+                  animateIn ? "opacity-100" : "opacity-0"
+                }`}
                 style={{
                   height:
                     status === "completed"
                       ? "100%"
                       : status === "in-process"
-                        ? "50%"
-                        : "0%",
+                      ? "50%"
+                      : "0%",
                 }}
               />
             </div>
@@ -253,10 +256,11 @@ export function StatusUpdateModal({
                 (step, index) => (
                   <div
                     key={step}
-                    className={`flex items-start gap-3 sm:gap-4 transition-all ${animateIn
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-6"
-                      }`}
+                    className={`flex items-start gap-3 sm:gap-4 transition-all ${
+                      animateIn
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 translate-y-6"
+                    }`}
                     style={{ transitionDelay: `${index * 100 + 100}ms` }}
                   >
                     <div
@@ -298,10 +302,11 @@ export function StatusUpdateModal({
                                 )
                               }
                               disabled={loading}
-                              className={`text-xs sm:text-sm ${step === "pending"
-                                ? "text-soil-inprocess border-soil-inprocess/30 hover:bg-soil-inprocess/10"
-                                : "text-soil-completed border-soil-completed/30 hover:bg-soil-completed/10"
-                                } transition-all`}
+                              className={`text-xs sm:text-sm ${
+                                step === "pending"
+                                  ? "text-soil-inprocess border-soil-inprocess/30 hover:bg-soil-inprocess/10"
+                                  : "text-soil-completed border-soil-completed/30 hover:bg-soil-completed/10"
+                              } transition-all`}
                             >
                               {loading ? (
                                 <Loader2 className="mr-1.5 sm:mr-2 size-3 sm:size-4 animate-spin" />

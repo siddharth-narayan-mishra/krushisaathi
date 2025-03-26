@@ -95,29 +95,6 @@ const HomeComponent = () => {
       hour12: true,
     });
 
-  // const getStatusBadge = () => {
-  //   switch (yard || "in-progress") {
-  //     case "complete":
-  //       return (
-  //         <div className="status-badge status-badge-complete animate-fade-in">
-  //           Complete
-  //         </div>
-  //       );
-  //     case "pending":
-  //       return (
-  //         <div className="status-badge status-badge-pending animate-fade-in">
-  //           Pending
-  //         </div>
-  //       );
-  //     default:
-  //       return (
-  //         <div className="status-badge status-badge-progress animate-fade-in">
-  //           In Progress
-  //         </div>
-  //       );
-  //   }
-  // };
-
   const SkeletonYardCard = () => (
     <div className="bg-white font-roboto rounded-2xl border border-green-100 shadow-md animate-pulse">
       <div className="p-6 flex flex-col h-full">

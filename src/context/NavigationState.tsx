@@ -9,7 +9,6 @@ import NewsComponent from "../components/farmerDashboard/NewsComponent";
 import SupportComponent from "../components/farmerDashboard/SupportComponent";
 import PrivacyComponent from "../components/farmerDashboard/PrivacyComponent";
 import HelpComponent from "../components/farmerDashboard/HelpComponent";
-import { useRouter } from "next/navigation";
 import FarmersListComponent from "@/components/soilAgent/FarmersListComponent";
 import AgentDashboardComponent from "@/components/soilAgent/AgentDashboardComponent";
 import TestResultsComponent from "@/components/soilAgent/TestResultsComponent";
@@ -19,7 +18,6 @@ interface NavigationStateProps {
 }
 
 const NavigationState: React.FC<NavigationStateProps> = ({ children }) => {
-  const router = useRouter();
   const [active, setActive] = useState<string>("");
   const [prevActive, setPrevActive] = useState<string>("home");
   const [currentComponent, setCurrentComponent] = useState<ReactNode>(
@@ -62,9 +60,8 @@ const NavigationState: React.FC<NavigationStateProps> = ({ children }) => {
         case "testResults":
           setCurrentComponent(
             <TestResultsComponent
-              userId={params.get("userId") || ""}
+              yardId={params.get("yardId") || ""}
               sampleId={params.get("sampleId") || ""}
-              labId={params.get("labId") || ""}
             />
           );
           break;
