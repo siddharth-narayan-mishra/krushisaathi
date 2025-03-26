@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, CalendarDays, Globe, Loader2 } from "lucide-react";
+import { ArrowRight, CalendarDays } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import UserContext from "@/context/userContext";
@@ -186,7 +186,6 @@ const HomeComponent = () => {
             </h1>
             <p className="text-gray-600 mt-1">Your Krushisaathi Dashboard</p>
           </div>
-          <Globe className="w-10 h-10 text-green-600" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
