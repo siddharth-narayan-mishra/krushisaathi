@@ -22,8 +22,6 @@ import {
   MonitorOff,
   Play,
   Pause,
-  Cast,
-  Power,
 } from "lucide-react";
 
 export type ControlTrayProps = {
