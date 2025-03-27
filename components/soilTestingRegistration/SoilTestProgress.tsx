@@ -2,7 +2,14 @@
 import UserContext from "@/context/UserContext";
 import { UserModel } from "@/models/User";
 import { Yard, YardModel } from "@/models/Yard";
-import { ChevronRight, Check, Leaf } from "lucide-react";
+import {
+  ChevronRight,
+  Check,
+  Clock,
+  Leaf,
+  Calendar,
+  MapPin
+} from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { SoilTestLoader } from "../common/SkeletonLoader";
@@ -27,36 +34,51 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
   const [yard, setYard] = useState<Yard | undefined>();
   const [activeSample, setActiveSample] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
+
+  useEffect(() => {
+    const initializeUser = async () => {
+      try {
+        if (!user && getUserData) {
+          getUserData();
+        }
+      } catch (error) {
+        console.error("Failed to load user data:", error);
+      } finally {
+        setInitialLoad(false);
+      }
+    };
+
+    initializeUser();
+  }, [getUserData, user]);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!user) return;
       try {
-        if (!user) {
-          getUserData();
-        }
+        console.log("mmc", user);
+        console.log("mb", (user as UserModel).id, (user as UserModel).role);
+        const yardData = await getYards(
+          (user as UserModel).id,
+          (user as UserModel).role
+        );
+        console.log("ll", yardData);
+        if (yardData && yardData.length > 0) {
+          setYards(yardData);
 
-        if (user) {
-          const yardData = await getYards(
-            (user as UserModel).id,
-            (user as UserModel).role
+          const givenYard = yardData.find(
+            (y: YardModel) => y.yardId === yardId
           );
 
-          if (yardData && yardData.length > 0) {
-            setYards(yardData);
-
-            const givenYard = yardData.find(
-              (y: YardModel) => y.yardId === yardId
-            );
-
-            if (givenYard) {
-              setYard(givenYard);
-            } else {
-              setYard(yardData[0]);
-              toast.success("Selected first available yard");
-            }
+          if (givenYard) {
+            setYard(givenYard);
           } else {
-            toast.error("No yards found");
+            setYard(yardData[0]);
+            toast.success("Selected first available yard");
           }
+        } else {
+          toast.error("No yards found");
         }
       } catch (error) {
         console.error("Error fetching yard data:", error);
@@ -67,18 +89,9 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
     };
 
     fetchData();
-  }, [user, yardId, getUserData, getYards]);
+  }, [user, yardId]);
 
-  // if (!userContext) {
-  //   console.error("User context is not provided");
-  //   return <div>Error: User context is not provided.</div>;
-  // }
-
-  // if (!yardContext) {
-  //   console.error("Yard context is not provided");
-  //   return <div>Error: Yard context is not provided.</div>;
-  // }
-
+  console.log("mm", yards);
   const getProgress = () => {
     const totalSamples = yard?.samples.length || 1;
     const completedSamples = yard?.samples.filter(
@@ -89,7 +102,7 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
 
   const getSampleProgress = () => {
     const status = yard?.samples[activeSample - 1].status;
-    if (status === "pending") return 1;
+    if (status === "registered") return 1;
     else if (status === "in-progress") return 2;
     else if (status === "completed") return 3;
     return 0;
@@ -188,7 +201,7 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                         ? "66%"
                         : getSampleProgress() >= 1
                         ? "33%"
-                        : "0%",
+                        : "0%"
                   }}
                 ></div>
 
@@ -217,7 +230,7 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                       Sample Received
                     </div>
                     <div className="soil-step-status">
-                      {getSampleProgress() >= 1 ? "Completed" : "Pending"}
+                      {getSampleProgress() >= 1 ? "Completed" : "registered"}
                     </div>
                   </div>
 
@@ -253,7 +266,7 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                         ? "Completed"
                         : getSampleProgress() === 1
                         ? "In Progress"
-                        : "Pending"}
+                        : "registered"}
                     </div>
                   </div>
 
@@ -289,7 +302,7 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                         ? "Completed"
                         : getSampleProgress() === 2
                         ? "In Progress"
-                        : "Pending"}
+                        : "registered"}
                     </div>
                   </div>
 
@@ -325,7 +338,7 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                         ? "Completed"
                         : getSampleProgress() === 3
                         ? "Processing"
-                        : "Pending"}
+                        : "registered"}
                     </div>
                   </div>
                 </div>
@@ -387,6 +400,9 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                           router.push(
                             `/view-report?sampleId=${sample.sampleId}&&yardId=${yard.yardId}`
                           );
+                          router.push(
+                            `/view-report?sampleId=${sample.sampleId}&&yardId=${yard.yardId}`
+                          );
                         }}
                         key={index}
                         className="soil-report-item"
@@ -400,7 +416,20 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
-                          <p className="soil-view-report">view report</p>
+                          <a
+                            href={sample.pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="soil-view-report"
+                            onClick={() => {
+                              if (!sample.pdfUrl) {
+                                toast.error("report not send yet");
+                              }
+                            }}
+                          >
+                            view report
+                          </a>
+
                           <ChevronRight size={16} className="soil-chevron" />
                         </div>
                       </button>
