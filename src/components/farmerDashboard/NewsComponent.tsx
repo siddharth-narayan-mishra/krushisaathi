@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ArrowLeft, Globe, Bookmark, Clock, ExternalLink, Loader2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Globe,
+  Bookmark,
+  Clock,
+  ExternalLink,
+  Loader2,
+} from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -12,7 +19,7 @@ interface NewsComponentProps {
 
 const NewsComponent: React.FC<NewsComponentProps> = ({
   setActive,
-  prevActive
+  prevActive,
 }) => {
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -34,17 +41,20 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 
         const response = await fetch(url);
         if (!response.ok) {
-          throw new Error('Failed to fetch news');
+          throw new Error("Failed to fetch news");
         }
         const data = await response.json();
-        setNews(data.articles.filter((article: any) =>
-          article.title !== "[Removed]" &&
-          article.description !== "[Removed]" &&
-          article.url !== "[Removed]"
-        ));
+        setNews(
+          data.articles.filter(
+            (article: any) =>
+              article.title !== "[Removed]" &&
+              article.description !== "[Removed]" &&
+              article.url !== "[Removed]"
+          )
+        );
       } catch (error) {
         console.error("Error:", error);
-        setError('Failed to load news. Please try again later.');
+        setError("Failed to load news. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -53,7 +63,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
     if (news.length === 0) {
       getNews();
     }
-  }, []);
+  }, [news.length]);
 
   const getTitle = (title: string) => {
     return title.length > 55 ? `${title.slice(0, 55)}...` : title;
@@ -64,10 +74,10 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
     });
   };
 
@@ -84,7 +94,9 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
               >
                 <ArrowLeft className="w-5 h-5 text-gray-600" />
               </button>
-              <h1 className="text-xl font-semibold text-gray-900">Agriculture News</h1>
+              <h1 className="text-xl font-semibold text-gray-900">
+                Agriculture News
+              </h1>
             </div>
             <Globe className="w-6 h-6 text-green-600" />
           </div>
@@ -117,7 +129,10 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
               >
                 <div className="relative aspect-video">
                   <Image
-                    src={article.urlToImage || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80"}
+                    src={
+                      article.urlToImage ||
+                      "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80"
+                    }
                     alt={article.title}
                     fill
                     className="object-cover"

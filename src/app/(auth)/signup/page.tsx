@@ -49,7 +49,7 @@ const SignupPage = () => {
           <div className="w-full max-w-md mx-auto">
             <div className="text-center mb-8">
               <h1 className="text-2xl font-bold text-gray-900 mb-2">Create an Account</h1>
-              <p className="text-gray-600">Join Krushi Saathi's farming community</p>
+              <p className="text-gray-600">Join Krushi Saathi&apos;s farming community</p>
             </div>
 
             <SignupForm />

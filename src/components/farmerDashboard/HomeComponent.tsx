@@ -213,6 +213,7 @@ const HomeComponent = () => {
                 <div
                   className="absolute inset-0 bg-cover bg-center"
                   style={{ backgroundImage: `url(${feature.image})` }}
+                  // style={{ backgroundImage: `url(${image})` }}
                 />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
                 <div className="absolute inset-0 p-6 flex flex-col justify-end">

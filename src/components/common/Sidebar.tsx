@@ -15,7 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  X
+  X,
 } from "lucide-react";
 import navigationContext from "@/context/NavigationContext";
 import UserContext from "@/context/UserContext";
@@ -29,31 +29,26 @@ const navigationItems = [
   { id: "news", label: "News Feed", icon: Newspaper },
   { id: "support", label: "Help and Support", icon: HelpCircle },
   { id: "privacy", label: "Privacy Policy", icon: Shield },
-  { id: "help", label: "FAQs", icon: FileQuestion }
+  { id: "help", label: "FAQs", icon: FileQuestion },
 ];
 
 const Sidebar = () => {
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
   const navContext = useContext(navigationContext);
-  if (!navContext) {
-    console.error("Navigation context is not provided");
-    return <div>Error: Navigation context is not provided.</div>;
-  }
 
+  //@ts-ignore
   const { active, setActive, setPrevActive, sidebarOpen, setSidebarOpen } =
     navContext;
 
   const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("UserContext must be used within a RegisterationProvider");
-  }
 
+  //@ts-ignore
   const { logout } = userContext;
 
   useEffect(() => {
     setActive("home");
-  }, []);
+  }, [setActive]);
 
   const handleNavigation = (itemId: string) => {
     if (setPrevActive) setPrevActive(active);
@@ -63,7 +58,7 @@ const Sidebar = () => {
 
   const NavItem = ({
     item,
-    isDesktop = true
+    isDesktop = true,
   }: {
     item: (typeof navigationItems)[0];
     isDesktop?: boolean;
@@ -76,19 +71,21 @@ const Sidebar = () => {
         onClick={() => handleNavigation(item.id)}
         className={`
           group flex items-center w-full gap-3 px-3 py-2 rounded-lg transition-colors
-          ${isActive
-            ? "bg-green-100 text-green-700"
-            : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
+          ${
+            isActive
+              ? "bg-green-100 text-green-700"
+              : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
           }
           ${!isDesktop && "justify-between"}
         `}
       >
         <div className="flex items-center gap-3">
           <Icon
-            className={`w-5 h-5 ${isActive
-              ? "text-green-700"
-              : "text-gray-500 group-hover:text-gray-700"
-              }`}
+            className={`w-5 h-5 ${
+              isActive
+                ? "text-green-700"
+                : "text-gray-500 group-hover:text-gray-700"
+            }`}
           />
           {(sidebarOpen || !isDesktop) && (
             <span className="text-sm font-medium">{item.label}</span>

@@ -22,19 +22,13 @@ interface SoilTestProgressProps {
 
 const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
   const userContext = useContext(UserContext);
-  if (!userContext) {
-    console.error("User context is not provided");
-    return <div>Error: User context is not provided.</div>;
-  }
-
   const yardContext = useContext(YardContext);
-  if (!yardContext) {
-    console.error("Yard context is not provided");
-    return <div>Error: Yard context is not provided.</div>;
-  }
 
   const router = useRouter();
+
+  //@ts-ignore
   const { user, getUserData } = userContext;
+  //@ts-ignore
   const { getYard, getYards } = yardContext;
   const [yards, setYards] = useState<YardModel[]>([]);
   const [yard, setYard] = useState<Yard | undefined>();
@@ -403,6 +397,9 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                       <button
                         onClick={() => {
                           if (!sample.sampleId || !yard.yardId) return;
+                          router.push(
+                            `/view-report?sampleId=${sample.sampleId}&&yardId=${yard.yardId}`
+                          );
                           router.push(
                             `/view-report?sampleId=${sample.sampleId}&&yardId=${yard.yardId}`
                           );

@@ -11,7 +11,7 @@ import labContext from "@/context/LabContext";
 import UserContext from "@/context/UserContext";
 import RegistrationSuccess from "@/components/soilTestingRegistration/RegistrationSuccess";
 
-const page = () => {
+const Page = () => {
   const navContext = useContext(navigationContext);
   const labcontext = useContext(labContext);
   const userContext = useContext(UserContext);
@@ -20,23 +20,12 @@ const page = () => {
   const { id } = params;
   const [lab, setLab] = useState<any>({});
   const [createdYard, setCreatedYard] = useState(null);
-  console.log(lab);
 
-  if (!navContext) {
-    console.error("Navigation context is not provided");
-    return <div>Error: Navigation context is not provided.</div>;
-  }
-  if (!labcontext) {
-    console.error("Lab context is not provided");
-    return <div>Error: Lab context is not provided.</div>;
-  }
-  if (!userContext) {
-    console.error("User context is not provided");
-    return <div>Error: User context is not provided.</div>;
-  }
-
+  //@ts-ignore
   const { setActive, prevActive } = navContext;
+  //@ts-ignore
   const { getLab } = labcontext;
+  //@ts-ignore
   const { user } = userContext;
 
   useEffect(() => {
@@ -44,17 +33,17 @@ const page = () => {
       router.push("/register-soil-sample");
       return;
     } else {
-      getLab(id).then((data) => {
+      getLab(id).then((data: any) => {
         setLab(data);
       });
     }
-  }, [router]);
+  }, [router, getLab, id]);
 
   useEffect(() => {
     if (!user) {
       router.push("/login");
     }
-  }, []);
+  }, [router, user]);
 
   return (
     <div className="block lg:flex">
@@ -85,4 +74,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

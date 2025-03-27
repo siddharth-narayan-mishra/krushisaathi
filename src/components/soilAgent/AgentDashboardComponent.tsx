@@ -82,7 +82,7 @@ const AgentDashboardComponent = () => {
       }
     };
     fetchData();
-  }, [user]);
+  }, [user, getUserData, getYards]);
 
   const generateMonthlyStats = (yards: Yard[]) => {
     const monthlyData: { [key: string]: number } = {};
