@@ -77,7 +77,7 @@ const NavigationState: React.FC<NavigationStateProps> = ({ children }) => {
     };
 
     handleActiveChange(active);
-  }, [active]);
+  }, [active, prevActive]);
 
   return (
     <NavigationContext.Provider
@@ -88,7 +88,7 @@ const NavigationState: React.FC<NavigationStateProps> = ({ children }) => {
         setPrevActive,
         currentComponent,
         sidebarOpen,
-        setSidebarOpen
+        setSidebarOpen,
       }}
     >
       {children}

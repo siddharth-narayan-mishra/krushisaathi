@@ -83,6 +83,8 @@ const MediaStreamButton = memo(
   )
 );
 
+MediaStreamButton.displayName = "MediaStreamButton"; // Fix for ESLint warning
+
 function ControlTray({
   videoRef,
   children,
@@ -161,7 +163,6 @@ function ControlTray({
                   index={0}
                 />
 
-
                 {supportsVideo && (
                   <>
                     <MediaStreamButton
@@ -224,5 +225,7 @@ function ControlTray({
     </motion.section>
   );
 }
+
+ControlTray.displayName = "ControlTray"; // Fix for ESLint warning
 
 export default memo(ControlTray);

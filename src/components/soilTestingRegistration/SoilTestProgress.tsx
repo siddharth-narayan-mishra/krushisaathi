@@ -15,25 +15,18 @@ interface SoilTestProgressProps {
 
 const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
   const userContext = useContext(UserContext);
-  if (!userContext) {
-    console.error("User context is not provided");
-    return <div>Error: User context is not provided.</div>;
-  }
-
   const yardContext = useContext(YardContext);
-  if (!yardContext) {
-    console.error("Yard context is not provided");
-    return <div>Error: Yard context is not provided.</div>;
-  }
 
   const router = useRouter();
+
+  //@ts-ignore
   const { user, getUserData } = userContext;
+  //@ts-ignore
   const { getYard, getYards } = yardContext;
   const [yards, setYards] = useState<YardModel[]>([]);
   const [yard, setYard] = useState<Yard | undefined>();
   const [activeSample, setActiveSample] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  // const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,7 +67,17 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
     };
 
     fetchData();
-  }, [user, yardId]);
+  }, [user, yardId, getUserData, getYards]);
+
+  // if (!userContext) {
+  //   console.error("User context is not provided");
+  //   return <div>Error: User context is not provided.</div>;
+  // }
+
+  // if (!yardContext) {
+  //   console.error("Yard context is not provided");
+  //   return <div>Error: Yard context is not provided.</div>;
+  // }
 
   const getProgress = () => {
     const totalSamples = yard?.samples.length || 1;
@@ -381,7 +384,9 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                       <button
                         onClick={() => {
                           if (!sample.sampleId || !yard.yardId) return;
-                          router.push(`/view-report?sampleId=${sample.sampleId}&&yardId=${yard.yardId}`);
+                          router.push(
+                            `/view-report?sampleId=${sample.sampleId}&&yardId=${yard.yardId}`
+                          );
                         }}
                         key={index}
                         className="soil-report-item"

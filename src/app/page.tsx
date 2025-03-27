@@ -4,7 +4,7 @@ import Sidebar from "../components/common/Sidebar";
 import navigationContext from "@/context/NavigationContext";
 import VoiceChat from "@/components/voice-chat/voiceChat";
 
-const page = () => {
+const Page = () => {
   const navContext = useContext(navigationContext);
 
   if (!navContext) {
@@ -27,4 +27,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

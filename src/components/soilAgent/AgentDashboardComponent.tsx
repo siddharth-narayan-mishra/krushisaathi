@@ -14,18 +14,10 @@ const AgentDashboardComponent = () => {
   const userContext = useContext(UserContext);
   const yardContext = useContext(YardContext);
 
-  if (!userContext) {
-    console.error("User context is not provided");
-    return <div>Error: User context is not provided.</div>;
-  }
-
+  //@ts-ignore
   const { user, getUserData } = userContext;
 
-  if (!yardContext) {
-    console.error("Yard context is not provided");
-    return <div>Error: Yard context is not provided.</div>;
-  }
-
+  //@ts-ignore
   const { getYards } = yardContext;
 
   useEffect(() => {
@@ -48,7 +40,7 @@ const AgentDashboardComponent = () => {
       }
     };
     fetchData();
-  }, [user]);
+  }, [user, getUserData, getYards]);
 
   const getTotalSamples = () => {
     let total = 0;

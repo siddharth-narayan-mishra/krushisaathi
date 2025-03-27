@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import Sidebar from "@/components/soilAgent/Sidebar";
 import navigationContext from "@/context/NavigationContext";
 
-const page = () => {
+const Page = () => {
   const navContext = useContext(navigationContext);
 
   if (!navContext) {
@@ -25,4 +25,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

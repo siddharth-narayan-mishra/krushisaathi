@@ -49,7 +49,7 @@ function App() {
         {
             icon: <Leaf className="w-6 h-6 text-green-600" />,
             title: "Understanding Results",
-            description: "You'll get a report that tells you what your soil needs. This helps you choose the right fertilizers."
+            description: "You will get a report that tells you what your soil needs. This helps you choose the right fertilizers."
         }
     ];
 
@@ -90,7 +90,7 @@ function App() {
                             Why is Soil Testing Important?
                         </h2>
                         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                            Just like we need regular health check-ups, your farm's soil needs testing too.
+                            Just like we need regular health check-ups, your farm&apos;s soil needs testing too.
                             Good soil means better crops and more money in your pocket.
                         </p>
                     </motion.div>
@@ -111,7 +111,7 @@ function App() {
                         <h3 className="text-2xl font-semibold">What is Soil Testing?</h3>
                     </div>
                     <p className="text-gray-700 text-xl leading-relaxed mb-6">
-                        Soil testing is like a health check-up for your farm's soil. It tells you what nutrients your soil has and what it needs.
+                        Soil testing is like a health check-up for your farm&apos;s soil. It tells you what nutrients your soil has and what it needs.
                         Just like we need different types of food to stay healthy, your soil needs different nutrients to grow good crops.
                     </p>
                     <p className="text-gray-700 text-xl leading-relaxed">

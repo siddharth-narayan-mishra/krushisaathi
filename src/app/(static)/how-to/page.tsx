@@ -16,7 +16,7 @@ const VideoComponent = React.lazy(
   () => import("@/components/common/VideoComponent")
 );
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
 
   return (
@@ -125,4 +125,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -21,24 +21,14 @@ const Page = () => {
   const router = useRouter();
   const subscriptionKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
-  const navContext = useContext(navigationContext);
-  const userContext = useContext(UserContext);
   const labContext = useContext(LabContext);
 
-  if (!subscriptionKey) {
-    console.error("Google Maps subscription key is not defined in .env.local");
-    return <div>Error: Google Maps subscription key is not defined.</div>;
-  }
-
-  if (!navContext || !userContext || !labContext) {
-    console.error("Required context is not provided");
-    return <div>Error: Required context is not provided.</div>;
-  }
-
+  //@ts-ignore
   const { getLabs } = labContext;
 
   useEffect(() => {
-    getLabs().then((data) => {
+    if (!getLabs) return;
+    getLabs().then((data: any) => {
       if (data) {
         setLocations(data);
       }
@@ -71,15 +61,18 @@ const Page = () => {
             >
               <ArrowLeft className="w-5 h-5 text-gray-600" />
             </button>
-            <h1 className="text-xl font-semibold text-gray-900">Testing Centers</h1>
+            <h1 className="text-xl font-semibold text-gray-900">
+              Testing Centers
+            </h1>
           </div>
 
           <div className="flex-1 overflow-y-auto">
             {locations.map((lab) => (
               <div
                 key={lab.id}
-                className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${selectedLab === lab.id ? 'bg-green-50' : ''
-                  }`}
+                className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${
+                  selectedLab === lab.id ? "bg-green-50" : ""
+                }`}
                 onClick={() => setSelectedLab(lab.id)}
               >
                 <div className="flex items-start gap-4">

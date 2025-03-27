@@ -23,7 +23,7 @@ const SupportComponent = () => {
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <Mail className="w-8 h-8 text-green-600 mb-4" />
                 <h2 className="text-lg font-medium text-gray-900 mb-2">Email Support</h2>
-                <p className="text-gray-600 mb-4">We'll respond within 24 hours</p>
+                <p className="text-gray-600 mb-4">We&apos;ll respond within 24 hours</p>
                 <a href="mailto:support@farmhelp.com" className="text-green-600 font-medium hover:text-green-700">
                   support@farmhelp.com
                 </a>

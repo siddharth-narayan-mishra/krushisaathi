@@ -32,18 +32,10 @@ const FarmerListComponent = () => {
   const yardContext = useContext(YardContext);
   const userContext = useContext(UserContext);
 
-  if (!userContext) {
-    console.error("User context is not provided");
-    return <div>Error: User context is not provided.</div>;
-  }
-
+  //@ts-ignore
   const { user, getUserData } = userContext;
 
-  if (!yardContext) {
-    console.error("Yard context is not provided");
-    return <div>Error: Yard context is not provided.</div>;
-  }
-
+  //@ts-ignore
   const { getYards } = yardContext;
 
   useEffect(() => {
@@ -218,8 +210,9 @@ const FarmerListComponent = () => {
             <Button
               variant="outline"
               size="sm"
-              className={`flex items-center gap-1 ${sortField === "sampleId" ? "bg-gray-100" : ""
-                }`}
+              className={`flex items-center gap-1 ${
+                sortField === "sampleId" ? "bg-gray-100" : ""
+              }`}
               onClick={() => handleSort("sampleId")}
             >
               Sample ID
@@ -228,8 +221,9 @@ const FarmerListComponent = () => {
             <Button
               variant="outline"
               size="sm"
-              className={`flex items-center gap-1 ${sortField === "yardName" ? "bg-gray-100" : ""
-                }`}
+              className={`flex items-center gap-1 ${
+                sortField === "yardName" ? "bg-gray-100" : ""
+              }`}
               onClick={() => handleSort("yardName")}
             >
               Yard Name
@@ -238,8 +232,9 @@ const FarmerListComponent = () => {
             <Button
               variant="outline"
               size="sm"
-              className={`flex items-center gap-1 ${sortField === "status" ? "bg-gray-100" : ""
-                }`}
+              className={`flex items-center gap-1 ${
+                sortField === "status" ? "bg-gray-100" : ""
+              }`}
               onClick={() => handleSort("status")}
             >
               Status

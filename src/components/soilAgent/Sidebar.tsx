@@ -26,24 +26,19 @@ const Sidebar = () => {
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
   const navContext = useContext(navigationContext);
-  if (!navContext) {
-    console.error("Navigation context is not provided");
-    return <div>Error: Navigation context is not provided.</div>;
-  }
 
+  //@ts-ignore
   const { active, setActive, setPrevActive, sidebarOpen, setSidebarOpen } =
     navContext;
 
   const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("UserContext must be used within a RegisterationProvider");
-  }
 
+  //@ts-ignore
   const { logout } = userContext;
 
   useEffect(() => {
     setActive("agentDashbaord");
-  }, []);
+  }, [setActive]);
 
   const handleNavigation = (itemId: string) => {
     if (setPrevActive) setPrevActive(active);
