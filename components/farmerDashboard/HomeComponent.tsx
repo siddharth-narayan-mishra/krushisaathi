@@ -159,7 +159,7 @@ const HomeComponent = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {mainFeatures.map(({ title, description, link }, index) => (
+          {mainFeatures.map(({ title, description, link, image }, index) => (
             <button
               key={index}
               onClick={() => router.push(link)}
@@ -168,7 +168,7 @@ const HomeComponent = () => {
               <div className="aspect-[4/3] relative">
                 <div
                   className="absolute inset-0 bg-cover bg-center"
-                  // style={{ backgroundImage: `url(${image})` }}
+                  style={{ backgroundImage: `url(${image})` }}
                 />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
                 <div className="absolute inset-0 p-6 flex flex-col justify-end">

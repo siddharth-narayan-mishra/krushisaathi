@@ -20,8 +20,8 @@ import {
   ToolCallCancellation,
   ToolResponseMessage,
   type LiveConfig,
-} from "@/types/multimodal-live-types"
-import { blobToJSON, base64ToArrayBuffer } from "@/utils/utils";
+} from "@/types/multimodal-live-types";
+import { base64ToArrayBuffer, blobToJSON } from "@/utils/utils";
 
 /**
  * the events that this client will emit
@@ -123,13 +123,13 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
             if (preludeIndex > 0) {
               reason = reason.slice(
                 preludeIndex + prelude.length + 1,
-                Infinity,
+                Infinity
               );
             }
           }
           this.log(
             `server.${ev.type}`,
-            `disconnected ${reason ? `with reason: ${reason}` : ``}`,
+            `disconnected ${reason ? `with reason: ${reason}` : ``}`
           );
           this.emit("close", ev);
         });
@@ -152,7 +152,7 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
 
   protected async receive(blob: Blob) {
     const response: LiveIncomingMessage = (await blobToJSON(
-      blob,
+      blob
     )) as LiveIncomingMessage;
     if (isToolCallMessage(response)) {
       this.log("server.toolCall", response);
@@ -191,7 +191,7 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
 
         // when its audio that is returned for modelTurn
         const audioParts = parts.filter(
-          (p) => p.inlineData && p.inlineData.mimeType.startsWith("audio/pcm"),
+          (p) => p.inlineData && p.inlineData.mimeType.startsWith("audio/pcm")
         );
         const base64s = audioParts.map((p) => p.inlineData?.data);
 
@@ -243,10 +243,10 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
       hasAudio && hasVideo
         ? "audio + video"
         : hasAudio
-          ? "audio"
-          : hasVideo
-            ? "video"
-            : "unknown";
+        ? "audio"
+        : hasVideo
+        ? "video"
+        : "unknown";
 
     const data: RealtimeInputMessage = {
       realtimeInput: {

@@ -1,35 +1,26 @@
-"use client"
-
-import { useRef, useState } from "react";
 import { LiveAPIProvider } from "@/context/LiveAPIContext";
-import { Altair } from "./altair/Altair";
-import ControlTray from "./control-tray/ControlTray";
-import cn from "classnames";
+import { useRef, useState } from "react";
+import ControlTray from "../control-tray/ControlTray";
 
 const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string;
-if (typeof API_KEY !== "string"
-) {
+if (typeof API_KEY !== "string") {
   throw new Error("set NEXT_PUBLIC_GEMINI_API_KEY in .env");
 }
 
 const host = "generativelanguage.googleapis.com";
 const uri = `wss://${host}/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent`;
 
-function VoiceChat() {
+const VoiceChat = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
-
   return (
-    <div className="App">
-      <LiveAPIProvider url={uri} apiKey={API_KEY}>
-        <div className="streaming-console">
+    <div className="fixed right-40 bottom-5">
+      <LiveAPIProvider apiKey={API_KEY} url={uri}>
+        <div className="">
           <main>
             <div className="main-app-area">
-              <Altair />
               <video
-                className={cn("stream", {
-                  hidden: !videoRef.current || !videoStream,
-                })}
+                hidden={!videoRef.current || !videoStream}
                 ref={videoRef}
                 autoPlay
                 playsInline
@@ -40,13 +31,12 @@ function VoiceChat() {
               videoRef={videoRef}
               supportsVideo={true}
               onVideoStreamChange={setVideoStream}
-            >
-            </ControlTray>
+            ></ControlTray>
           </main>
         </div>
       </LiveAPIProvider>
     </div>
   );
-}
+};
 
 export default VoiceChat;

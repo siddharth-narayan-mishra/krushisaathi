@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   MultimodalLiveAPIClientConnection,
-  MultimodalLiveClient
-} from "@/lib/multimodal-api/multimodal-live-client"
+  MultimodalLiveClient,
+} from "../lib/multimodal-live-client";
+import { AudioStreamer } from "../lib/audio-streamer";
+import VolMeterWorket from "../lib/worklets/vol-meter";
 import { LiveConfig } from "@/types/multimodal-live-types";
-import { AudioStreamer } from "@/lib/multimodal-api/audio-streamer";
-import { audioContext } from "@/utils/utils"
-import VolMeterWorket from "@/lib/multimodal-api/worklets/vol-meter";
+import { audioContext } from "@/utils/utils";
 
 export type UseLiveAPIResults = {
   client: MultimodalLiveClient;

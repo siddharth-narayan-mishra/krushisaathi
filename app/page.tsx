@@ -2,7 +2,7 @@
 import React, { useContext } from "react";
 import Sidebar from "../components/common/Sidebar";
 import navigationContext from "@/context/NavigationContext";
-import VoiceChat from "@/components/voice-chat/voiceChat";
+import VoiceChat from "@/components/farmerDashboard/VoiceChat";
 
 const Page = () => {
   const navContext = useContext(navigationContext);

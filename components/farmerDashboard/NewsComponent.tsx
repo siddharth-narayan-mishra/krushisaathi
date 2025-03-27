@@ -21,11 +21,13 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
   prevActive,
 }) => {
   interface Article {
+    article_id: string;
     title: string;
     description: string;
-    url: string;
-    urlToImage?: string;
-    publishedAt: string;
+    link: string;
+    image_url?: string;
+    pubDate: string;
+    source_name: string;
   }
 
   const [news, setNews] = useState<Article[]>([]);
@@ -38,12 +40,11 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
         setLoading(true);
         setError(null);
         const url =
-          `https://newsapi.org/v2/everything?` +
+          `https://newsdata.io/api/1/latest?` +
           `q=farmer+india` +
           `&language=en` +
-          `&sortBy=popularity` +
           `&apiKey=${process.env.NEXT_PUBLIC_NEWS_API_KEY}` +
-          `&pageSize=30`;
+          `&size=10`;
 
         const response = await fetch(url);
         if (!response.ok) {
@@ -51,11 +52,10 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
         }
         const data = await response.json();
         setNews(
-          data.articles.filter(
-            (article: { title: string; description: string; url: string }) =>
+          data.results.filter(
+            (article: Article) =>
               article.title !== "[Removed]" &&
-              article.description !== "[Removed]" &&
-              article.url !== "[Removed]"
+              article.description !== "[Removed]"
           )
         );
       } catch (error) {
@@ -76,6 +76,9 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
   };
 
   const getMinutesRead = (description: string) => {
+    if (!description) {
+      return 0;
+    }
     return Math.ceil(description.split(" ").length / 200);
   };
 
@@ -89,7 +92,6 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
@@ -109,7 +111,6 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
         </div>
       </div>
 
-      {/* Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-12">
@@ -128,15 +129,15 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {news.map((article, index) => (
+            {news.map((article) => (
               <div
-                key={`${article.url}-${index}`}
+                key={article.article_id}
                 className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden"
               >
                 <div className="relative aspect-video">
                   <Image
                     src={
-                      article.urlToImage ||
+                      article.image_url ||
                       "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80"
                     }
                     alt={article.title}
@@ -153,7 +154,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
                     <Clock className="w-4 h-4" />
                     <span>{getMinutesRead(article.description)} min read</span>
                     <span className="text-gray-300">•</span>
-                    <span>{formatDate(article.publishedAt)}</span>
+                    <span>{formatDate(article.pubDate)}</span>
                   </div>
 
                   <h2 className="text-lg font-medium text-gray-900 mb-2">
@@ -165,7 +166,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
                   </p>
 
                   <a
-                    href={article.url}
+                    href={article.link}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 transition-colors"

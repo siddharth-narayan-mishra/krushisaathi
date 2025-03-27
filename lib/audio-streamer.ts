@@ -25,7 +25,6 @@ export class AudioStreamer {
     this.gainNode.connect(this.context.destination);
     this.addPCM16 = this.addPCM16.bind(this);
   }
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async addWorklet<T extends (d: any) => void>(
     workletName: string,
@@ -139,10 +138,10 @@ export class AudioStreamer {
       const worklets = registeredWorklets.get(this.context);
 
       if (worklets) {
-        Object.entries(worklets).forEach(([key, value]) => {
-          console.log(key);
+        Object.entries(worklets).forEach(([workletName, graph]) => {
+          console.log("workletName", workletName);
 
-          const { node, handlers } = value;
+          const { node, handlers } = graph;
           if (node) {
             source.connect(node);
             node.port.onmessage = function (ev: MessageEvent) {
@@ -174,7 +173,7 @@ export class AudioStreamer {
           this.checkInterval = null;
         }
       } else {
-        if (!this.checkInterval && typeof window !== undefined) {
+        if (!this.checkInterval) {
           this.checkInterval = window.setInterval(() => {
             if (
               this.audioQueue.length > 0 ||

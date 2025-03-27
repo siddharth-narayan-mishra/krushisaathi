@@ -1,9 +1,9 @@
-import { audioContext } from "@/utils/utils";
 import AudioRecordingWorklet from "./worklets/audio-processing";
 import VolMeterWorket from "./worklets/vol-meter";
 
 import { createWorketFromSrc } from "./audioworklet-registry";
 import EventEmitter from "eventemitter3";
+import { audioContext } from "@/utils/utils";
 
 function arrayBufferToBase64(buffer: ArrayBuffer) {
   let binary = "";
@@ -11,9 +11,6 @@ function arrayBufferToBase64(buffer: ArrayBuffer) {
   const len = bytes.byteLength;
   for (let i = 0; i < len; i++) {
     binary += String.fromCharCode(bytes[i]);
-  }
-  if (typeof window === "undefined") {
-    return Buffer.from(binary).toString("base64");
   }
   return window.btoa(binary);
 }
