@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectToFirebase } from "@/lib/firebase/FirebaseConfig";
+import { connectToFirebase } from "@/lib/firebase/FirebaseConfig"
 import {
   // doc,
   // setDoc,
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { username, password, role } = body;
 
-    console.log(username, role);
+    console.log(username);
 
     const userCollection = collection(
       db,
