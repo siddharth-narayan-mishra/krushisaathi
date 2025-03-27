@@ -8,9 +8,11 @@ interface YardStateProps {
   children: ReactNode;
 }
 
+
+
 const getYards = async (id: string, role: string) => {
   try {
-    var url = `http://localhost:3000/api/yards?${role}=${id}`;
+    var url = `${process.env.NEXT_PUBLIC_DOMAIN}/api/yards?${role}=${id}`;
     const response = await fetch(url);
     const data = await response.json();
     if (data.success) {
@@ -25,7 +27,7 @@ const getYards = async (id: string, role: string) => {
 
 const getYard = async (id: string) => {
   try {
-    var url = "http://localhost:3000/api/yards/" + id;
+    var url = `${process.env.NEXT_PUBLIC_DOMAIN}/api/yards/` + id;
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
@@ -48,7 +50,7 @@ const updateYardStatus = async ({
   sampleId: string;
 }) => {
   try {
-    const url = "http://localhost:3000/api/yards/status";
+    const url = `${process.env.NEXT_PUBLIC_DOMAIN}/api/yards/status`;
 
     const response = await fetch(url, {
       method: "PUT",
@@ -85,7 +87,7 @@ const updateYardStatus = async ({
 
 const sendYardReport = async (result: FormValues) => {
   try {
-    const url = "http://localhost:3000/api/yards/sendReport";
+    const url = `${process.env.NEXT_PUBLIC_DOMAIN}/api/yards/sendReport`;
 
     const response = await fetch(url, {
       method: "PUT",
