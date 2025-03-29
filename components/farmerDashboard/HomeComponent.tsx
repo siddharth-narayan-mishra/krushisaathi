@@ -1,12 +1,13 @@
 "use client";
 
-import { ArrowRight, CalendarDays } from "lucide-react";
+import { ArrowRight, CalendarDays, Mic } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import UserContext from "@/context/UserContext";
 import { UserModel } from "@/models/User";
 import { Yard } from "@/models/Yard";
 import YardContext from "@/context/YardContext";
+import VoiceChat from "./VoiceChat";
 
 const HomeComponent = () => {
   const router = useRouter();
@@ -15,6 +16,11 @@ const HomeComponent = () => {
   const [inProgressYards, setInProgressYards] = useState<Yard[]>([]);
   const [completedyards, setCompletedYards] = useState<Yard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showVoiceChat, setShowVoiceChat] = useState<boolean>(false);
+
+  const toggleVoiceChat = () => {
+    setShowVoiceChat((prev) => !prev);
+  };
 
   //@ts-expect-error - Unreachable code error
   const { user, getUserData } = userContext;
@@ -60,22 +66,22 @@ const HomeComponent = () => {
       description: "Get your soil analyzed by experts",
       image:
         "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80",
-      link: "/soil-testing",
+      link: "/soil-testing"
     },
     {
       title: "How to Take Soil Sample",
       description: "Learn the correct way to collect soil",
       image:
         "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&q=80",
-      link: "/how-to",
+      link: "/how-to"
     },
     {
       title: "Register Your Sample",
       description: "Submit your soil sample for testing",
       image:
         "https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&q=80",
-      link: "/register-soil-sample",
-    },
+      link: "/register-soil-sample"
+    }
   ];
 
   const formatReadableDate = (isoString: string | number | Date) =>
@@ -85,7 +91,7 @@ const HomeComponent = () => {
       day: "numeric",
       hour: "numeric",
       minute: "2-digit",
-      hour12: true,
+      hour12: true
     });
 
   const SkeletonYardCard = () => (
@@ -185,7 +191,7 @@ const HomeComponent = () => {
         <div className="flex flex-col gap-7">
           {[
             { title: "Your completed Soil Tests", yards: completedyards },
-            { title: "Your Ongoing Soil Tests", yards: inProgressYards },
+            { title: "Your Ongoing Soil Tests", yards: inProgressYards }
           ].map(({ title, yards }, index) => (
             <div key={index}>
               <h2 className="text-2xl font-semibold text-gray-900 mb-6">
@@ -230,6 +236,13 @@ const HomeComponent = () => {
           </div>
         )}
       </div>
+      <div
+        onClick={() => toggleVoiceChat()}
+        className="fixed bottom-5 rounded-full z-[100]  bg-primary_green hover:scale-105 hover:rotate-12 transform transition-all duration-300 cursor-pointer p-3 sm:p-4 border-primary_green right-4"
+      >
+        <Mic className=" h-6 sm:h-8 w-6 sm:w-8 text-white" />
+      </div>
+      {showVoiceChat && <VoiceChat />}
     </div>
   );
 };
