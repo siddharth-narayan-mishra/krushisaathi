@@ -1,10 +1,10 @@
 FROM node:18-alpine AS base
 
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat python3 py3-pip make g++ 
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm ci --ignore-scripts && npm rebuild && npm run postinstall || true
 
 FROM base AS builder
 WORKDIR /app
