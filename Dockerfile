@@ -1,30 +1,32 @@
-# Use an official Node.js runtime as a parent image
-FROM node:18-alpine
+FROM node:18-alpine AS base
 
-# Set the working directory in the container
+FROM base AS deps
+# Add Python and build dependencies for canvas
+RUN apk add --no-cache libc6-compat python3 make g++ pkgconf pixman-dev cairo-dev pango-dev jpeg-dev giflib-dev
 WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci
 
-# Install system dependencies required for 'canvas'
-RUN apk add --no-cache \
-    build-base \
-    cairo-dev \
-    pango-dev \
-    jpeg-dev \
-    giflib-dev \
-    librsvg-dev \
-    pkgconf
-
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Install Node.js dependencies
-RUN npm install --omit=dev
-
-# Copy the rest of the application code
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN npm run build
 
-# Expose the port the app runs on
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
 EXPOSE 3000
+ENV PORT 3000
+ENV HOSTNAME localhost
 
-# Command to run the application
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
