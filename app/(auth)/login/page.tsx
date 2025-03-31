@@ -28,7 +28,6 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Left Panel - Login Form */}
       <div className="w-full lg:w-[45%] flex flex-col">
         <div className="p-6 flex justify-between items-center">
           <Image

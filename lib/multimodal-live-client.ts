@@ -84,8 +84,6 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
     ws.addEventListener("message", async (evt: MessageEvent) => {
       if (evt.data instanceof Blob) {
         this.receive(evt.data);
-      } else {
-        console.log("non blob message", evt);
       }
     });
     return new Promise((resolve, reject) => {
@@ -114,7 +112,6 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
 
         ws.removeEventListener("error", onError);
         ws.addEventListener("close", (ev: CloseEvent) => {
-          console.log(ev);
           this.disconnect(ws);
           let reason = ev.reason || "";
           if (reason.toLowerCase().includes("error")) {
@@ -189,15 +186,12 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
       if (isModelTurn(serverContent)) {
         let parts: Part[] = serverContent.modelTurn.parts;
 
-        // when its audio that is returned for modelTurn
         const audioParts = parts.filter(
           (p) => p.inlineData && p.inlineData.mimeType.startsWith("audio/pcm")
         );
         const base64s = audioParts.map((p) => p.inlineData?.data);
 
-        // strip the audio parts out of the modelTurn
         const otherParts = difference(parts, audioParts);
-        // console.log("otherParts", otherParts);
 
         base64s.forEach((b64) => {
           if (b64) {
@@ -216,9 +210,7 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
         this.emit("content", content);
         this.log(`server.content`, response);
       }
-    } else {
-      console.log("received unmatched message", response);
-    }
+    } 
   }
 
   /**

@@ -15,7 +15,6 @@ const db = connectToFirebase();
 export async function GET(req: NextRequest) {
   try {
     const id = req.nextUrl.pathname.split("/").pop();
-    console.log(id);
     if (!id) {
       return new NextResponse(
         JSON.stringify({ message: "yardId is required", success: false }),

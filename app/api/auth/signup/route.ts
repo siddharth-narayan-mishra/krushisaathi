@@ -3,7 +3,7 @@ import { connectToFirebase } from "@/lib/firebase/FirebaseConfig";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { UserModel } from "@/models/User";
 import { LabModel } from "@/models/Labs";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { v4 } from "uuid";
 
 const db = connectToFirebase();
@@ -33,29 +33,7 @@ export async function POST(req: NextRequest) {
       phone
     } = body;
 
-    // if (
-    //   !name ||
-    //   !username ||
-    //   !password ||
-    //   !role ||
-    //   !adhaar ||
-    //   !country ||
-    //   !state ||
-    //   !district ||
-    //   !fulladdress ||
-    //   !passbook ||
-    //   !photo ||
-    //   !ekyf
-    // ) {
-    //   return NextResponse.json(
-    //     { error: "Missing required fields", success: false },
-    //     { status: 400 }
-    //   );
-    // }
-
     const id = v4();
-    
-    console.log(id)
 
     const collection = role === "soil-agent" ? "labs" : "users";
     const userDocRef = doc(db, collection, id);
@@ -69,9 +47,6 @@ export async function POST(req: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const fullAddress = `${streetAddress}, ${city}, ${district}, ${pincode}, ${state}, ${country}`;
-
-   
-    console.log(v4);
 
     const user =
       role === "soil-agent"

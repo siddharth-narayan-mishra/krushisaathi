@@ -151,7 +151,6 @@ export default function TestResultsComponent({
       if (!response.ok) throw new Error("Upload failed");
 
       const data: CloudinaryResponse = await response.json();
-      console.log(data);
       return data.secure_url;
     } catch (error) {
       console.error("Cloudinary upload error:", error);

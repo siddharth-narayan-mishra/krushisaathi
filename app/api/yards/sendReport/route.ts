@@ -7,7 +7,6 @@ const db = connectToFirebase();
 export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log(body);
 
     const { sampleId, yardId, suggestions, fileUrl, nutrients } = body.result;
 

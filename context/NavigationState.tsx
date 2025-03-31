@@ -31,7 +31,6 @@ const NavigationState: React.FC<NavigationStateProps> = ({ children }) => {
         ? active.split("?")
         : [active, ""];
       const params = new URLSearchParams(queryString || "");
-      console.log(params);
 
       switch (basePath) {
         case "account":

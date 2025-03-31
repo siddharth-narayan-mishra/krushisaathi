@@ -51,15 +51,15 @@ const SignupForm = () => {
           password: string;
           cpassword: string;
           labName: string;
-          latitude: string;
-          longitude: string;
+          latitude: number;
+          longitude: number;
           country: string;
           state: string;
           district: string;
           streetAddress: string;
           city: string;
-          pincode: string;
-          phone: string;
+          pincode: number;
+          phone: number;
         }
     >>;
     (arg0: string, arg1: string): void;
@@ -86,33 +86,51 @@ const SignupForm = () => {
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().when("role", {
-      is: "farmer",
-      then: (schema) => schema.required("Lab Name is required"),
-    }),
-    username: Yup.string().required("Username is required"),
+    name: Yup.string()
+      .when("role", {
+        is: "farmer",
+        then: (schema) => schema.required("Full Name is required"),
+      })
+      .max(50, "Name cannot exceed 50 characters"),
+    username: Yup.string()
+      .required("Username is required")
+      .matches(
+        /^[a-zA-Z0-9_]+$/,
+        "Username can only contain letters, numbers, and underscores"
+      ),
     password: Yup.string()
       .min(6, "Password must be at least 6 characters long")
+      .max(20, "Password cannot exceed 20 characters")
       .required("Password is required"),
     cpassword: Yup.string()
       .required("Confirming your password is required")
       .oneOf([Yup.ref("password"), ""], "Passwords do not match"),
-    labName: Yup.string().when("role", {
-      is: "soil-agent",
-      then: (schema) => schema.required("Lab Name is required"),
-    }),
-    latitude: Yup.number().when("role", {
-      is: "soil-agent",
-      then: (schema) => schema.required("Latitude is required"),
-    }),
-    longitude: Yup.number().when("role", {
-      is: "soil-agent",
-      then: (schema) => schema.required("Longitude is required"),
-    }),
-    country: Yup.string().when("role", {
-      is: "soil-agent",
-      then: (schema) => schema.required("Country is required"),
-    }),
+    labName: Yup.string()
+      .when("role", {
+        is: "soil-agent",
+        then: (schema) => schema.required("Lab Name is required"),
+      })
+      .max(100, "Lab Name cannot exceed 100 characters"),
+    latitude: Yup.number()
+      .when("role", {
+        is: "soil-agent",
+        then: (schema) => schema.required("Latitude is required"),
+      })
+      .min(-90, "Latitude must be between -90 and 90")
+      .max(90, "Latitude must be between -90 and 90"),
+    longitude: Yup.number()
+      .when("role", {
+        is: "soil-agent",
+        then: (schema) => schema.required("Longitude is required"),
+      })
+      .min(-180, "Longitude must be between -180 and 180")
+      .max(180, "Longitude must be between -180 and 180"),
+    country: Yup.string()
+      .when("role", {
+        is: "soil-agent",
+        then: (schema) => schema.required("Country is required"),
+      })
+      .max(50, "Country name cannot exceed 50 characters"),
     state: Yup.string().when("role", {
       is: "soil-agent",
       then: (schema) => schema.required("State is required"),
@@ -121,30 +139,40 @@ const SignupForm = () => {
       is: "soil-agent",
       then: (schema) => schema.required("District is required"),
     }),
-    streetAddress: Yup.string().when("role", {
-      is: "soil-agent",
-      then: (schema) => schema.required("Street Address is required"),
-    }),
+    streetAddress: Yup.string()
+      .when("role", {
+        is: "soil-agent",
+        then: (schema) => schema.required("Street Address is required"),
+      })
+      .max(200, "Street Address cannot exceed 200 characters"),
     city: Yup.string().when("role", {
       is: "soil-agent",
       then: (schema) => schema.required("City is required"),
     }),
-    pincode: Yup.string().when("role", {
-      is: "soil-agent",
-      then: (schema) => schema.required("Pincode is required"),
-    }),
-    phone: Yup.string().when("role", {
-      is: "soil-agent",
-      then: (schema) => schema.required("Phone number is required"),
-    }),
-    adhaar: Yup.string().when("role", {
-      is: "farmer",
-      then: (schema) => schema.required("Aadhaar number is required"),
-    }),
-    address: Yup.string().when("role", {
-      is: "farmer",
-      then: (schema) => schema.required("Address is required"),
-    }),
+    pincode: Yup.string()
+      .when("role", {
+        is: "soil-agent",
+        then: (schema) => schema.required("Pincode is required"),
+      })
+      .matches(/^\d{6}$/, "Pincode must be a 6-digit number"),
+    phone: Yup.string()
+      .when("role", {
+        is: "soil-agent",
+        then: (schema) => schema.required("Phone number is required"),
+      })
+      .matches(/^\d{10}$/, "Phone number must be a 10-digit number"),
+    adhaar: Yup.string()
+      .when("role", {
+        is: "farmer",
+        then: (schema) => schema.required("Aadhaar number is required"),
+      })
+      .matches(/^\d{12}$/, "Aadhaar number must be a 12-digit number"),
+    address: Yup.string()
+      .when("role", {
+        is: "farmer",
+        then: (schema) => schema.required("Address is required"),
+      })
+      .max(200, "Address cannot exceed 200 characters"),
     passbook: Yup.string().when("role", {
       is: "farmer",
       then: (schema) => schema.required("Passbook details are required"),
@@ -296,14 +324,14 @@ const SignupForm = () => {
             password: string;
             cpassword: string;
             labName: string;
-            latitude: string;
-            longitude: string;
+            latitude: number;
+            longitude: number;
             country: string;
             state: string;
             district: string;
             streetAddress: string;
             city: string;
-            pincode: string;
+            pincode: number;
             phone: string;
           }
         | {
@@ -340,7 +368,28 @@ const SignupForm = () => {
         initialValues={getInitialValues()}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          signup(values);
+          const formattedValues = {
+            ...values,
+            latitude:
+              "latitude" in values && values.latitude
+                ? parseFloat(values.latitude)
+                : null,
+            longitude:
+              "longitude" in values && values.longitude
+                ? parseFloat(values.longitude)
+                : null,
+            pincode:
+              "pincode" in values && values.pincode
+                ? parseInt(values.pincode, 10)
+                : null,
+            phone:
+              "phone" in values && values.phone
+                ? parseInt(values.phone, 10)
+                : null,
+          };
+          console.log("Formatted Values:", formattedValues);
+
+          signup(formattedValues); // Send the formatted values to Firebase
         }}
       >
         {({ values, setFieldValue }) => {

@@ -68,9 +68,6 @@ export class AudioStreamer {
         float32Array[i] = int16 / 32768;
       } catch (e) {
         console.error(e);
-        // console.log(
-        //   `dataView.length: ${dataView.byteLength},  i * 2: ${i * 2}`,
-        // );
       }
     }
 
@@ -139,7 +136,7 @@ export class AudioStreamer {
 
       if (worklets) {
         Object.entries(worklets).forEach(([workletName, graph]) => {
-          console.log("workletName", workletName);
+          console.log(workletName);
 
           const { node, handlers } = graph;
           if (node) {
