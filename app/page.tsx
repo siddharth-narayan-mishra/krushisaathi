@@ -1,11 +1,13 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Sidebar from "../components/common/Sidebar";
 import navigationContext from "@/context/NavigationContext";
-import VoiceChat from "@/components/farmerDashboard/VoiceChat";
+// import VoiceChat from "@/components/farmerDashboard/VoiceChat";
+import { LandingTransition } from "@/components/landing";
 
 const Page = () => {
   const navContext = useContext(navigationContext);
+  const [isTrue, setIsTrue] = useState(false);
 
   if (!navContext) {
     console.log("Navigation context is not provided", navContext);
@@ -17,13 +19,19 @@ const Page = () => {
   const { currentComponent } = navContext;
 
   return (
-    <main className="lg:flex">
-      <div>
-        <Sidebar />
-      </div>
-      <div className="w-full">{currentComponent}</div>
-      <VoiceChat />
-    </main>
+    <>
+      {isTrue ? (
+        <main className="lg:flex">
+          <div>
+            <Sidebar />
+          </div>
+          <div className="w-full">{currentComponent}</div>
+          {/* <VoiceChat /> */}
+        </main>
+      ) : (
+        <LandingTransition setIsTrue={setIsTrue} />
+      )}
+    </>
   );
 };
 
