@@ -88,7 +88,7 @@ KrushiSaathi is an AI-driven agricultural advisory system designed to assist sma
    ```
 4. **Run the application**
    ```bash
-   npm start
+   npm run dev
    ```
 
 ---
