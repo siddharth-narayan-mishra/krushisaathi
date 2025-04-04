@@ -29,7 +29,6 @@ export async function GET(req: NextRequest) {
         decodedToken.id
       );
       const userDoc = await getDoc(docRef);
-
       if (userDoc.exists()) {
         const user = { ...userDoc.data() };
         delete user.password;

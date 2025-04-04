@@ -85,6 +85,7 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
       if (evt.data instanceof Blob) {
         this.receive(evt.data);
       } 
+
     });
     return new Promise((resolve, reject) => {
       const onError = (ev: Event) => {

@@ -136,7 +136,7 @@ export class AudioStreamer {
 
       if (worklets) {
         Object.entries(worklets).forEach(([workletName, graph]) => {
-          console.log("workletName", workletName);
+          console.log(workletName);
 
           const { node, handlers } = graph;
           if (node) {

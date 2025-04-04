@@ -30,6 +30,7 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gray-50 flex">
       <div className="w-full lg:w-[45%] flex flex-col mb-6">
         <div className="px-6 flex justify-between items-center">
+
           <Image
             src={logo}
             alt="Krushi Saathi Logo"
