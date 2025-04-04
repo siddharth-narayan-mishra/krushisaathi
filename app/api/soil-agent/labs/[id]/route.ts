@@ -18,7 +18,6 @@ export async function GET(req: NextRequest) {
 
     const docRef = doc(db, "labs", id);
     const docSnap = await getDoc(docRef);
-
     if (!docSnap.exists()) {
       return new NextResponse(
         JSON.stringify({ message: "Lab not found", success: false }),

@@ -69,8 +69,8 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
               ),
           };
         })
-        .sort((a, b) => a.distance - b.distance) 
-        .slice(0, 3); 
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 3);
 
       nearestLocations.forEach((location) => {
         bounds.extend(location.latLng);
@@ -79,6 +79,7 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
         new window.google.maps.LatLng(userLocation.lat, userLocation.lng)
       );
 
+      // Fit bounds to include user location and 3 nearest labs
       map.fitBounds(bounds);
     }
   }, [locations, userLocation, map]);

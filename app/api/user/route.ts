@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
         decodedToken.id
       );
       const userDoc = await getDoc(docRef);
+
       if (userDoc.exists()) {
         const user = { ...userDoc.data() };
         delete user.password;
@@ -36,7 +37,6 @@ export async function GET(req: NextRequest) {
         delete user.verifyTokenExpiry;
         delete user.forgotPasswordTokenExpiry;
         delete user.forgotPasswordToken;
-
         return new NextResponse(
           JSON.stringify({
             message: "User authenticated",

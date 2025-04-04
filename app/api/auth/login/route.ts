@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToFirebase } from "@/lib/firebase/FirebaseConfig"
 import {
+  // doc,
+  // setDoc,
+  // getDoc,
   collection,
   query,
   where,
   getDocs
 } from "firebase/firestore";
+// import { UserModel } from "@/models/User";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -67,6 +71,8 @@ export async function POST(req: NextRequest) {
 
     return reponse;
   } catch (error) {
+    console.log("Login post error: ", error);
+
     return new NextResponse(
       JSON.stringify({ error: (error as Error).message, success: false }),
       { status: 400 }

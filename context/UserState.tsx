@@ -44,7 +44,6 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
 
   const signup = async (values: any) => {
     try {
-
       const isLab = values.role;
       setLoading(true);
       const response = await fetch("/api/auth/signup", {
