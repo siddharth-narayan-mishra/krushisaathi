@@ -2,7 +2,7 @@
 import React, { useState, useEffect, ReactNode } from "react";
 import NavigationContext from "./NavigationContext";
 import HomeComponent from "../components/farmerDashboard/HomeComponent";
-import AccountComponent from "../components/farmerDashboard/AccountComponent";
+import ToolsComponent from "../components/farmerDashboard/ToolsComponent";
 import SettingsComponent from "../components/farmerDashboard/SettingsComponent";
 import TestComponent from "../components/farmerDashboard/TestComponent";
 import NewsComponent from "../components/farmerDashboard/NewsComponent";
@@ -31,11 +31,10 @@ const NavigationState: React.FC<NavigationStateProps> = ({ children }) => {
         ? active.split("?")
         : [active, ""];
       const params = new URLSearchParams(queryString || "");
-      console.log(params);
 
       switch (basePath) {
-        case "account":
-          setCurrentComponent(<AccountComponent />);
+        case "aitools":
+          setCurrentComponent(<ToolsComponent />);
           break;
         case "settings":
           setCurrentComponent(<SettingsComponent />);

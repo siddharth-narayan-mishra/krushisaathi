@@ -47,7 +47,6 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
   // Fit bounds to include user location and 3 nearest labs
   useEffect(() => {
     if (window.google?.maps?.geometry && map && userLocation) {
-      console.log("locations now:", locations);
       const bounds = new window.google.maps.LatLngBounds();
 
       const nearestLocations = locations
@@ -56,7 +55,6 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
             location.position.latitude,
             location.position.longitude
           );
-          console.log("LatLng:", latLng);
 
           return {
             ...location,
@@ -71,9 +69,8 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
               ),
           };
         })
-        .sort((a, b) => a.distance - b.distance) // Sort by distance
-        .slice(0, 3); // Take the 3 nearest locations
-      console.log("Nearest locations:", nearestLocations);
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 3);
 
       nearestLocations.forEach((location) => {
         bounds.extend(location.latLng);
@@ -128,7 +125,6 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
   useEffect(() => {
     if (map && userLocation && destination) {
       fetchRoute(userLocation, destination).then((encodedPolyline) => {
-        console.log("Encoded polyline:", encodedPolyline);
 
         if (encodedPolyline) {
           if (routePolyline) {

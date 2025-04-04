@@ -5,7 +5,6 @@ export async function GET(req: NextRequest) {
   try {
     const token = req.cookies.get("token")?.value || "";
 
-    console.log("hello");
     if (!token) {
       return new NextResponse(
         JSON.stringify({ message: "User not authenticated", success: false }),

@@ -44,14 +44,8 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
 
   const signup = async (values: any) => {
     try {
-      // if (await isLoggedIn()) {
-      //   router.push("/");
-      //   return;
-      // }
-
       const isLab = values.role;
       setLoading(true);
-      console.log(values);
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
@@ -60,7 +54,6 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
         body: JSON.stringify(values),
       });
       const data = await response.json();
-      console.log("signup data", data);
 
       if (data.success) {
         toast.success(data.message);
@@ -70,17 +63,12 @@ const RegisterationState: React.FC<RegisterationStateProps> = ({
       toast.error("Error: " + error);
       console.error("Error:", error);
     } finally {
-      console.log(setLoading(false));
+      setLoading(false);
     }
   };
 
   const login = async (values: any) => {
     try {
-      // if (await isLoggedIn()) {
-      //   router.push("/");
-      //   return;
-      // }
-      console.log(values);
       setLoading(true);
       const response = await fetch("/api/auth/login", {
         method: "POST",

@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
     const token = req.cookies.get("token")?.value || "";
     const role = req.cookies.get("role")?.value || "";
 
-    console.log(token, role);
     if (!token) {
       return new NextResponse(
         JSON.stringify({ message: "User not authenticated", success: false }),
@@ -24,8 +23,6 @@ export async function GET(req: NextRequest) {
     );
 
     if (typeof decodedToken !== "string" && "id" in decodedToken) {
-      console.log(decodedToken);
-      console.log("hello");
       const docRef = doc(
         db,
         role === "soil-agent" ? "labs" : "users",
@@ -33,7 +30,6 @@ export async function GET(req: NextRequest) {
       );
       const userDoc = await getDoc(docRef);
 
-      console.log(userDoc.data());
       if (userDoc.exists()) {
         const user = { ...userDoc.data() };
         delete user.password;
@@ -41,7 +37,6 @@ export async function GET(req: NextRequest) {
         delete user.verifyTokenExpiry;
         delete user.forgotPasswordTokenExpiry;
         delete user.forgotPasswordToken;
-        console.log(user);
         return new NextResponse(
           JSON.stringify({
             message: "User authenticated",

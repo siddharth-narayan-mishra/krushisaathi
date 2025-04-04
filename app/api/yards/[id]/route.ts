@@ -15,7 +15,6 @@ const db = connectToFirebase();
 export async function GET(req: NextRequest) {
   try {
     const id = req.nextUrl.pathname.split("/").pop();
-    console.log(id);
     if (!id) {
       return new NextResponse(
         JSON.stringify({ message: "yardId is required", success: false }),
@@ -29,9 +28,6 @@ export async function GET(req: NextRequest) {
     const yardQuery = query(yardCollection, where("yardId", "==", id));
     const querySnapshot = await getDocs(yardQuery);
     const yardDoc = querySnapshot.docs[0];
-
-    console.log(yardDoc);
-
     if (!yardDoc.exists()) {
       return new NextResponse(
         JSON.stringify({ message: "yard not found", success: false }),

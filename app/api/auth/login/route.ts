@@ -10,7 +10,7 @@ import {
   getDocs
 } from "firebase/firestore";
 // import { UserModel } from "@/models/User";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const db = connectToFirebase();
@@ -19,8 +19,6 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { username, password, role } = body;
-
-    console.log(username);
 
     const userCollection = collection(
       db,
@@ -53,12 +51,10 @@ export async function POST(req: NextRequest) {
       id: userDoc.data().id,
       role: userDoc.data().role
     };
-    console.log(tokenData);
 
     const token = jwt.sign(tokenData, process.env.NEXT_PUBLIC_TOKEN_SECRETE!, {
       expiresIn: "1d"
     });
-    console.log(token);
 
     const reponse = NextResponse.json({
       message: "Login successful",

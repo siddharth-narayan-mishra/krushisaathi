@@ -30,7 +30,6 @@ const getYard = async (id: string) => {
     var url = `${process.env.NEXT_PUBLIC_DOMAIN}/api/yards/` + id;
     const response = await fetch(url);
     const data = await response.json();
-    console.log(data);
     if (data.success) {
       return data.yard;
     }
@@ -65,7 +64,6 @@ const updateYardStatus = async ({
     });
 
     const data = await response.json();
-    console.log("Status update response:", data);
 
     if (data.success) {
       toast.success(`Sample status updated to ${status}`);
@@ -100,7 +98,6 @@ const sendYardReport = async (result: FormValues) => {
     });
 
     const data = await response.json();
-    console.log("Report sending response:", data);
 
     if (data.success) {
       return true;

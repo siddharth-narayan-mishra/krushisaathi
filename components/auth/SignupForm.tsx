@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import UploadWidget from "../common/UploadWidget";
 import toast, { Renderable, Toast, ValueFunction } from "react-hot-toast";
 import UserContext from "@/context/UserContext";
-import { Eye, EyeOff, MapPin, FileText } from "lucide-react";
+import { Eye, EyeOff, MapPin, FileText, Verified } from "lucide-react";
 import { indianStates } from "@/config/statesData";
 import { motion } from "framer-motion";
 
@@ -323,6 +323,8 @@ const SignupForm = () => {
     },
     successMessage: Renderable | ValueFunction<Renderable, Toast>
   ) => {
+    console.log("resultInfo:", resultInfo);
+
     setFieldValue(fieldName, resultInfo.public_id);
     toast.success(successMessage);
   };
@@ -709,8 +711,13 @@ const SignupForm = () => {
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {farmersDocConfig.map((doc) => (
                           <div key={doc.id} className="space-y-3">
-                            <label className="block text-sm font-medium text-gray-700">
+                            <label className="block text-sm font-medium text-gray-700 text-center">
                               {doc.label}
+                              {values[doc.id as keyof typeof values] && (
+                                <span className="ml-2 inline text-green-600">
+                                  <Verified className="w-5 inline h-5" />
+                                </span>
+                              )}
                             </label>
                             <UploadWidget
                               text={doc.buttonText}
@@ -723,6 +730,7 @@ const SignupForm = () => {
                                 );
                               }}
                             />
+
                             <ErrorMessage
                               name={doc.id}
                               component="div"
