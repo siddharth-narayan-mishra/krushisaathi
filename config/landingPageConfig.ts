@@ -73,8 +73,8 @@ export const WORKFLOW_STEPS = [
 ];
 
 export const TEAM_MEMBERS = [
-    { name: "Team Member 1", role: "Full Stack Developer" },
-    { name: "Team Member 2", role: "AI/ML Engineer" },
-    { name: "Team Member 3", role: "UI/UX Designer" },
-    { name: "Team Member 4", role: "Backend Developer" }
+    { name: "Siddharth Narayan Mishra", role: "Full Stack Developer" },
+    { name: "Lord Sen", role: "AI/ML Engineer" },
+    { name: "M. Ayan", role: "Full Stack Developer" },
+    { name: "Himanshu", role: "Full Stack Developer" }
 ];

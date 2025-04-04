@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import UserContext from "@/context/UserContext";
 import { logo, mission } from "@/config/ImagesUrl";
-import { Globe, ChevronDown, Tractor } from "lucide-react";
+import { Tractor } from "lucide-react";
 
 const SignupPage = () => {
   const userContext = useContext(UserContext);
@@ -29,7 +29,7 @@ const SignupPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Left Panel - Signup Form */}
-      <div className="w-full lg:w-[45%] flex flex-col">
+      <div className="w-full lg:w-[45%] flex flex-col mb-6">
         <div className="p-6 flex justify-between items-center">
           <Image
             src={logo}
@@ -38,18 +38,17 @@ const SignupPage = () => {
             width={40}
             className="h-10 w-auto"
           />
-          <button className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-colors duration-200">
-            <Globe className="w-4 h-4 text-gray-600" />
-            <span className="text-gray-700">English</span>
-            <ChevronDown className="w-4 h-4 text-gray-600" />
-          </button>
         </div>
 
         <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 lg:px-16 xl:px-20">
           <div className="w-full max-w-md mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Create an Account</h1>
-              <p className="text-gray-600">Join Krushi Saathi&apos;s farming community</p>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                Create an Account
+              </h1>
+              <p className="text-gray-600">
+                Join Krushi Saathi&apos;s farming community
+              </p>
             </div>
 
             <SignupForm />
@@ -74,10 +73,6 @@ const SignupPage = () => {
             </div>
           </div>
         </div>
-
-        <div className="p-6 text-center text-sm text-gray-500">
-          © 2024 Krushi Saathi. All rights reserved.
-        </div>
       </div>
 
       {/* Right Panel - Mission Statement */}
@@ -85,15 +80,15 @@ const SignupPage = () => {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url(${mission})`
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url(${mission})`,
           }}
         >
           <div className="h-full flex flex-col justify-center items-center text-white p-12">
             <h2 className="text-4xl font-bold mb-6">Empowering Farmers</h2>
             <p className="text-xl text-center max-w-2xl leading-relaxed">
-              Krushi Saathi is committed to revolutionizing agriculture through technology,
-              providing farmers with the tools and insights they need to make informed decisions
-              and achieve better yields.
+              Krushi Saathi is committed to revolutionizing agriculture through
+              technology, providing farmers with the tools and insights they
+              need to make informed decisions and achieve better yields.
             </p>
             <div className="mt-12 grid grid-cols-3 gap-8 text-center">
               <div>

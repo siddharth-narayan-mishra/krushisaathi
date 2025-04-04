@@ -69,8 +69,8 @@ const CustomGoogleMap: React.FC<GoogleMapProps> = ({
               ),
           };
         })
-        .sort((a, b) => a.distance - b.distance) 
-        .slice(0, 3); 
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 3);
 
       nearestLocations.forEach((location) => {
         bounds.extend(location.latLng);

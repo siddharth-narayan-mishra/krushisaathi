@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Home,
-  User,
   Settings,
   FlaskRound as Flask,
   Newspaper,
@@ -16,6 +15,7 @@ import {
   ChevronRight,
   Menu,
   X,
+  Wrench,
 } from "lucide-react";
 import navigationContext from "@/context/NavigationContext";
 import UserContext from "@/context/UserContext";
@@ -23,7 +23,7 @@ import { logo, logo_small } from "@/config/ImagesUrl";
 
 const navigationItems = [
   { id: "home", label: "Home", icon: Home },
-  { id: "account", label: "Account", icon: User },
+  { id: "aitools", label: "AI Tools", icon: Wrench },
   { id: "settings", label: "Settings", icon: Settings },
   { id: "test", label: "Soil Analysis", icon: Flask },
   { id: "news", label: "News Feed", icon: Newspaper },
@@ -109,8 +109,8 @@ const Sidebar = () => {
           <Image
             src={sidebarOpen ? logo : logo_small}
             alt="Krushi Saathi Logo"
-            width={sidebarOpen ? 150 : 40}
-            height={sidebarOpen ? 150 : 40}
+            width={sidebarOpen ? 150 : 0}
+            height={sidebarOpen ? 150 : 0}
             className="transition-all duration-300"
           />
           <button
@@ -168,12 +168,7 @@ const Sidebar = () => {
             />
             <div className="fixed inset-y-0 left-0 w-64 bg-white z-50 shadow-xl">
               <div className="p-4 flex items-center justify-between border-b border-gray-200">
-                <Image
-                  src={logo}
-                  alt="Krushi Saathi Logo"
-                  width={150}
-                  height={150}
-                />
+                
                 <button
                   onClick={() => setShowMobileSidebar(false)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"

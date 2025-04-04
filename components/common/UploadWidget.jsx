@@ -22,7 +22,11 @@ const UploadWidget = ({ text, onUploadSuccess }) => {
           open();
         }
         return (
-          <button type="button" onClick={handleOnClick}>
+          <button
+            type="button"
+            onClick={handleOnClick}
+            className="bg-green-700 cursor-pointer text-sm rounded-sm px-2 py-1 text-white hover:bg-green-800 transition duration-200 ease-in-out"
+          >
             {text}
           </button>
         );

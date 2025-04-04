@@ -1,31 +1,30 @@
-FROM node:18-alpine AS base
+# Use Node.js slim image
+FROM node:20-bullseye-slim
 
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
+# Set working directory
 WORKDIR /app
-COPY package.json package-lock.json* ./
-RUN npm ci
 
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Copy package files
+COPY package.json package-lock.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy application code
 COPY . .
-RUN npm run build
 
-FROM base AS runner
-WORKDIR /app
-ENV NODE_ENV production
+# Build the Next.js application
+RUN npx next build
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Prune development dependencies
+RUN npm prune --production
 
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
 
-USER nextjs
+# Expose the application port
 EXPOSE 3000
-ENV PORT 3000
-ENV HOSTNAME localhost
 
-CMD ["node", "server.js"]
+# Start the application
+CMD ["npx", "next", "start"]

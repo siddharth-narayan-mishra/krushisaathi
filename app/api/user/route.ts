@@ -36,7 +36,6 @@ export async function GET(req: NextRequest) {
         delete user.verifyTokenExpiry;
         delete user.forgotPasswordTokenExpiry;
         delete user.forgotPasswordToken;
-
         return new NextResponse(
           JSON.stringify({
             message: "User authenticated",

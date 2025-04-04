@@ -84,7 +84,8 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
     ws.addEventListener("message", async (evt: MessageEvent) => {
       if (evt.data instanceof Blob) {
         this.receive(evt.data);
-      }
+      } 
+
     });
     return new Promise((resolve, reject) => {
       const onError = (ev: Event) => {
@@ -210,7 +211,7 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
         this.emit("content", content);
         this.log(`server.content`, response);
       }
-    } 
+    }
   }
 
   /**

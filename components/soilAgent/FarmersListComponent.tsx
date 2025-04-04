@@ -118,7 +118,7 @@ const FarmerListComponent = () => {
   };
 
   const handleStatusChange = (newStatus: StatusType) => {
-    console.log(
+    console.info(
       `Status updated for sample ${selectedSample?.sampleId} to ${newStatus}`
     );
     if (selectedSample && yardsData) {
