@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, CalendarDays, Mic } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import UserContext from "@/context/UserContext";
 import { UserModel } from "@/models/User";
@@ -27,6 +27,34 @@ const HomeComponent = () => {
 
   //@ts-expect-error - Unreachable code error
   const { getYards } = yardContext;
+
+  // Memoize main features to prevent re-creation on each render
+  const mainFeatures = useMemo(
+    () => [
+      {
+        title: "Soil Testing",
+        description: "Get your soil analyzed by experts",
+        image:
+          "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80",
+        link: "/soil-testing"
+      },
+      {
+        title: "How to Take Soil Sample",
+        description: "Learn the correct way to collect soil",
+        image:
+          "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&q=80",
+        link: "/how-to"
+      },
+      {
+        title: "Register Your Sample",
+        description: "Submit your soil sample for testing",
+        image:
+          "https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&q=80",
+        link: "/register-soil-sample"
+      }
+    ],
+    []
+  );
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -60,39 +88,19 @@ const HomeComponent = () => {
     fetchUserData();
   }, [user, getUserData, getYards]);
 
-  const mainFeatures = [
-    {
-      title: "Soil Testing",
-      description: "Get your soil analyzed by experts",
-      image:
-        "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80",
-      link: "/soil-testing"
-    },
-    {
-      title: "How to Take Soil Sample",
-      description: "Learn the correct way to collect soil",
-      image:
-        "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&q=80",
-      link: "/how-to"
-    },
-    {
-      title: "Register Your Sample",
-      description: "Submit your soil sample for testing",
-      image:
-        "https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&q=80",
-      link: "/register-soil-sample"
-    }
-  ];
-
-  const formatReadableDate = (isoString: string | number | Date) =>
-    new Date(isoString).toLocaleString(undefined, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true
-    });
+  // Memoize this function to prevent recreation on each render
+  const formatReadableDate = useMemo(
+    () => (isoString: string | number | Date) =>
+      new Date(isoString).toLocaleString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+      }),
+    []
+  );
 
   const SkeletonYardCard = () => (
     <div className="bg-white font-roboto rounded-2xl border border-green-100 shadow-md animate-pulse">
@@ -150,6 +158,30 @@ const HomeComponent = () => {
     </div>
   );
 
+  // Memoize the loading cards to prevent unnecessary re-renders
+  const loadingCards = useMemo(
+    () => (
+      <div className="flex flex-col gap-7">
+        {[
+          { title: "Your Completed Soil Tests" },
+          { title: "Your Ongoing Soil Tests" }
+        ].map(({ title }, index) => (
+          <div key={index}>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+              {title}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map((i) => (
+                <SkeletonYardCard key={i} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    ),
+    []
+  );
+
   return (
     <div className="min-h-screen font-roboto bg-[#f7f8fa]">
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -188,48 +220,47 @@ const HomeComponent = () => {
           ))}
         </div>
 
-        <div className="flex flex-col gap-7">
-          {[
-            { title: "Your completed Soil Tests", yards: completedyards },
-            { title: "Your Ongoing Soil Tests", yards: inProgressYards }
-          ].map(({ title, yards }, index) => (
-            <div key={index}>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-                {title}
-              </h2>
-              {isLoading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[1, 2, 3].map((i) => (
-                    <SkeletonYardCard key={i} />
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {yards.map((yard) => (
-                    <YardCard
-                      key={yard.yardId}
-                      yard={yard}
-                      type="test-progress"
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {inProgressYards.length === 0 && isLoading && (
-          <div className="text-center py-12 bg-white rounded-2xl shadow-md">
-            <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-              No Active Soil Tests
+        {isLoading ? (
+          loadingCards
+        ) : user &&
+          (inProgressYards.length > 0 || completedyards.length > 0) ? (
+          <div className="flex flex-col gap-7">
+            {[
+              { title: "Your Completed Soil Tests", yards: completedyards },
+              { title: "Your Ongoing Soil Tests", yards: inProgressYards }
+            ].map(
+              ({ title, yards }, index) =>
+                yards.length > 0 && (
+                  <div key={index}>
+                    <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+                      {title}
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {yards.map((yard) => (
+                        <YardCard
+                          key={yard.yardId}
+                          yard={yard}
+                          type="test-progress"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )
+            )}
+          </div>
+        ) : (
+          <div className="text-center py-12 bg-primary_green/10 border border-primary_green/20 rounded-2xl shadow-md mb-8">
+            <h3 className="text-2xl font-semibold text-primary_green mb-4">
+              No Active Upcoming Projects Found
             </h3>
             <p className="text-gray-600 mb-6">
-              Ready to start testing your soil? Click on &apos;Register Your
-              Sample&apos; to begin.
+              {!user
+                ? "Please sign in to view your projects or register a new soil sample."
+                : "Ready to start testing your soil? Click on 'Register Your Sample' to begin."}
             </p>
             <button
               onClick={() => router.push("/register-soil-sample")}
-              className="bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition-colors"
+              className="bg-primary_green text-white px-6 py-3 rounded-full hover:bg-green-700 transition-colors"
             >
               Register Soil Sample
             </button>
@@ -246,5 +277,4 @@ const HomeComponent = () => {
     </div>
   );
 };
-
 export default HomeComponent;

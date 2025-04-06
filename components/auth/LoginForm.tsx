@@ -106,7 +106,11 @@ const LoginForm = () => {
               >
                 <Image
                   priority
-                  src={showPassword ? "/assets/icons/eyeClosed.svg" : "/assets/icons/eyeOpen.svg"}
+                  src={
+                    showPassword
+                      ? "/assets/icons/eyeClosed.svg"
+                      : "/assets/icons/eyeOpen.svg"
+                  }
                   width={21}
                   height={21}
                   alt="Show Password"
