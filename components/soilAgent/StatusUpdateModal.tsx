@@ -155,9 +155,7 @@ StatusUpdateModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-[700px] p-0 h-auto md:h-[80%] overflow-auto rounded-xl border border-gray-100 shadow-xl">
-        {/* <div className="absolute inset-0 bg-gradient-to-br from-primary_green/20 to-white" /> */}
-
+      <DialogContent className="max-w-[700px] p-0 h-auto md:h-[80%] overflow-auto rounded-xl border border-gray-100 shadow-xl bg-white">
         <DialogHeader className="px-4 md:px-8 pt-6 md:pt-8 pb-3">
           <div className="flex items-center space-x-3">
             <div className="size-8 sm:size-10 rounded-full bg-soil-green flex items-center justify-center">
@@ -353,5 +351,5 @@ StatusUpdateModalProps) {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  );
 }

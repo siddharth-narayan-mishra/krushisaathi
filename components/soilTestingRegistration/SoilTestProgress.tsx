@@ -362,7 +362,7 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
 
         <div className="soil-fade-in" style={{ animationDelay: "0.2s" }}>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="soil-section-title">Completed Reports</h2>
+            <h2 className="soil-section-title">All Yards</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -381,16 +381,7 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
 
                   <div className="space-y-3 mb-5">
                     {yard.samples.map((sample, index) => (
-                      <button
-                        onClick={() => {
-                          if (!sample.sampleId || !yard.yardId) return;
-                          router.push(
-                            `/view-report?sampleId=${sample.sampleId}&&yardId=${yard.yardId}`
-                          );
-                        }}
-                        key={index}
-                        className="soil-report-item"
-                      >
+                      <div key={index} className="soil-report-item">
                         <div>
                           <div className="text-gray-900 font-medium">
                             {sample.sampleName}
@@ -399,11 +390,25 @@ const SoilTestProgress: React.FC<SoilTestProgressProps> = ({ yardId }) => {
                             {sample.sampleId}
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <p className="soil-view-report">view report</p>
-                          <ChevronRight size={16} className="soil-chevron" />
-                        </div>
-                      </button>
+                        {sample.status === "completed" ? (
+                          <button
+                            onClick={() => {
+                              if (!sample.sampleId || !yard.yardId) return;
+                              router.push(
+                                `/view-report?sampleId=${sample.sampleId}&&yardId=${yard.yardId}`
+                              );
+                            }}
+                            className="flex items-center gap-3"
+                          >
+                            <p className="soil-view-report">view report</p>
+                            <ChevronRight size={16} className="soil-chevron" />
+                          </button>
+                        ) : (
+                          <div className="flex items-center gap-3">
+                            <p className="soil-view-report">Pending</p>
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
 
