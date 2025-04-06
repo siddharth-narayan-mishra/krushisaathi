@@ -3,17 +3,17 @@ import "./globals.css";
 import NavigationState from "@/context/NavigationState";
 import UserState from "@/context/UserState";
 import LabState from "@/context/LabState";
-import YardState from "@/context/YardState"; // Import YardState
+import YardState from "@/context/YardState";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Krushi Saathi",
   description:
-    "Krushi Saathi is a platform for farmers to get information about farming with AI powerd suggestions.",
+    "Krushi Saathi is a platform for farmers to get information about farming with AI powerd suggestions."
 };
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -25,7 +25,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <UserState>
           <Toaster position="top-right" />
           <NavigationState>
