@@ -7,9 +7,9 @@ import YardState from "@/context/YardState";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: "Krushi Saathi",
+  title: "KrushiSaathi",
   description:
-    "Krushi Saathi is a platform for farmers to get information about farming with AI powerd suggestions."
+    "KrushiSaathi is a revolutionary AI-driven agricultural solution designed to simplify and enhance the lives of small and marginal farmers in India."
 };
 
 export default function RootLayout({
