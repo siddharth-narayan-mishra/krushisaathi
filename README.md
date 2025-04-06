@@ -49,6 +49,21 @@ You can try the working prototype at:
 👉 [KrushiSaathi](https://krushisaathi-891779892886.us-central1.run.app/)
 
 ---
+## 📷 Screenshots
+
+![ss2](https://github.com/user-attachments/assets/f046f419-b38a-40bf-86a2-aa47443a8e71)
+
+![ss1](https://github.com/user-attachments/assets/c18a3a0e-4166-411a-9f50-9db33287d372)
+
+![ss3](https://github.com/user-attachments/assets/fa2f74e5-fa72-45a3-97a8-d3241bb78106)
+
+![ss4](https://github.com/user-attachments/assets/3f776c9e-7eec-4e52-aeba-5026a46e0e2a)
+
+![ss5](https://github.com/user-attachments/assets/ee9698ab-8b4d-44ba-91d9-dc266c5c0ae4)
+
+![ss6](https://github.com/user-attachments/assets/60fc65c5-9aaa-4c64-b6b1-7d7954f52892)
+
+---
 
 ## 📄 Project Structure
 
