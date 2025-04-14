@@ -4,6 +4,8 @@
 
 KrushiSaathi is a comprehensive agri-tech platform aimed at supporting Indian farmers by providing real-time weather forecasts, crop recommendations, market prices, and government scheme updates in their native languages. With a voice assistant and easy-to-use interface, KrushiSaathi ensures even semi-literate or illiterate farmers can make informed decisions to improve yield, reduce losses, and increase profitability.
 
+ **Link to the Repo of ML models:** https://github.com/Lord3008/AGRI_AI 
+
 ---
 
 ## 🚀 Features
