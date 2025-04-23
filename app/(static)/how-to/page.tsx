@@ -46,7 +46,7 @@ const Page = () => {
           <Suspense fallback={<p>Loading video...</p>}>
             <VideoComponent
               src={
-                "https://soilhealth.dac.gov.in/files/videos/Video 3 - Soil Sample Processing_Hindi.mp4"
+                "https://res.cloudinary.com/diwmwhu0x/video/upload/v1743951644/Video_3_-_Soil_Sample_Processing_Hindi_jhznac.mp4"
               }
             />
           </Suspense>
